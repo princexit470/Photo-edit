@@ -49,7 +49,7 @@
         /* Mobile Menu */
         .hamburger { display: none; background: none; border: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
         .hamburger span { width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: var(--transition); }
-        .mobile-menu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: rgba(10,10,10,0.98); backdrop-filter: blur(20px); z-index: 600; padding: 5rem 1.5rem 2rem; transition: right 0.3s ease; border-left: 1px solid var(--border); }
+        .mobile-menu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: rgba(10,10,10,0.98); backdrop-filter: blur(20px); z-index: 600; padding: 5rem 1.5rem 2rem; transition: right 0.3s ease; border-left: 1px solid var(--border); display: flex; flex-direction: column; }
         .mobile-menu.open { right: 0; }
         .mobile-menu a { display: block; color: var(--dim); padding: 1rem; text-decoration: none; border-radius: 12px; cursor: pointer; font-weight: 500; font-size: 1rem; }
         .mobile-menu a:hover, .mobile-menu a.active { background: rgba(255,255,255,0.05); color: #fff; }
@@ -66,7 +66,7 @@
         .home-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
         .xit-logo { font-size: 8rem; font-weight: 900; letter-spacing: 10px; user-select: none; transition: transform 0.1s ease-out; background: linear-gradient(90deg, #fff, var(--gold), #fff); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; cursor: crosshair; }
         @keyframes shine { to { background-position: 200% center; } }
-        .hero-subtitle { color: var(--dim); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; font-weight: 500; }
+        .hero-subtitle { color: var(--dim); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; font-weight: 500; text-align: center; }
 
         /* 📡 LIVE PAGE */
         .live-admin-top { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #111; padding: 15px; border-radius: 12px; border: 1px dashed var(--gold); align-items: center; }
@@ -76,8 +76,9 @@
         .live-badge.offline { background: #333; color: #888; animation: none; }
         .viewer-count { background: rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); }
         
-        .live-video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); }
-        .live-video-container iframe, .live-video-container video { width: 100%; height: 100%; border: none; object-fit: contain; }
+        /* Strict 16:9 Video Container */
+        .live-video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); display: block; }
+        .live-video-container iframe, .live-video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; background: #000; }
         .coming-soon-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #050505; flex-direction: column; gap: 15px; z-index: 2; }
 
         /* MEDIA GRIDS & LISTS */
@@ -88,17 +89,17 @@
         .gallery-item { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; background: #000; aspect-ratio: 4/5; border: 1px solid var(--border); transition: transform 0.3s; }
         .gallery-item:hover { transform: scale(1.02); border-color: var(--gold); }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-        .media-title { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: #fff; padding: 30px 15px 15px; font-size: 0.85rem; font-weight: 500; }
+        .media-title { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: #fff; padding: 30px 15px 15px; font-size: 0.85rem; font-weight: 500; pointer-events: none; }
         
-        /* Video Card Fixed */
+        /* 🔥 Rigid Video Feed Container Fix */
         .video-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
         .video-card-yt { display: flex; flex-direction: column; background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-        .video-thumb-yt { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; }
-        /* playsinline ensures mobile browsers don't force native fullscreen initially */
-        .video-thumb-yt video, .video-thumb-yt iframe { width: 100%; height: 100%; border: none; object-fit: contain; } 
+        .video-thumb-yt { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; overflow: hidden; display: block; }
+        /* These absolute positionings ensure video stays EXACTLY inside the 16:9 box when playing */
+        .video-thumb-yt video, .video-thumb-yt iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; background: #000; } 
         .vid-duration { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; pointer-events: none; }
         .video-info-yt { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
-        .video-info-yt h3 { font-size: 1rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .video-info-yt h3 { font-size: 1rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin:0; }
         
         .action-group { display: flex; gap: 5px; margin-top: 10px; }
         .action-group button { padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 5px; transition: var(--transition); }
@@ -186,24 +187,29 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <div id="mobileProfileSection" style="display:none; padding-bottom:1rem; margin-bottom:1rem; border-bottom:1px solid var(--border);">
-            <div style="color:var(--gold); font-weight:bold; font-size:1.1rem; margin-bottom:5px;"><i class="fas fa-user-circle"></i> <span id="mobileProfileName"></span></div>
-        </div>
-        <a onclick="navigateTo('home')"><i class="fas fa-home fa-fw"></i> Home</a>
-        <a onclick="navigateTo('live')"><i class="fas fa-satellite-dish fa-fw"></i> Live Stream</a>
-        <a onclick="navigateTo('gallery')"><i class="fas fa-image fa-fw"></i> Photos</a>
-        <a onclick="navigateTo('videos')"><i class="fas fa-video fa-fw"></i> Videos</a>
-        <a onclick="navigateTo('documents')"><i class="fas fa-file-alt fa-fw"></i> Documents</a>
-        <a href="https://princexit470.github.io/Chatus/" target="_blank"><i class="fas fa-comment fa-fw"></i> ChatUs</a>
-        <a href="https://princexit470.github.io/QR-studio/" target="_blank"><i class="fas fa-qrcode fa-fw"></i> QR Studio</a>
-        <a onclick="navigateTo('about')"><i class="fas fa-info-circle fa-fw"></i> Contact</a>
-        <hr class="mobile-divider">
-        <div id="mobileLoggedOut">
-            <a onclick="showAuth('login')"><i class="fas fa-sign-in-alt fa-fw"></i> Log In</a>
-            <a onclick="showAuth('signup')" style="color:var(--gold);"><i class="fas fa-user-plus fa-fw"></i> Sign Up</a>
-        </div>
-        <div id="mobileLoggedIn" class="hidden">
-            <a onclick="doLogout()"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
+        <div style="flex:1;">
+            <a onclick="navigateTo('home')"><i class="fas fa-home fa-fw"></i> Home</a>
+            <a onclick="navigateTo('live')"><i class="fas fa-satellite-dish fa-fw"></i> Live Stream</a>
+            <a onclick="navigateTo('gallery')"><i class="fas fa-image fa-fw"></i> Photos</a>
+            <a onclick="navigateTo('videos')"><i class="fas fa-video fa-fw"></i> Videos</a>
+            <a onclick="navigateTo('documents')"><i class="fas fa-file-alt fa-fw"></i> Documents</a>
+            <a href="https://princexit470.github.io/Chatus/" target="_blank"><i class="fas fa-comment fa-fw"></i> ChatUs</a>
+            <a href="https://princexit470.github.io/QR-studio/" target="_blank"><i class="fas fa-qrcode fa-fw"></i> QR Studio</a>
+            <a onclick="navigateTo('about')"><i class="fas fa-info-circle fa-fw"></i> Contact</a>
+            
+            <hr class="mobile-divider">
+            
+            <div id="mobileProfileSection" style="display:none; padding:10px; text-align:center; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:15px;">
+                <div style="color:var(--gold); font-weight:bold; font-size:1.1rem;"><i class="fas fa-user-circle"></i> <span id="mobileProfileName"></span></div>
+            </div>
+            
+            <div id="mobileLoggedOut">
+                <a onclick="showAuth('login')"><i class="fas fa-sign-in-alt fa-fw"></i> Log In</a>
+                <a onclick="showAuth('signup')" style="color:var(--gold);"><i class="fas fa-user-plus fa-fw"></i> Sign Up</a>
+            </div>
+            <div id="mobileLoggedIn" class="hidden">
+                <a onclick="doLogout()" style="color:#e74c3c;"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
+            </div>
         </div>
     </div>
 
@@ -281,6 +287,20 @@
             <img id="lbImage" src="">
         </div>
         <div class="lb-title" id="lbTitleText"></div>
+    </div>
+
+    <div id="fullscreenCameraUI" style="position:fixed; inset:0; background:#000; z-index:99999; display:none; flex-direction:column; justify-content:center; align-items:center;">
+        <div style="position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; z-index:10;">
+            <div style="background:#e74c3c; color:#fff; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:0.9rem; animation:pulse 2s infinite;"><i class="fas fa-circle"></i> LIVE REC</div>
+            <div style="background:rgba(0,0,0,0.7); color:#fff; padding:5px 15px; border-radius:20px; font-size:0.9rem; border:1px solid rgba(255,255,255,0.2);"><i class="fas fa-eye"></i> <span id="camViewerCount">0</span></div>
+        </div>
+        <video id="liveVideoElement" autoplay muted playsinline style="width:100vw; height:100vh; object-fit:cover; position:absolute; top:0; left:0;"></video>
+        
+        <div style="position:absolute; bottom:40px; display:flex; gap:20px; background:rgba(0,0,0,0.6); padding:15px 30px; border-radius:40px; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.2); z-index:10;">
+            <button id="camPlayBtn" onclick="toggleCameraPlay()" style="display:none; width:60px; height:60px; border-radius:50%; border:none; background:#2ecc71; color:#fff; font-size:1.5rem; cursor:pointer;"><i class="fas fa-play"></i></button>
+            <button id="camPauseBtn" onclick="toggleCameraPause()" style="width:60px; height:60px; border-radius:50%; border:none; background:#f39c12; color:#fff; font-size:1.5rem; cursor:pointer;"><i class="fas fa-pause"></i></button>
+            <button onclick="stopFullscreenCamera()" style="width:60px; height:60px; border-radius:50%; border:none; background:#e74c3c; color:#fff; font-size:1.5rem; cursor:pointer;"><i class="fas fa-stop"></i></button>
+        </div>
     </div>
 
     <div class="modal-backdrop" id="authModal">
@@ -462,6 +482,7 @@
             liveChannel.on('presence', { event: 'sync' }, () => {
                 const count = Object.keys(liveChannel.presenceState()).length;
                 document.getElementById('homeViewerCount').innerText = count;
+                document.getElementById('camViewerCount').innerText = count;
             }).subscribe(async (status) => {
                 if (status === 'SUBSCRIBED') await liveChannel.track({ online_at: new Date().toISOString() });
             });
@@ -576,7 +597,7 @@
                 </div>`;
             }).join('');
             
-            // Videos (preload="metadata" & playsinline added)
+            // 🔥 Videos (Strict Container + Preload="metadata")
             document.getElementById('videoFeed').innerHTML = videos.map(v => {
                 let vidSrc = v.url, poster = '';
                 if(v.url.includes('|')) {
@@ -821,9 +842,48 @@
         }
         async function clearLive() { await SB.from('media').delete().eq('type', 'live'); TOAST('Stream Stopped'); closeModal('liveStudioModal'); fetchMedia(); }
 
-        // MOCK FULLSCREEN CAMERA (For Admin View)
-        function openFullscreenCamera() {
-            TOAST('Web Camera access requested (Admin Only View)', 'info');
+        // 🔥 FIXED: FULL SCREEN BROWSER CAMERA
+        let camStream = null;
+        async function openFullscreenCamera() {
+            try {
+                // Request camera & mic
+                camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: true });
+                // Attach to video element
+                document.getElementById('liveVideoElement').srcObject = camStream;
+                // Show UI
+                document.getElementById('fullscreenCameraUI').classList.add('show');
+                // Setup Buttons
+                document.getElementById('camPlayBtn').style.display = 'none';
+                document.getElementById('camPauseBtn').style.display = 'block';
+                TOAST('Web Camera Live Started', 'success');
+            } catch(e) { TOAST('Camera permission denied', 'error'); }
+        }
+
+        function toggleCameraPause() {
+            if(camStream) {
+                camStream.getVideoTracks()[0].enabled = false; // Turn off video track (goes black)
+                document.getElementById('camPauseBtn').style.display = 'none';
+                document.getElementById('camPlayBtn').style.display = 'block';
+                TOAST('Camera Paused', 'info');
+            }
+        }
+
+        function toggleCameraPlay() {
+            if(camStream) {
+                camStream.getVideoTracks()[0].enabled = true; // Turn on video track
+                document.getElementById('camPlayBtn').style.display = 'none';
+                document.getElementById('camPauseBtn').style.display = 'block';
+                TOAST('Camera Resumed', 'success');
+            }
+        }
+
+        function stopFullscreenCamera() {
+            if(camStream) {
+                camStream.getTracks().forEach(t => t.stop()); // Completely shut down camera/mic
+                camStream = null;
+            }
+            document.getElementById('fullscreenCameraUI').classList.remove('show');
+            TOAST('Camera Stopped', 'info');
         }
     </script>
 </body>
