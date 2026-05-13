@@ -14,74 +14,65 @@
             --dim: #999; --radius: 12px; --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         body.no-scroll { overflow: hidden; }
 
-        /* Toast Notifications */
+        /* TOAST */
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { padding: 12px 20px; border-radius: 8px; color: #fff; font-weight: 500; font-size: 0.9rem; background: rgba(15,15,15,0.95); backdrop-filter: blur(10px); animation: toastIn 0.3s ease forwards; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-left: 4px solid var(--gold); }
         .toast.success { border-left-color: #2ecc71; } .toast.error { border-left-color: #e74c3c; }
         @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        /* Navbar */
-        .navbar { position: sticky; top: 0; z-index: 500; background: rgba(10,10,10,0.85); backdrop-filter: saturate(180%) blur(20px); padding: 0.8rem 2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        /* NAVBAR */
+        .navbar { position: sticky; top: 0; z-index: 500; background: rgba(10,10,10,0.85); backdrop-filter: saturate(180%) blur(20px); padding: 0.8rem 1.5rem; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
         .nav-logo { font-size: 1.5rem; font-weight: 900; color: var(--gold); cursor: pointer; letter-spacing: 1px; }
-        .nav-links { display: flex; gap: 0.5rem; list-style: none; align-items: center; }
-        .nav-links a { color: var(--dim); text-decoration: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: var(--transition); }
+        .nav-links { display: flex; gap: 0.5rem; list-style: none; align-items: center; margin-left: 20px; }
+        .nav-links a { color: var(--dim); text-decoration: none; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; transition: var(--transition); cursor: pointer; }
         .nav-links a:hover, .nav-links a.active { color: #fff; background: rgba(255,255,255,0.08); }
+        .nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
         
-        .nav-btn { padding: 0.5rem 1.2rem; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: #fff; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: var(--transition); }
-        .nav-btn:hover { background: rgba(255,255,255,0.05); }
-        .nav-btn.primary { background: var(--gold); border: none; color: #000; font-weight: 600; }
-        .nav-btn.primary:hover { background: var(--gold-hover); transform: translateY(-1px); }
+        .nav-btn { padding: 0.4rem 0.8rem; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: #fff; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: var(--transition); }
+        .nav-btn.primary { background: var(--gold); color: #000; border: none; }
+        .nav-btn:hover { background: rgba(255,255,255,0.05); } .nav-btn.primary:hover { background: var(--gold-hover); transform: translateY(-1px); }
 
-        /* Profile Dropdown */
+        /* PROFILE DROPDOWN */
         .profile-wrap { position: relative; }
-        .profile-chip { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; border: 1px solid var(--border); transition: var(--transition); }
-        .profile-chip:hover { background: rgba(255,255,255,0.1); }
-        .profile-chip span { color: var(--gold); font-size: 0.85rem; font-weight: 600; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .profile-dropdown { position: absolute; top: 110%; right: 0; background: #111; border-radius: 12px; padding: 0.5rem; border: 1px solid var(--border); z-index: 60; display: none; min-width: 160px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
-        .profile-dropdown.show { display: block; animation: dropIn 0.2s ease; }
-        @keyframes dropIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .profile-dropdown a { display: block; padding: 0.7rem 1rem; color: var(--dim); text-decoration: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: var(--transition); }
+        .profile-chip { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; border: 1px solid var(--border); }
+        .profile-chip span { color: var(--gold); font-size: 0.85rem; font-weight: 600; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .profile-dropdown { position: absolute; top: 110%; right: 0; background: #111; border-radius: 12px; padding: 0.5rem; border: 1px solid var(--border); z-index: 60; display: none; min-width: 150px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .profile-dropdown.show { display: block; }
+        .profile-dropdown a { display: block; padding: 0.7rem 1rem; color: var(--dim); cursor: pointer; border-radius: 8px; font-size: 0.85rem; }
         .profile-dropdown a:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-        /* Mobile Menu */
+        /* MOBILE MENU */
         .hamburger { display: none; background: none; border: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
-        .hamburger span { width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: var(--transition); }
+        .hamburger span { width: 22px; height: 2px; background: #fff; border-radius: 2px; }
         .mobile-menu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: rgba(10,10,10,0.98); backdrop-filter: blur(20px); z-index: 600; padding: 5rem 1.5rem 2rem; transition: right 0.3s ease; border-left: 1px solid var(--border); display: flex; flex-direction: column; }
         .mobile-menu.open { right: 0; }
-        .mobile-menu a { display: block; color: var(--dim); padding: 1rem; text-decoration: none; border-radius: 12px; cursor: pointer; font-weight: 500; font-size: 1rem; }
-        .mobile-menu a:hover, .mobile-menu a.active { background: rgba(255,255,255,0.05); color: #fff; }
+        .mobile-menu a { display: block; color: var(--dim); padding: 1rem; text-decoration: none; border-radius: 12px; font-weight: 500; cursor: pointer; }
+        .mobile-menu a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .mobile-profile-box { margin: 15px 0; padding: 15px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); border-radius: 12px; text-align: center; color: var(--gold); font-weight: bold; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 550; display: none; }
         .overlay.show { display: block; }
 
-        /* Pages */
+        /* PAGES */
         .main-content { padding: 2rem; max-width: 1200px; margin: 0 auto; min-height: 80vh; }
         .page { display: none; animation: pageFade 0.4s ease forwards; opacity: 0; }
         .page.show { display: block; opacity: 1; }
-        @keyframes pageFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* 🔥 HOME PAGE (XIT Only) */
-        .home-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
-        .xit-logo { font-size: 8rem; font-weight: 900; letter-spacing: 10px; user-select: none; transition: transform 0.1s ease-out; background: linear-gradient(90deg, #fff, var(--gold), #fff); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; cursor: crosshair; }
-        @keyframes shine { to { background-position: 200% center; } }
-        .hero-subtitle { color: var(--dim); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; font-weight: 500; text-align: center; }
-
-        /* 📡 LIVE PAGE */
-        .live-admin-top { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #111; padding: 15px; border-radius: 12px; border: 1px dashed var(--gold); align-items: center; }
-        .live-section { margin: 0 auto; max-width: 1000px; padding: 1.5rem; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
-        .live-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .live-badge { background: #e74c3c; color: #fff; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; animation: pulse 2s infinite; display: inline-flex; align-items: center; gap: 6px; }
-        .live-badge.offline { background: #333; color: #888; animation: none; }
-        .viewer-count { background: rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); }
+        @keyframes pageFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Strict 16:9 Video Container */
-        .live-video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); display: block; }
-        .live-video-container iframe, .live-video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; background: #000; }
-        .coming-soon-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #050505; flex-direction: column; gap: 15px; z-index: 2; }
+        /* HOME (XIT ANIMATION) */
+        .home-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
+        .xit-logo { font-size: 8rem; font-weight: 900; letter-spacing: 12px; user-select: none; transition: transform 0.1s ease-out; background: linear-gradient(90deg, #fff, var(--gold), #fff); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; cursor: crosshair; }
+        @keyframes shine { to { background-position: 200% center; } }
+        .hero-subtitle { color: var(--dim); font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; font-weight: 500; }
 
-        /* MEDIA GRIDS & LISTS */
+        /* SEARCH BAR */
+        .search-container { display: flex; align-items: center; background: #111; border: 1px solid var(--border); border-radius: 20px; padding: 0.6rem 1.2rem; margin-bottom: 1.5rem; }
+        .search-container i { color: var(--dim); margin-right: 10px; }
+        .search-container input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 0.9rem; }
+
+        /* MEDIA GRIDS */
         .section-title { font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: 700; color: #fff; }
         .add-media-bar { display: flex; gap: 10px; margin-bottom: 1.5rem; }
         
@@ -89,62 +80,77 @@
         .gallery-item { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; background: #000; aspect-ratio: 4/5; border: 1px solid var(--border); transition: transform 0.3s; }
         .gallery-item:hover { transform: scale(1.02); border-color: var(--gold); }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-        .media-title { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: #fff; padding: 30px 15px 15px; font-size: 0.85rem; font-weight: 500; pointer-events: none; }
-        
-        /* 🔥 Rigid Video Feed Container Fix */
+        .media-title { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: #fff; padding: 30px 15px 15px; font-size: 0.85rem; }
+
+        /* 🔥 STRICT 16:9 VIDEO FEED */
         .video-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
         .video-card-yt { display: flex; flex-direction: column; background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-        .video-thumb-yt { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; overflow: hidden; display: block; }
-        /* These absolute positionings ensure video stays EXACTLY inside the 16:9 box when playing */
-        .video-thumb-yt video, .video-thumb-yt iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; background: #000; } 
+        .video-thumb-yt { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; overflow: hidden; }
+        .video-thumb-yt video, .video-thumb-yt iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; }
         .vid-duration { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; pointer-events: none; }
-        .video-info-yt { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
-        .video-info-yt h3 { font-size: 1rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin:0; }
+        .video-info-yt { padding: 1rem; display: flex; flex-direction: column; gap: 10px; }
+        .video-info-yt h3 { font-size: 1rem; font-weight: 600; color: #fff; margin:0; }
         
-        .action-group { display: flex; gap: 5px; margin-top: 10px; }
-        .action-group button { padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 5px; transition: var(--transition); }
-        .btn-edit { background: rgba(52, 152, 219, 0.1); color: #3498db; } .btn-edit:hover { background: #3498db; color: #fff; }
-        .btn-del { background: rgba(231, 76, 60, 0.1); color: #e74c3c; } .btn-del:hover { background: #e74c3c; color: #fff; }
-        .admin-absolute-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
+        .action-group { display: flex; gap: 5px; }
+        .action-group button { padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .btn-edit { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+        .btn-del { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+
+        /* LIVE SECTION */
+        .live-admin-top { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #111; padding: 15px; border-radius: 12px; border: 1px dashed var(--gold); align-items: center; }
+        .live-section { margin: 0 auto; max-width: 900px; padding: 1.5rem; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+        .live-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .live-badge { background: #e74c3c; color: #fff; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; animation: pulse 2s infinite; display: inline-flex; align-items: center; gap: 6px; }
+        .live-badge.offline { background: #333; color: #888; animation: none; }
+        .viewer-count { background: rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); }
+        .live-video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid var(--border); }
+        .live-video-container iframe, .live-video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; }
+        .coming-soon-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #050505; flex-direction: column; gap: 15px; z-index: 2; }
+
+        /* FULL SCREEN CAMERA UI */
+        #fullscreenCameraUI { position: fixed; inset: 0; background: #000; z-index: 99999; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        #fullscreenCameraUI.show { display: flex; }
+        #liveVideoElement { width: 100vw; height: 100vh; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .cam-controls { position: absolute; bottom: 40px; display: flex; gap: 20px; background: rgba(0,0,0,0.6); padding: 15px 30px; border-radius: 40px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); z-index: 10; }
+        .cam-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; }
+        .cam-btn-play { background: #2ecc71; } .cam-btn-pause { background: #f39c12; } .cam-btn-stop { background: #e74c3c; }
 
         /* LIGHTBOX */
         .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .lightbox.show { opacity: 1; pointer-events: auto; }
-        .lb-image-wrap { position: relative; width: 100%; height: 80vh; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: transform 0.3s ease; }
-        .lightbox img { max-width: 95vw; max-height: 80vh; border-radius: 8px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.5); user-select: none; pointer-events: none; transition: transform 0.3s ease; }
+        .lb-image-wrap { position: relative; width: 100%; height: 80vh; display: flex; align-items: center; justify-content: center; }
+        .lightbox img { max-width: 95vw; max-height: 80vh; border-radius: 8px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.5); user-select: none; transition: transform 0.3s ease; }
         .lb-top-bar { position: absolute; top: 0; left: 0; right: 0; padding: 20px; display: flex; justify-content: space-between; z-index: 10; background: linear-gradient(rgba(0,0,0,0.8), transparent); }
         .lb-counter { color: #fff; font-size: 1rem; font-weight: 500; }
         .lb-actions { display: flex; gap: 15px; }
-        .lb-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); transition: 0.2s; }
-        .lb-btn:hover { background: rgba(255,255,255,0.2); }
-        .lb-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 3rem; cursor: pointer; z-index: 10; padding: 20px; transition: 0.2s; }
-        .lb-nav-btn:hover { color: #fff; }
+        .lb-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; }
+        .lb-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 3rem; cursor: pointer; z-index: 10; padding: 20px; }
         .lb-prev { left: 10px; } .lb-next { right: 10px; }
 
-        /* MODALS */
+        /* MODALS (CRITICAL CSS FIX) */
         .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 6000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-backdrop.show { display: flex; }
         .modal-dialog { background: #111; border-radius: 16px; padding: 2.5rem; width: 90%; max-width: 450px; border: 1px solid var(--border); position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; }
         .modal-dialog h2 { color: #fff; text-align: center; margin-bottom: 1.5rem; font-size: 1.4rem; }
         .input-group { margin-bottom: 1rem; }
         .input-group label { display: block; font-size: 0.85rem; color: var(--dim); margin-bottom: 6px; }
-        .modal-dialog input, .modal-dialog textarea, .modal-dialog select { width: 100%; padding: 0.9rem; border-radius: 10px; border: 1px solid var(--border); background: #000; color: #fff; outline: none; transition: 0.2s; font-size: 0.95rem; }
+        .modal-dialog input, .modal-dialog textarea, .modal-dialog select { width: 100%; padding: 0.9rem; border-radius: 10px; border: 1px solid var(--border); background: #000; color: #fff; outline: none; font-size: 0.95rem; }
         .modal-dialog input:focus { border-color: var(--gold); }
-        .modal-submit { width: 100%; padding: 1rem; margin-top: 1rem; border-radius: 10px; border: none; background: var(--gold); color: #000; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; }
-        .modal-submit:hover { background: var(--gold-hover); transform: translateY(-2px); }
+        .modal-submit { width: 100%; padding: 1rem; margin-top: 1rem; border-radius: 10px; border: none; background: var(--gold); color: #000; font-weight: 700; font-size: 1rem; cursor: pointer; }
         .modal-close { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--dim); font-size: 1.2rem; cursor: pointer; }
+        
         .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; background: #000; padding: 5px; border-radius: 10px; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; color: var(--dim); border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.2s; }
+        .tab-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; color: var(--dim); border-radius: 6px; cursor: pointer; font-weight: 500; }
         .tab-btn.active { background: var(--surface-hover); color: #fff; }
 
         /* UPLOAD MANAGER */
-        .upload-manager { position: fixed; bottom: 20px; right: 20px; width: 340px; background: #111; border: 1px solid var(--border); border-radius: 12px; z-index: 5500; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: none; flex-direction: column; overflow: hidden; }
+        .upload-manager { position: fixed; bottom: 20px; right: 20px; width: 340px; background: #111; border: 1px solid var(--border); border-radius: 12px; z-index: 5500; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         .upload-manager.active { display: flex; }
-        .um-header { padding: 12px 15px; background: #1a1a1a; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid var(--border); }
+        .um-header { padding: 12px 15px; background: #1a1a1a; display: flex; justify-content: space-between; cursor: pointer; border-bottom: 1px solid var(--border); color: #fff; font-weight: bold;}
         .um-list { max-height: 250px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
         .um-item { background: #000; border: 1px solid var(--border); padding: 10px; border-radius: 8px; }
         .um-progress-bar { width: 100%; height: 5px; background: #333; margin-top: 8px; border-radius: 3px; overflow: hidden;}
-        .um-progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.3s ease; }
+        .um-progress-fill { height: 100%; background: var(--gold); width: 0%; transition: 0.3s; }
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -197,10 +203,10 @@
             <a href="https://princexit470.github.io/QR-studio/" target="_blank"><i class="fas fa-qrcode fa-fw"></i> QR Studio</a>
             <a onclick="navigateTo('about')"><i class="fas fa-info-circle fa-fw"></i> Contact</a>
             
-            <hr class="mobile-divider">
+            <hr class="mobile-divider" style="border:none; border-top:1px solid var(--border); margin:15px 0;">
             
-            <div id="mobileProfileSection" style="display:none; padding:10px; text-align:center; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:15px;">
-                <div style="color:var(--gold); font-weight:bold; font-size:1.1rem;"><i class="fas fa-user-circle"></i> <span id="mobileProfileName"></span></div>
+            <div id="mobileProfileSection" class="mobile-profile-box" style="display:none;">
+                <i class="fas fa-user-circle"></i> <span id="mobileProfileName"></span>
             </div>
             
             <div id="mobileLoggedOut">
@@ -228,7 +234,7 @@
             <div class="live-admin-top" id="liveAdminButtons" style="display:none;">
                 <span style="color:var(--gold); font-weight:bold; margin-right:auto;"><i class="fas fa-user-shield"></i> Admin Settings</span>
                 <button class="nav-btn primary" onclick="document.getElementById('liveStudioModal').classList.add('show')"><i class="fas fa-cog"></i> Setup Stream</button>
-                <button class="nav-btn" onclick="openFullscreenCamera()"><i class="fas fa-mobile-alt"></i> Web Camera Preview</button>
+                <button class="nav-btn" onclick="openFullscreenCamera()"><i class="fas fa-camera"></i> Web Camera Preview</button>
             </div>
 
             <div class="live-section" id="liveSection">
@@ -248,18 +254,21 @@
 
         <div class="page" id="page-gallery">
             <h2 class="section-title"><i class="fas fa-images" style="color:var(--gold);"></i> Photos</h2>
+            <div class="search-container"><i class="fas fa-search"></i><input type="text" id="searchPhotos" placeholder="Search photos..." onkeyup="fetchMedia()"></div>
             <div class="add-media-bar" id="photoAddBar" style="display:none;"><button class="nav-btn primary" onclick="openAddMediaModal('photo')"><i class="fas fa-upload"></i> Upload Photos / URL</button></div>
             <div class="gallery-grid" id="photoGrid"></div>
         </div>
 
         <div class="page" id="page-videos">
             <h2 class="section-title"><i class="fas fa-play-circle" style="color:var(--gold);"></i> Videos</h2>
+            <div class="search-container"><i class="fas fa-search"></i><input type="text" id="searchVideos" placeholder="Search videos..." onkeyup="fetchMedia()"></div>
             <div class="add-media-bar" id="videoAddBar" style="display:none;"><button class="nav-btn primary" onclick="openAddMediaModal('video')"><i class="fas fa-upload"></i> Upload Video / URL</button></div>
             <div class="video-feed" id="videoFeed"></div>
         </div>
 
         <div class="page" id="page-documents">
             <h2 class="section-title"><i class="fas fa-file-pdf" style="color:var(--gold);"></i> Documents</h2>
+            <div class="search-container"><i class="fas fa-search"></i><input type="text" id="searchDocs" placeholder="Search documents..." onkeyup="fetchMedia()"></div>
             <div class="add-media-bar" id="docAddBar" style="display:none;"><button class="nav-btn primary" onclick="openAddMediaModal('doc')"><i class="fas fa-upload"></i> Upload Document / URL</button></div>
             <div class="video-feed" style="display:flex; flex-direction:column; gap:1rem;" id="docList"></div>
         </div>
@@ -286,20 +295,19 @@
         <div class="lb-image-wrap" id="lbImageWrap">
             <img id="lbImage" src="">
         </div>
-        <div class="lb-title" id="lbTitleText"></div>
+        <div class="lb-title" id="lbTitleText" style="position: absolute; bottom: 30px; color: #fff; font-size: 1.2rem; text-align: center; width: 100%;"></div>
     </div>
 
-    <div id="fullscreenCameraUI" style="position:fixed; inset:0; background:#000; z-index:99999; display:none; flex-direction:column; justify-content:center; align-items:center;">
+    <div id="fullscreenCameraUI">
         <div style="position:absolute; top:20px; left:20px; right:20px; display:flex; justify-content:space-between; z-index:10;">
             <div style="background:#e74c3c; color:#fff; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:0.9rem; animation:pulse 2s infinite;"><i class="fas fa-circle"></i> LIVE REC</div>
             <div style="background:rgba(0,0,0,0.7); color:#fff; padding:5px 15px; border-radius:20px; font-size:0.9rem; border:1px solid rgba(255,255,255,0.2);"><i class="fas fa-eye"></i> <span id="camViewerCount">0</span></div>
         </div>
-        <video id="liveVideoElement" autoplay muted playsinline style="width:100vw; height:100vh; object-fit:cover; position:absolute; top:0; left:0;"></video>
-        
-        <div style="position:absolute; bottom:40px; display:flex; gap:20px; background:rgba(0,0,0,0.6); padding:15px 30px; border-radius:40px; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.2); z-index:10;">
-            <button id="camPlayBtn" onclick="toggleCameraPlay()" style="display:none; width:60px; height:60px; border-radius:50%; border:none; background:#2ecc71; color:#fff; font-size:1.5rem; cursor:pointer;"><i class="fas fa-play"></i></button>
-            <button id="camPauseBtn" onclick="toggleCameraPause()" style="width:60px; height:60px; border-radius:50%; border:none; background:#f39c12; color:#fff; font-size:1.5rem; cursor:pointer;"><i class="fas fa-pause"></i></button>
-            <button onclick="stopFullscreenCamera()" style="width:60px; height:60px; border-radius:50%; border:none; background:#e74c3c; color:#fff; font-size:1.5rem; cursor:pointer;"><i class="fas fa-stop"></i></button>
+        <video id="liveVideoElement" autoplay muted playsinline></video>
+        <div class="cam-controls">
+            <button id="camPlayBtn" onclick="toggleCameraPlay()" class="cam-btn cam-btn-play" style="display:none;"><i class="fas fa-play"></i></button>
+            <button id="camPauseBtn" onclick="toggleCameraPause()" class="cam-btn cam-btn-pause"><i class="fas fa-pause"></i></button>
+            <button onclick="stopFullscreenCamera()" class="cam-btn cam-btn-stop"><i class="fas fa-stop"></i></button>
         </div>
     </div>
 
@@ -429,7 +437,7 @@
 
     <div class="upload-manager" id="uploadManager">
         <div class="um-header" onclick="document.getElementById('umList').style.display = document.getElementById('umList').style.display==='none'?'flex':'none'">
-            <strong style="color:#fff; font-size:0.95rem;" id="umTitle">Uploads</strong>
+            <span id="umTitle">Uploads</span>
             <button onclick="event.stopPropagation(); clearUploads()" style="background:none;border:none;color:var(--dim);cursor:pointer;"><i class="fas fa-trash"></i></button>
         </div>
         <div class="um-list" id="umList" style="display:flex;"></div>
@@ -496,7 +504,7 @@
             document.getElementById('authConfirmPassGroup').style.display = isSignup ? 'block' : 'none';
             document.getElementById('authTitle').innerText = isSignup ? 'Create Account' : 'Welcome Back';
             document.getElementById('authSubmit').innerText = isSignup ? 'Sign Up' : 'Log In';
-            document.getElementById('authSwitch').innerHTML = isSignup ? 'Have account? <span style="color:var(--gold);cursor:pointer;font-weight:600;" onclick="switchAuthMode(\'login\')">Log In</span>' : 'New here? <span style="color:var(--gold);cursor:pointer;font-weight:600;" onclick="switchAuthMode(\'signup\')">Create account</span>';
+            document.getElementById('authSwitch').innerHTML = isSignup ? 'Have account? <span style="color:var(--gold);cursor:pointer;" onclick="switchAuthMode(\'login\')">Log In</span>' : 'New here? <span style="color:var(--gold);cursor:pointer;" onclick="switchAuthMode(\'signup\')">Create account</span>';
         }
 
         function showAuth(mode) { switchAuthMode(mode); document.getElementById('authModal').classList.add('show'); }
@@ -526,25 +534,22 @@
 
         function updateUI(u) {
             USER = u; const isAdm = USER && USER.email === ADMIN_EMAIL;
-            // Desktop Name logic
+            
             document.getElementById('desktopAuthBtns').style.display = USER ? 'none' : 'block';
             document.getElementById('profileChipWrapper').style.display = USER ? 'block' : 'none';
             if(USER) document.getElementById('profileEmailText').innerText = USER.user_metadata?.full_name || USER.email.split('@')[0];
             
-            // Mobile Name Logic
             document.getElementById('mobileLoggedOut').style.display = USER ? 'none' : 'block';
             document.getElementById('mobileLoggedIn').style.display = USER ? 'block' : 'none';
             document.getElementById('mobileProfileSection').style.display = USER ? 'block' : 'none';
             if(USER) document.getElementById('mobileProfileName').innerText = USER.user_metadata?.full_name || USER.email.split('@')[0];
             
-            // Admin Controls
             document.getElementById('photoAddBar').style.display = isAdm ? 'flex' : 'none';
             document.getElementById('videoAddBar').style.display = isAdm ? 'flex' : 'none';
             document.getElementById('docAddBar').style.display = isAdm ? 'flex' : 'none';
             document.getElementById('liveAdminButtons').style.display = isAdm ? 'flex' : 'none';
         }
 
-        // NAVIGATION
         function navigateTo(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
             document.getElementById('page-' + page).classList.add('show');
@@ -556,33 +561,33 @@
             document.getElementById('mobileOverlay').classList.remove('show');
         }
 
-        // TIME HELPER
         function formatTime(seconds) {
             if(isNaN(seconds) || seconds === 0) return '';
             const m = Math.floor(seconds / 60); const s = Math.floor(seconds % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
-
-        // EXTRACT YOUTUBE ID
         function extractYtId(url) {
             const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&]{11})/);
             return match ? match[1] : null;
         }
 
-        // FETCH MEDIA
+        // FETCH MEDIA (Search integration)
         async function fetchMedia() {
             const { data } = await SB.from('media').select('*').order('created_at', { ascending: false });
             if(!data) return;
             
-            const photos = data.filter(m => m.type === 'photo');
-            const videos = data.filter(m => m.type === 'video');
-            const docs = data.filter(m => m.type === 'doc');
+            const qPhoto = (document.getElementById('searchPhotos') ? document.getElementById('searchPhotos').value.toLowerCase() : '');
+            const qVideo = (document.getElementById('searchVideos') ? document.getElementById('searchVideos').value.toLowerCase() : '');
+            const qDoc = (document.getElementById('searchDocs') ? document.getElementById('searchDocs').value.toLowerCase() : '');
+            
+            const photos = data.filter(m => m.type === 'photo' && m.title.toLowerCase().includes(qPhoto));
+            const videos = data.filter(m => m.type === 'video' && m.title.toLowerCase().includes(qVideo));
+            const docs = data.filter(m => m.type === 'doc' && m.title.toLowerCase().includes(qDoc));
             const live = data.filter(m => m.type === 'live');
             const admin = USER && USER.email === ADMIN_EMAIL;
             
             ALL_PHOTOS = photos;
             
-            // Photos
             document.getElementById('photoGrid').innerHTML = photos.map((p, index) => {
                 let pUrl = p.url, tUrl = '';
                 if(p.url.includes('|')) { const pts = p.url.split('|'); pUrl = pts[0]; tUrl = pts[1]; }
@@ -591,13 +596,13 @@
                     <img src="${pUrl}" loading="lazy" onclick="openLB(${index})">
                     <div class="media-title">${p.title}</div>
                     ${admin?`<div class="admin-absolute-actions">
-                        <button class="del-btn btn-edit" style="position:static" onclick="openEditModal('${p.id}', '${p.title.replace(/'/g,"\\'")}', '${p.url}')"><i class="fas fa-edit"></i></button>
-                        <button class="del-btn" style="position:static" onclick="delMedia('${p.id}')"><i class="fas fa-trash"></i></button>
+                        <button class="btn-edit" onclick="openEditModal('${p.id}', '${p.title.replace(/'/g,"\\'")}', '${p.url}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-del" onclick="delMedia('${p.id}')"><i class="fas fa-trash"></i></button>
                     </div>`:''}
                 </div>`;
             }).join('');
             
-            // 🔥 Videos (Strict Container + Preload="metadata")
+            // VIDEOS (Strict 16:9 + Metadata)
             document.getElementById('videoFeed').innerHTML = videos.map(v => {
                 let vidSrc = v.url, poster = '';
                 if(v.url.includes('|')) {
@@ -631,18 +636,17 @@
                 </div>`;
             }).join('');
             
-            // Docs
             document.getElementById('docList').innerHTML = docs.map(d => `
                 <div class="video-card-yt" style="padding:15px; flex-direction:row; justify-content:space-between; align-items:center;">
                     <span style="font-weight:600;"><i class="fas fa-file-pdf" style="color:#e74c3c; font-size:1.2rem; margin-right:10px;"></i> ${d.title}</span>
                     <div style="display:flex; gap:10px;">
                         <a href="${d.url}" target="_blank" class="nav-btn primary" style="text-decoration:none;"><i class="fas fa-download"></i> Open</a>
-                        ${admin?`<button class="del-btn" style="position:static; width:auto; border-radius:6px; padding:0 10px;" onclick="delMedia('${d.id}')"><i class="fas fa-trash"></i></button>`:''}
+                        ${admin?`<button class="btn-del" style="position:static; width:auto; border-radius:6px; padding:0 10px;" onclick="delMedia('${d.id}')"><i class="fas fa-trash"></i></button>`:''}
                     </div>
                 </div>
             `).join('');
 
-            // LIVE SECTION (Robust Player)
+            // LIVE SECTION
             const lContainer = document.getElementById('liveVideoContainer');
             const lBadge = document.getElementById('liveBadge');
             const lOverlay = document.getElementById('liveOverlay');
@@ -653,21 +657,17 @@
                 lBadge.classList.remove('offline'); lBadge.innerHTML = `<i class="fas fa-circle"></i> ${live[0].title || 'LIVE NOW'}`;
                 
                 if (url.includes('.m3u8')) {
-                    // Use HLS.js for raw streams
-                    lContainer.innerHTML = `<video id="hlsLivePlayer" controls autoplay playsinline style="width:100%;height:100%;background:#000;object-fit:contain;"></video>`;
+                    lContainer.innerHTML = `<video id="hlsLivePlayer" controls autoplay playsinline></video>`;
                     const video = document.getElementById('hlsLivePlayer');
-                    if (Hls.isSupported()) {
-                        const hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
-                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                        video.src = url;
-                    }
+                    if (Hls.isSupported()) { const hls = new Hls(); hls.loadSource(url); hls.attachMedia(video); }
+                    else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; }
                 } else if(url.includes('youtube') || url.includes('youtu.be')) {
                     const ytId = extractYtId(url);
                     if(ytId) lContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" allowfullscreen></iframe>`;
                 } else if(url.includes('cloudinary')) {
                     lContainer.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
                 } else {
-                    lContainer.innerHTML = `<video src="${url}" controls autoplay playsinline style="width:100%;height:100%;background:#000;object-fit:contain;"></video>`;
+                    lContainer.innerHTML = `<video src="${url}" controls autoplay playsinline></video>`;
                 }
             } else {
                 lBadge.classList.add('offline'); lBadge.innerHTML = '<i class="fas fa-circle"></i> OFFLINE';
@@ -675,37 +675,24 @@
             }
         }
 
-        async function delMedia(id) {
-            if(!confirm('Delete permanently?')) return;
-            await SB.from('media').delete().eq('id', id);
-            fetchMedia(); TOAST('Deleted', 'success');
-        }
+        async function delMedia(id) { if(!confirm('Delete permanently?')) return; await SB.from('media').delete().eq('id', id); fetchMedia(); TOAST('Deleted', 'success'); }
 
         // EDIT MEDIA
         function openEditModal(id, title, urlRaw) {
-            document.getElementById('editMediaId').value = id;
-            document.getElementById('editMediaTitleInput').value = title;
-            document.getElementById('editMediaUrlOrig').value = urlRaw;
-            
-            let thumb = '';
-            if(urlRaw.includes('|')) thumb = urlRaw.split('|')[1];
+            document.getElementById('editMediaId').value = id; document.getElementById('editMediaTitleInput').value = title; document.getElementById('editMediaUrlOrig').value = urlRaw;
+            let thumb = ''; if(urlRaw.includes('|')) thumb = urlRaw.split('|')[1];
             document.getElementById('editMediaThumbInput').value = thumb;
-            
             document.getElementById('editMediaModal').classList.add('show');
         }
 
         async function saveMediaEdit() {
-            const id = document.getElementById('editMediaId').value;
-            const newTitle = document.getElementById('editMediaTitleInput').value;
-            const newThumb = document.getElementById('editMediaThumbInput').value;
+            const id = document.getElementById('editMediaId').value, newTitle = document.getElementById('editMediaTitleInput').value, newThumb = document.getElementById('editMediaThumbInput').value;
             let origUrl = document.getElementById('editMediaUrlOrig').value;
-            
             let baseVid = origUrl.includes('|') ? origUrl.split('|')[0] : origUrl;
             let finalUrl = newThumb ? `${baseVid}|${newThumb}` : baseVid;
 
             await SB.from('media').update({ title: newTitle, url: finalUrl }).eq('id', id);
-            TOAST('Updated successfully!', 'success');
-            closeModal('editMediaModal'); fetchMedia();
+            TOAST('Updated successfully!', 'success'); closeModal('editMediaModal'); fetchMedia();
         }
 
         // LIGHTBOX
@@ -728,11 +715,10 @@
         lbElement.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; });
         lbElement.addEventListener('touchend', e => {
             let dx = e.changedTouches[0].screenX - touchStartX, dy = e.changedTouches[0].screenY - touchStartY;
-            if (dy > 100 && Math.abs(dx) < 60) closeLB(); 
-            else if (dx > 70) lbNav(-1); else if (dx < -70) lbNav(1);
+            if (dy > 100 && Math.abs(dx) < 60) closeLB(); else if (dx > 70) lbNav(-1); else if (dx < -70) lbNav(1);
         });
 
-        // TABS
+        // TABS FOR ADD MEDIA
         document.getElementById('mediaTabs').addEventListener('click', (e) => {
             if (!e.target.classList.contains('tab-btn')) return;
             document.querySelectorAll('#mediaTabs .tab-btn').forEach(b => b.classList.remove('active'));
@@ -746,7 +732,6 @@
             document.getElementById('addMediaType').value = type;
             document.getElementById('addMediaName').value = ''; document.getElementById('addMediaFile').value = '';
             document.getElementById('addMediaLinkName').value = ''; document.getElementById('addMediaUrl').value = '';
-            
             document.getElementById('thumbnailGroup').style.display = type === 'video' ? 'block' : 'none';
             document.getElementById('linkThumbGroup').style.display = type === 'video' ? 'block' : 'none';
             
@@ -783,10 +768,8 @@
                 const title = document.getElementById('addMediaLinkName').value.trim();
                 const url = document.getElementById('addMediaUrl').value.trim();
                 const thumb = document.getElementById('addMediaLinkThumb') ? document.getElementById('addMediaLinkThumb').value.trim() : '';
-                
                 if(!title || !url) return TOAST('Title & URL required', 'error');
                 let finalUrl = (type === 'video' && thumb) ? `${url}|${thumb}` : url;
-                
                 await SB.from('media').insert([{ type, title, url: finalUrl }]);
                 TOAST('Saved!', 'success'); closeModal('addMediaModal'); fetchMedia(); return;
             }
@@ -816,7 +799,6 @@
                     let thumbUrl = null; if(type === 'video' && thumbFile && i === 0) thumbUrl = await uploadToCloudinary(thumbFile, null);
                     const fileUrl = await uploadToCloudinary(file, (e) => { if(e.lengthComputable) { const idx = uploads.findIndex(u=>u.id===id); if(idx>-1) { uploads[idx].progress = Math.round((e.loaded/e.total)*100); renderUM(); } } });
                     let finalUrl = thumbUrl ? `${fileUrl}|${thumbUrl}` : fileUrl;
-                    
                     await SB.from('media').insert([{ type, title: finalTitle, url: finalUrl }]);
                     const idx = uploads.findIndex(u=>u.id===id); if(idx>-1) { uploads[idx].status = 'done'; uploads[idx].progress = 100; renderUM(); fetchMedia(); }
                 } catch(error) { const idx = uploads.findIndex(u=>u.id===id); if(idx>-1) { uploads[idx].status = 'error'; renderUM(); TOAST('Error', 'error'); } }
@@ -842,48 +824,30 @@
         }
         async function clearLive() { await SB.from('media').delete().eq('type', 'live'); TOAST('Stream Stopped'); closeModal('liveStudioModal'); fetchMedia(); }
 
-        // 🔥 FIXED: FULL SCREEN BROWSER CAMERA
+        // CAMERA (FULL SCREEN)
         let camStream = null;
         async function openFullscreenCamera() {
             try {
-                // Request camera & mic
                 camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: true });
-                // Attach to video element
                 document.getElementById('liveVideoElement').srcObject = camStream;
-                // Show UI
                 document.getElementById('fullscreenCameraUI').classList.add('show');
-                // Setup Buttons
                 document.getElementById('camPlayBtn').style.display = 'none';
                 document.getElementById('camPauseBtn').style.display = 'block';
-                TOAST('Web Camera Live Started', 'success');
+                TOAST('Web Camera Started', 'success');
             } catch(e) { TOAST('Camera permission denied', 'error'); }
         }
 
         function toggleCameraPause() {
-            if(camStream) {
-                camStream.getVideoTracks()[0].enabled = false; // Turn off video track (goes black)
-                document.getElementById('camPauseBtn').style.display = 'none';
-                document.getElementById('camPlayBtn').style.display = 'block';
-                TOAST('Camera Paused', 'info');
-            }
+            if(camStream) { camStream.getVideoTracks()[0].enabled = false; document.getElementById('camPauseBtn').style.display = 'none'; document.getElementById('camPlayBtn').style.display = 'block'; TOAST('Camera Paused', 'info'); }
         }
 
         function toggleCameraPlay() {
-            if(camStream) {
-                camStream.getVideoTracks()[0].enabled = true; // Turn on video track
-                document.getElementById('camPlayBtn').style.display = 'none';
-                document.getElementById('camPauseBtn').style.display = 'block';
-                TOAST('Camera Resumed', 'success');
-            }
+            if(camStream) { camStream.getVideoTracks()[0].enabled = true; document.getElementById('camPlayBtn').style.display = 'none'; document.getElementById('camPauseBtn').style.display = 'block'; TOAST('Camera Resumed', 'success'); }
         }
 
         function stopFullscreenCamera() {
-            if(camStream) {
-                camStream.getTracks().forEach(t => t.stop()); // Completely shut down camera/mic
-                camStream = null;
-            }
-            document.getElementById('fullscreenCameraUI').classList.remove('show');
-            TOAST('Camera Stopped', 'info');
+            if(camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+            document.getElementById('fullscreenCameraUI').classList.remove('show'); TOAST('Camera Stopped', 'info');
         }
     </script>
 </body>
