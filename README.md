@@ -1,646 +1,905 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>XIT | Creative Studio</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XIT - Premium Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold: #d4af37; --gold-hover: #f3b965; --bg: #060606; --surface: #111; --surface-hover: #1a1a1a;
-            --border: rgba(255, 255, 255, 0.08); --text: #f0f0f0; --dim: #999; --radius: 14px; --transition: 0.25s ease;
+            --bg-dark: #0a0f18;
+            --panel-bg: rgba(15, 20, 30, 0.85);
+            --panel-solid: #121824;
+            --primary: #00e5ff;
+            --primary-glow: rgba(0, 229, 255, 0.4);
+            --sent-bubble: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --recv-bubble: #1a2233;
+            --text-main: #f8fafc;
+            --danger: #ff4757;
+            --blur: blur(15px);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Outfit', sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(--bg-dark); color: var(--text-main); overflow: hidden; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #000; } ::-webkit-scrollbar-thumb { background: #333; border-radius: 6px; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-        .navbar { position: sticky; top: 0; z-index: 500; background: rgba(6,6,6,0.8); backdrop-filter: blur(24px); padding: 0.8rem 1.8rem; display: flex; align-items: center; border-bottom: 1px solid var(--border); transition: 0.3s; }
-        .nav-logo { font-size: 1.7rem; font-weight: 900; color: var(--gold); cursor: pointer; letter-spacing: 2px; }
-        .nav-links { display: flex; gap: 0.5rem; list-style: none; align-items: center; margin-left: 30px; }
-        .nav-links a { color: var(--dim); text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 24px; font-size: 0.9rem; transition: var(--transition); font-weight: 500; }
-        .nav-links a:hover, .nav-links a.active { color: #fff; background: rgba(255,255,255,0.06); }
-        .nav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-        .nav-btn { padding: 0.5rem 1rem; border-radius: 24px; border: 1px solid var(--border); background: transparent; color: #fff; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: var(--transition); }
-        .nav-btn.primary { background: var(--gold); color: #000; border: none; }
-        .nav-btn.primary:hover { background: var(--gold-hover); }
-        .hamburger { display: none; background: none; border: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
-        .hamburger span { width: 22px; height: 2px; background: #fff; border-radius: 2px; }
-        .mobile-menu { position: fixed; top: 0; right: -340px; width: 300px; height: 100vh; background: rgba(10,10,10,0.97); backdrop-filter: blur(24px); z-index: 600; padding: 5rem 1.8rem 2rem; transition: right 0.3s ease; border-left: 1px solid var(--border); }
-        .mobile-menu.open { right: 0; }
-        .mobile-menu a { display: block; color: var(--dim); padding: 1rem; text-decoration: none; border-radius: 14px; font-weight: 500; margin-bottom: 4px; }
-        .mobile-profile-box { margin: 15px 0; padding: 15px; background: rgba(212,175,55,0.1); border: 1px solid var(--gold); border-radius: 14px; text-align: center; color: var(--gold); font-weight: bold; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 550; display: none; }
-        .overlay.show { display: block; }
+        /* Glassmorphism Modals */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); backdrop-filter: var(--blur); z-index: 9000; display:none; align-items:flex-end; justify-content:center; transition: opacity 0.3s; cursor: pointer; }
+        .modal-card { background: var(--panel-solid); width: 100%; max-width: 600px; border-radius: 25px 25px 0 0; padding: 25px 20px; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); cursor: default; max-height: 85vh; overflow-y: auto; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.05); }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
+        .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color:white; border-radius: 12px; outline: none; transition: 0.3s; font-size:15px; }
+        .modal-card input:focus, .modal-card textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
 
-        .home-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; }
-        .xit-logo { font-size: 7rem; font-weight: 900; letter-spacing: 10px; background: linear-gradient(90deg, #fff, var(--gold), #fff); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3.5s linear infinite; cursor: pointer; }
-        @keyframes shine { to { background-position: 200% center; } }
+        /* Sleek Buttons */
+        button { cursor: pointer; transition: 0.2s; font-family: 'Outfit'; }
+        button:active { transform: scale(0.95); }
+        .btn-primary { background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4); }
+        .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 15px; border-radius: 12px; width: 100%; font-weight: 600; font-size: 15px; margin-bottom: 10px;}
+        .btn-danger { background: rgba(255, 71, 87, 0.1); color: var(--danger); border: 1px solid rgba(255, 71, 87, 0.3); padding: 15px; border-radius: 12px; width: 100%; font-weight: 600; font-size: 15px; margin-bottom: 10px;}
 
-        .page { display: none; padding: 2rem; max-width: 1300px; margin: 0 auto; animation: pageFade 0.35s ease; }
-        .page.show { display: block; }
-        @keyframes pageFade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        /* Header & Tabs */
+        header { background: var(--panel-bg); backdrop-filter: var(--blur); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 100; position: relative; }
+        .top-bar { display: flex; align-items: center; padding: 20px; gap: 15px; font-weight: 800; font-size: 22px; letter-spacing: 1px; color: var(--primary); }
+        .tabs { display: flex; }
+        .tab { flex: 1; padding: 15px 0; text-align: center; font-size: 14px; font-weight: 600; opacity: 0.5; border-bottom: 3px solid transparent; color: white; cursor: pointer; transition: 0.3s; }
+        .tab.active { opacity: 1; border-bottom: 3px solid var(--primary); color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
 
-        .search-container { display: flex; align-items: center; background: #0d0d0d; border: 1px solid var(--border); border-radius: 24px; padding: 0.6rem 1.2rem; margin-bottom: 1.8rem; }
-        .search-container input { background: transparent; border: none; color: #fff; width: 100%; outline: none; margin-left: 10px; font-size: 0.95rem; }
+        /* Swipe Container */
+        .view-container { display: flex; width: 300%; height: calc(100vh - 120px); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); will-change: transform; }
+        .view { width: 33.333%; height: 100%; overflow-y: auto; padding-bottom: 90px; }
 
-        .video-feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .video-card-yt { background: var(--surface); border-radius: 14px; border: 1px solid var(--border); overflow: hidden; transition: transform 0.2s; }
-        .video-card-yt:hover { transform: translateY(-4px); }
-        .video-thumb-yt { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; }
-        .video-thumb-yt video, .video-thumb-yt iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; }
+        /* Sidebar Theme */
+        #sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--panel-solid); z-index: 2000; transition: 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); box-shadow: 5px 0 25px rgba(0,0,0,0.8); border-right: 1px solid rgba(255,255,255,0.05); }
+        #sidebar.open { left: 0; }
+        .sidebar-header { background: linear-gradient(180deg, rgba(0,229,255,0.1) 0%, transparent 100%); padding: 60px 20px 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);}
+        .sidebar-header .avatar { margin: 0 auto 15px; width: 80px; height: 80px; font-size: 32px; box-shadow: 0 0 20px var(--primary-glow); border: 2px solid var(--primary); }
+        .menu-item { padding: 18px 25px; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; color: #aaa; font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 15px; }
+        .menu-item:hover { background: rgba(255,255,255,0.03); color: white; padding-left: 30px; }
+        .menu-item a { color: inherit; text-decoration: none; width: 100%;}
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: var(--blur); z-index: 1900; animation: fadeIn 0.3s; }
 
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .gallery-item { position: relative; border-radius: 14px; overflow: hidden; cursor: pointer; background: #000; aspect-ratio: 4/5; border: 1px solid var(--border); transition: transform 0.2s; }
-        .gallery-item:hover { transform: scale(1.02); }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        /* Modern Chat UI */
+        #chat-window { position: fixed; top: 0; left: 100%; width: 100%; height: 100%; background: var(--bg-dark); z-index: 1500; display: flex; flex-direction: column; transition: 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        #chat-window.open { left: 0; }
+        .chat-header { background: var(--panel-bg); backdrop-filter: var(--blur); padding: 12px 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;}
+        .icon-btn { background: transparent; border: none; fill: var(--primary); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;}
+        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn svg { width: 22px; height: 22px; }
+        
+        .msg-flow { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        .msg-wrapper { display:flex; align-items:center; width:100%; position:relative; }
+        .sent-wrap { justify-content:flex-end; }
+        .recv-wrap { justify-content:flex-start; }
 
-        /* Lightbox with swipe */
-        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9000; display: none; align-items: center; justify-content: center; }
-        .lightbox.show { display: flex; }
-        .lb-image-wrap { position: relative; width: 100%; height: 80vh; display: flex; align-items: center; justify-content: center; }
-        .lightbox img { max-width: 95vw; max-height: 85vh; border-radius: 8px; object-fit: contain; user-select: none; }
-        .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 2.5rem; padding: 0.5rem; border-radius: 50%; cursor: pointer; z-index: 10; backdrop-filter: blur(10px); }
-        .lb-prev { left: 20px; } .lb-next { right: 20px; }
+        .bubble { max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 15px; position: relative; word-wrap: break-word; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .bubble img, .bubble video { width: 100%; border-radius: 12px; margin-top: 5px; margin-bottom: 5px; cursor: pointer; }
+        .bubble a { color: #fff; text-decoration: underline; font-weight: 600; }
+        .bubble audio { width: 100%; min-width: 200px; margin-top:5px; height: 40px; border-radius: 20px;}
+        
+        .msg-time { font-size: 10px; margin-top: 8px; text-align: right; opacity: 0.6; font-weight: 600; }
+        .sent { background: var(--sent-bubble); color: white; border-bottom-right-radius: 4px; }
+        .recv { background: var(--recv-bubble); color: white; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
 
-        .form-card { background: var(--surface); padding: 1.2rem 1.5rem; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .form-builder-field { background: #080808; padding: 1rem; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 12px; }
-        .form-view-container { max-width: 700px; margin: 2rem auto; background: var(--surface); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-        .form-view-container input, .form-view-container select, .form-view-container textarea { width: 100%; padding: 0.9rem; margin-bottom: 18px; border-radius: 10px; border: 1px solid var(--border); background: #0a0a0a; color: #fff; font-size: 1rem; }
-        .response-card { background: #0a0a0a; padding: 1rem; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
-        .response-card:hover { border-color: var(--gold); }
-        .chart-container { width: 100%; max-width: 400px; margin: 0 auto 2rem; }
+        .reply-block { background: rgba(0,0,0,0.4); padding: 8px 12px; border-left: 4px solid var(--primary); border-radius: 8px; margin-bottom: 8px; font-size: 13px; cursor: pointer; transition: 0.2s;}
+        
+        #reply-preview { display:none; background:var(--panel-solid); padding:12px 20px; border-left:4px solid var(--primary); position:relative; z-index: 11; border-top: 1px solid rgba(255,255,255,0.05);}
+        #reply-preview .close-btn { position:absolute; right:20px; top:15px; cursor:pointer; font-weight:bold; color:var(--danger); font-size:22px; background: rgba(255,71,87,0.1); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
 
-        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 6000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-backdrop.show { display: flex; }
-        .modal-dialog { background: #0f0f0f; border-radius: 20px; padding: 2.5rem; width: 90%; max-width: 600px; border: 1px solid var(--border); position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
-        .modal-dialog input, .modal-dialog textarea, .modal-dialog select { width: 100%; padding: 0.8rem; margin: 0.6rem 0; border-radius: 10px; border: 1px solid var(--border); background: #000; color: #fff; outline: none; }
-        .modal-submit { width: 100%; padding: 0.9rem; margin-top: 1rem; border-radius: 10px; border: none; background: var(--gold); color: #000; font-weight: 700; cursor: pointer; font-size: 1rem; }
-        .modal-close { position: absolute; top: 18px; right: 22px; background: none; border: none; color: var(--dim); font-size: 1.4rem; cursor: pointer; }
+        /* Chat Input Bar & Voice Record Integration */
+        #chat-input-bar { background: var(--panel-bg); backdrop-filter: var(--blur); border-top: 1px solid rgba(255,255,255,0.05); padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+        #chat-input-row { padding: 12px 15px; display: flex; gap: 12px; align-items: center; position: relative; }
+        
+        #msg-input { flex:1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 25px; padding: 14px 20px; font-size: 15px; outline: none; transition: 0.3s;}
+        #msg-input:focus { border-color: var(--primary); }
+        
+        .send-btn { background: var(--primary); color: #000; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 0 15px var(--primary-glow); }
+        
+        /* Voice Chat Recording UI */
+        .mic-btn { background: rgba(0, 229, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.3s; cursor: pointer; user-select: none; -webkit-user-select: none;}
+        .mic-btn svg { width: 24px; height: 24px; fill: currentColor; pointer-events: none;}
+        .mic-btn.recording { background: var(--danger); color: white; box-shadow: 0 0 25px rgba(255, 71, 87, 0.6); border-color: var(--danger); transform: scale(1.15); animation: pulseRecord 1.5s infinite; }
+        
+        #record-ui { display: none; flex: 1; align-items: center; justify-content: flex-start; gap: 15px; color: var(--danger); font-weight: 800; font-size: 16px; padding-left: 15px; }
+        .red-dot { display:inline-block; width:12px; height:12px; background:var(--danger); border-radius:50%; box-shadow: 0 0 10px var(--danger); animation: blink 1s infinite; }
 
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { padding: 14px 22px; border-radius: 10px; color: #fff; background: rgba(20,20,20,0.95); animation: toastIn 0.3s forwards; border-left: 4px solid var(--gold); backdrop-filter: blur(8px); }
-        @keyframes toastIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        /* List Rows */
+        .chat-row, .status-row, .req-row, .history-row { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.2s; }
+        .chat-row:hover, .status-row:hover, .req-row:hover, .history-row:hover { background: rgba(255,255,255,0.03); }
+        .chat-row.unread .chat-name { color: var(--primary); font-weight: 800; } 
+        .chat-row.unread { background: linear-gradient(90deg, rgba(0,229,255,0.05) 0%, transparent 100%); }
+        .avatar { width: 55px; height: 55px; border-radius: 18px; background: linear-gradient(135deg, #2b3240, #141820); display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; font-weight: 800; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;}
+        
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #11998e, #38ef7d); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 28px; border:none; z-index: 90; box-shadow: 0 10px 25px rgba(56, 239, 125, 0.4); transition: 0.3s; }
+        .fab:hover { transform: scale(1.1) rotate(90deg); border-radius: 50%; }
 
-        .step-indicator { display: flex; gap: 8px; margin-bottom: 25px; }
-        .step-dot { width: 12px; height: 12px; border-radius: 50%; background: #333; }
-        .step-dot.active { background: var(--gold); }
+        /* Login Screen */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a2233 0%, var(--bg-dark) 100%); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #login-screen h1 { font-size: 60px; letter-spacing: 10px; color: var(--primary); text-shadow: 0 0 20px var(--primary-glow); margin-bottom: 50px; font-weight: 800;}
 
-        @media (max-width: 768px) {
-            .nav-links { display: none; } .hamburger { display: flex; } .xit-logo { font-size: 5rem; }
-        }
+        /* Status Viewer */
+        #status-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 8000; display: none; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
+        #status-render-area { position: relative; width: 100%; max-width: 500px; height: 80vh; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 20px;}
+        #status-img { width: 100%; height: 100%; object-fit: contain; display: none; }
+        #status-text-overlay { position: absolute; color: white; font-weight: bold; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); text-align: center; width: 100%; pointer-events: none; }
+        
+        /* Realistic Calling Screen UI */
+        #call-screen { position:fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at top, #1e293b 0%, #000 100%); z-index:9999; display:none; flex-direction:column; color:white; animation: fadeIn 0.3s;}
+        .video-grid { flex:1; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; padding:10px; gap:10px; overflow:hidden;}
+        .video-container { position:relative; background:#111; border-radius:20px; overflow:hidden; flex: 1 1 45%; min-width: 150px; height: 40vh; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);}
+        .video-container video { width:100%; height:100%; object-fit:cover; }
+        
+        .video-grid.pinned-layout .video-container { display:none; }
+        .video-grid.pinned-layout .video-container.pinned { display:block; flex: 1 1 100%; height: 100%; border-radius: 0; border: none; }
+        .video-grid.pinned-layout.two-pinned .video-container.pinned { flex: 1 1 100%; height: 49%; border-radius: 20px;}
+        
+        #local-video-wrap { position:absolute; bottom:120px; right:20px; width:110px; height:160px; border-radius:15px; border:2px solid var(--primary); z-index:10; overflow:hidden; background:#000; box-shadow:0 10px 20px rgba(0,0,0,0.5);}
+        #local-video { width:100%; height:100%; object-fit:cover; transform: scaleX(-1); }
+
+        .call-controls { position:absolute; bottom:30px; left:0; width:100%; display:flex; justify-content:center; gap:20px; z-index:11;}
+        .call-btn { width:65px; height:65px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;}
+        .call-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+        .call-btn svg { width: 28px; height: 28px; fill: white; }
+        .call-btn.end { background: linear-gradient(135deg, #ff4757, #ff6b81); width: 75px; height: 75px; box-shadow: 0 0 20px rgba(255,71,87,0.4); border: none; animation: pulse 2s infinite; }
+        .call-btn.end svg { width: 35px; height: 35px; }
+        
+        .call-status-text { position:absolute; top:50px; width:100%; text-align:center; font-size:24px; z-index:10; font-weight:800; letter-spacing: 1px;}
+        .member-btn { position:absolute; top:50px; right:20px; background:rgba(0,0,0,0.5); backdrop-filter: blur(5px); padding:10px 20px; border-radius:25px; border:1px solid rgba(255,255,255,0.1); z-index:10; cursor:pointer; font-weight: 600;}
+        
+        .audio-avatar-wrapper { display:none; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; position:absolute; top:0; left:0; z-index:1; }
+        .audio-avatar { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(135deg, #1e293b, #0f172a); display: flex; align-items: center; justify-content: center; font-size: 70px; color: var(--primary); box-shadow: 0 0 50px var(--primary-glow); text-transform: uppercase; border: 2px solid rgba(0,229,255,0.3); animation: pulseGlow 2s infinite;}
+
+        #search-bar { background: var(--panel-bg); padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);}
+        #search-bar input { width: 100%; padding: 14px 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; outline: none; font-size: 15px;}
+        
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-bottom: 15px;}
+        .file-upload-btn { background: rgba(0, 229, 255, 0.1); border: 2px dashed var(--primary); color: var(--primary); padding: 20px; border-radius: 12px; width: 100%; text-align: center; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; }
+        
+        #status-create-preview { width: 100%; height: 250px; background: #000; border-radius: 12px; margin-bottom: 15px; position: relative; overflow: hidden; display: none; border: 1px solid #333;}
+        #scp-img { width: 100%; height: 100%; object-fit: contain; }
+        #scp-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; text-shadow: 2px 2px 5px black; white-space: pre-wrap; text-align: center; min-width: 50px; }
+
+        @keyframes popIn { from { opacity: 0; transform: translateY(15px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes pulseRecord { 0% { box-shadow: 0 0 10px rgba(255,71,87,0.4); transform: scale(1.15); } 50% { box-shadow: 0 0 25px rgba(255,71,87,0.8); transform: scale(1.2); } 100% { box-shadow: 0 0 10px rgba(255,71,87,0.4); transform: scale(1.15); } }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 10px rgba(255,71,87,0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,71,87,0.8); } 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,71,87,0.4); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 30px var(--primary-glow); } 50% { box-shadow: 0 0 60px var(--primary-glow); } 100% { box-shadow: 0 0 30px var(--primary-glow); } }
+        
+        .req-section-title { padding: 20px 20px 10px; font-weight: 800; color: var(--primary); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        #image-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
+        #image-viewer img, #image-viewer video { max-width: 95%; max-height: 75vh; border-radius: 10px; box-shadow: 0 0 25px rgba(255,255,255,0.1); margin-bottom: 20px;}
     </style>
 </head>
 <body>
-    <div class="toast-container" id="toastContainer"></div>
-    <div class="overlay" id="mobileOverlay" onclick="closeMenu()"></div>
 
-    <nav class="navbar" id="mainNav">
-        <div class="nav-logo" onclick="navigateTo('home')">XIT</div>
-        <ul class="nav-links">
-            <li><a data-page="home" class="active" onclick="navigateTo('home')">Home</a></li>
-            <li><a data-page="live" onclick="navigateTo('live')">Live</a></li>
-            <li><a data-page="gallery" onclick="navigateTo('gallery')">Photos</a></li>
-            <li><a data-page="videos" onclick="navigateTo('videos')">Videos</a></li>
-            <li><a data-page="documents" onclick="navigateTo('documents')">Docs</a></li>
-            <li><a data-page="forms" onclick="navigateTo('forms')">Forms</a></li>
-        </ul>
-        <div class="nav-right">
-            <span id="authBtns"><button class="nav-btn" onclick="showAuth('login')">Log In</button><button class="nav-btn primary" onclick="showAuth('signup')">Sign Up</button></span>
-            <div id="userProfile" style="display:none;" class="profile-chip" onclick="document.getElementById('profileDropdown').classList.toggle('show')">
-                <span id="userNameText"></span><i class="fas fa-chevron-down"></i>
-                <div class="profile-dropdown" id="profileDropdown" style="right:0;"><a onclick="doLogout()">Logout</a></div>
+    <audio id="ringtone-audio" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="msg-audio" src="https://assets.mixkit.co/active_storage/sfx/2866/2866-preview.mp3"></audio>
+
+    <div id="modal-container" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-card" id="modal-card" onclick="event.stopPropagation()">
+            <h3 id="modal-title" style="margin-top:0; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 20px;"></h3>
+            <div id="modal-body"></div>
+            <div class="modal-btns" id="modal-btns-wrapper" style="display:flex; justify-content:flex-end; gap:12px; margin-top:25px;">
+                <button onclick="closeModal()" style="border:none; background:rgba(255,255,255,0.1); color:white; padding:12px 25px; border-radius:12px; font-weight:600; font-size:15px;">Cancel</button>
+                <button id="modal-confirm-btn" style="border:none; background:var(--primary); color:#000; padding:12px 25px; border-radius:12px; font-weight:800; font-size:15px; box-shadow: 0 4px 15px var(--primary-glow);">Confirm</button>
             </div>
-            <button class="hamburger" onclick="openMenu()"><span></span><span></span><span></span></button>
         </div>
-    </nav>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <div id="mobileNameBox" class="mobile-profile-box" style="display:none;"></div>
-        <a onclick="navigateTo('home')">Home</a><a onclick="navigateTo('live')">Live Stream</a><a onclick="navigateTo('gallery')">Photos</a><a onclick="navigateTo('videos')">Videos</a><a onclick="navigateTo('documents')">Documents</a><a onclick="navigateTo('forms')">Forms</a>
-        <hr style="border:none; border-top:1px solid var(--border); margin:15px 0;">
-        <div id="mobileAuth"><a onclick="showAuth('login')">Log In</a><a onclick="showAuth('signup')" style="color:var(--gold);">Sign Up</a></div>
-        <a id="mobileLogout" onclick="doLogout()" style="display:none; color:#e74c3c;">Logout</a>
     </div>
 
-    <div class="main-content" id="appContent">
-        <div class="page show" id="page-home"><div class="home-container"><div class="xit-logo">XIT</div><p style="color:var(--dim); font-size:1.2rem;">Creative Studio</p></div></div>
+    <div id="image-viewer">
+        <span onclick="document.getElementById('image-viewer').style.display='none'; document.getElementById('iv-video').pause();" style="position:absolute; top:20px; right:30px; color:white; font-size:45px; cursor:pointer; font-weight:300; z-index:10000;">&times;</span>
+        <img id="iv-img" src="" style="display:none;">
+        <video id="iv-video" src="" controls style="display:none;"></video>
+        <a id="iv-download" class="btn-primary" style="width:auto; padding:15px 30px; text-decoration:none; margin-top:20px;" href="" target="_blank" download="xit_media">📥 Download File</a>
+    </div>
 
-        <div class="page" id="page-live">
-            <h2 style="margin-bottom:15px;"><i class="fas fa-satellite-dish" style="color:var(--gold)"></i> Live Broadcast</h2>
-            <div id="adminLiveControls" style="display:none; margin-bottom:20px;"><button class="nav-btn primary" onclick="document.getElementById('liveModal').classList.add('show')">Setup Stream</button></div>
-            <div style="background:var(--surface); padding:1.5rem; border-radius:18px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span id="liveBadge" style="background:#e74c3c; padding:5px 15px; border-radius:20px; font-size:0.8rem; font-weight:bold;">OFFLINE</span>
-                    <span style="background:#1a1a1a; padding:5px 15px; border-radius:20px; font-size:0.8rem;"><i class="fas fa-eye"></i> <span id="vCount">0</span></span>
+    <div id="call-screen">
+        <div class="call-status-text" id="call-status-text">Calling...</div>
+        <div class="member-btn" id="view-members-btn" onclick="showCallMembers()" style="display:none;">👥 Members (1)</div>
+        
+        <div class="video-grid" id="video-grid"></div>
+
+        <div id="local-video-wrap">
+            <video id="local-video" autoplay playsinline muted></video>
+        </div>
+        
+        <div class="audio-avatar-wrapper" id="audio-avatar-wrap">
+            <div class="audio-avatar" id="audio-avatar-letter">A</div>
+        </div>
+
+        <div class="call-controls">
+            <button class="call-btn" id="toggle-mic-btn" onclick="toggleMute()" title="Mute">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+            </button>
+            <button class="call-btn" id="toggle-vid-btn" onclick="toggleVideo()" title="Video">
+                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            </button>
+            <button class="call-btn end" onclick="endCall()" title="End Call">
+                <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+            </button>
+            <button class="call-btn" id="flip-cam-btn" onclick="flipCamera()" title="Flip">
+                <svg viewBox="0 0 24 24"><path d="M20 4h-3.17L15 2H9L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z"/></svg>
+            </button>
+            <button class="call-btn" id="toggle-speaker-btn" onclick="toggleSpeaker()" title="Speaker">
+                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="login-screen">
+        <h1>XIT</h1>
+        <div style="width: 85%; max-width: 340px; display: flex; flex-direction: column; gap: 18px; animation: slideUp 0.5s;">
+            <input type="text" id="user-input" placeholder="Enter Username" style="padding:18px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.5); color:white; font-size:16px; outline:none;">
+            <input type="password" id="pass-input" placeholder="Enter Password" style="padding:18px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.5); color:white; font-size:16px; outline:none;">
+            <button onclick="performLogin()" style="padding:18px; background:linear-gradient(90deg, #11998e, #38ef7d); color:#000; border:none; border-radius:15px; font-weight:800; font-size:16px; margin-top:10px; box-shadow: 0 5px 20px rgba(56, 239, 125, 0.4);">GET STARTED</button>
+        </div>
+    </div>
+
+    <div id="status-viewer" onclick="closeStatus()">
+        <div style="position:absolute; top:30px; left:20px; display:flex; align-items:center; gap:15px; z-index:10;">
+            <div id="st-avatar" class="avatar" style="width:45px; height:45px; border:2px solid var(--primary);"></div>
+            <div><b id="st-user" style="font-size:18px;"></b><br><small id="st-time" style="opacity: 0.7;"></small></div>
+        </div>
+        
+        <div id="status-render-area">
+            <img id="status-img" src="">
+            <div id="status-text-overlay"></div>
+        </div>
+        
+        <div id="status-stats" style="position:absolute; bottom: 90px; width:100%; display:none; justify-content:center; gap:25px; font-size:15px; font-weight:bold; color:#ccc;">
+            <span id="st-views">👁️ 0</span>
+            <span id="st-likes-count">❤️ 0</span>
+        </div>
+
+        <div style="position:absolute; bottom:30px; width:100%; text-align:center; display:flex; justify-content:center; gap:15px; z-index:10;">
+            <button id="like-st-btn" onclick="likeStatus(event)" style="display:none; background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); color:white; border:1px solid rgba(255,255,255,0.2); padding:12px 25px; border-radius:25px; font-weight:bold;">❤️ Like</button>
+            <button id="view-stats-btn" onclick="viewStatusStats(event)" style="display:none; background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); color:white; border:1px solid rgba(255,255,255,0.2); padding:12px 25px; border-radius:25px; font-weight:bold;">📊 Views</button>
+            <button id="delete-st-btn" onclick="deleteMyStatus(event)" style="display:none; background:rgba(255,71,87,0.2); color:var(--danger); border:1px solid rgba(255,71,87,0.4); padding:12px 25px; border-radius:25px; font-weight:bold;">🗑️ Delete</button>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="toggleSidebar(false)"></div>
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <div id="my-avatar" class="avatar"></div>
+            <b id="side-user-info" style="font-size: 22px; letter-spacing: 1px;"></b>
+        </div>
+        <div style="padding-top:10px;">
+            <div class="menu-item" onclick="showPrivateRoomMenu()"><span>🔒</span> Private Rooms</div>
+            <div class="menu-item" onclick="showHideFriendMenu()"><span>🕵️</span> Hide Friend</div>
+            <div class="menu-item" onclick="showCallHistory()"><span>📞</span> Call History</div>
+            <div class="menu-item" onclick="showChatBgSettings()"><span>🖼️</span> Chat Background</div>
+            <div class="menu-item" onclick="showChangePass()"><span>🔑</span> Change Password</div>
+            <div class="menu-item"><a href="prince" target="_blank"><span>⬇️</span> Download App</a></div>
+            <div class="menu-item" style="color: var(--danger); margin-top:20px;" onclick="logout()"><span>🚪</span> Logout</div>
+        </div>
+    </div>
+
+    <header>
+        <div class="top-bar"><span onclick="toggleSidebar(true)" style="cursor:pointer; display:flex; align-items:center; gap:15px;">☰ XIT</span></div>
+        <div class="tabs">
+            <div class="tab active" id="tab0" onclick="moveTab(0)">CHATS</div>
+            <div class="tab" id="tab1" onclick="moveTab(1)">STATUS</div>
+            <div class="tab" id="tab2" onclick="moveTab(2)">REQUESTS</div>
+        </div>
+    </header>
+
+    <div class="view-container" id="main-container">
+        <div class="view">
+            <div id="search-bar">
+                <input type="text" id="search-chat-input" placeholder="Search hidden alias..." oninput="renderChatList()">
+            </div>
+            <div id="chat-list"></div>
+        </div>
+        <div class="view" id="status-list"></div>
+        <div class="view" id="request-list">
+            <div class="req-section-title">Received Requests</div>
+            <div id="received-reqs"></div>
+            <div class="req-section-title" style="margin-top:15px;">Sent Requests</div>
+            <div id="sent-reqs"></div>
+        </div>
+    </div>
+
+    <button class="fab" onclick="handleFab()">+</button>
+
+    <div id="chat-window">
+        <div class="chat-header">
+            <span onclick="closeChat()" style="font-size:28px; cursor:pointer; padding-right:10px; font-weight:300;">←</span>
+            <b id="active-name" style="flex:1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size:20px;"></b>
+            
+            <button class="icon-btn" id="btn-audio-call" onclick="startCall('audio')" title="Audio Call" style="display:none;">
+                <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-video-call" onclick="startCall('video')" title="Video Call" style="display:none;">
+                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            </button>
+            
+            <button class="icon-btn" id="pr-share-btn" onclick="openShareLinkModal()" title="Share Link" style="display:none; fill:#fff;">
+                <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+            </button>
+            <button class="icon-btn" id="pr-exit-btn" onclick="exitPrivateRoom()" title="Exit Room" style="display:none; fill:var(--danger);">
+                <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <div class="msg-flow" id="msg-flow"></div>
+        
+        <div id="chat-input-bar">
+            <div id="upload-indicator" style="display:none; padding:10px 15px; background:rgba(0,229,255,0.1); color:var(--primary); font-size:13px; font-weight:bold; text-align:center;">Preparing file for transfer... ⏳</div>
+            
+            <div id="reply-preview">
+                <div class="close-btn" onclick="cancelReply()">×</div>
+                <small style="font-weight:800; color:var(--primary);" id="reply-to-name"></small><br>
+                <div id="reply-to-text" style="font-size:14px; opacity:0.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:3px;"></div>
+            </div>
+            
+            <div id="chat-input-row">
+                <label style="font-size:26px; cursor:pointer; display:flex; align-items:center; color:#aaa; padding: 0 5px;">
+                    <input type="file" id="media-input" hidden onchange="sendMedia()">📎
+                </label>
+                
+                <input type="text" id="msg-input" placeholder="Message..." autocomplete="off" onkeydown="if(event.key==='Enter') sendMsg()" oninput="toggleInputButtons()">
+                
+                <div id="record-ui">
+                    <span class="red-dot"></span>
+                    Recording... <span id="record-time" style="color:white; margin-left:10px; font-weight:normal;">00:00</span>
                 </div>
-                <div style="width:100%; aspect-ratio:16/9; background:#000; border-radius:14px; position:relative; overflow:hidden;" id="livePlayer"><div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#555;">STREAM OFFLINE</div></div>
+
+                <button class="send-btn" id="send-btn" style="display:none;" onclick="sendMsg()">➔</button>
+                <button class="mic-btn" id="mic-btn" title="Hold to Record Voice">
+                    <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                </button>
             </div>
-        </div>
-
-        <div class="page" id="page-gallery">
-            <div class="search-container"><i class="fas fa-search"></i><input type="text" id="sPhoto" placeholder="Search photos..." onkeyup="fetchMedia()"></div>
-            <div id="pAdd" style="display:none; margin-bottom:15px;"><button class="nav-btn primary" onclick="openAdd('photo')">Add Photo</button></div>
-            <div class="gallery-grid" id="photoGrid"></div>
-        </div>
-
-        <div class="page" id="page-videos">
-            <div class="search-container"><i class="fas fa-search"></i><input type="text" id="sVideo" placeholder="Search videos..." onkeyup="fetchMedia()"></div>
-            <div id="vAdd" style="display:none;"><button class="nav-btn primary" onclick="openAdd('video')">Add Video</button></div>
-            <div class="video-feed" id="videoFeed"></div>
-        </div>
-
-        <div class="page" id="page-documents">
-            <div class="search-container"><i class="fas fa-search"></i><input type="text" id="sDoc" placeholder="Search docs..." onkeyup="fetchMedia()"></div>
-            <div id="dAdd" style="display:none;"><button class="nav-btn primary" onclick="openAdd('doc')">Add Document</button></div>
-            <div id="docList" style="display:flex; flex-direction:column; gap:10px;"></div>
-        </div>
-
-        <div class="page" id="page-forms">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-                <h2><i class="fas fa-clipboard-list" style="color:var(--gold)"></i> Custom Forms</h2>
-                <button class="nav-btn primary" id="createFormBtn" style="display:none;" onclick="openFormBuilder()">+ Create New Form</button>
-            </div>
-            <div id="formsList"></div>
         </div>
     </div>
 
-    <div id="publicFormView" style="display:none; min-height:100vh; padding:2rem; background:var(--bg);"></div>
-
-    <!-- Auth Modal -->
-    <div class="modal-backdrop" id="authModal"><div class="modal-dialog"><button class="modal-close" onclick="closeModal('authModal')">✕</button><h2 id="authTitle">Welcome</h2><input type="text" id="aName" placeholder="Full Name" style="display:none;"><input type="email" id="aEmail" placeholder="Email"><input type="password" id="aPass" placeholder="Password"><input type="password" id="aCPass" placeholder="Confirm Password" style="display:none;"><button class="modal-submit" onclick="handleAuth()">Submit</button></div></div>
-    <!-- Media Add Modal -->
-    <div class="modal-backdrop" id="mediaModal"><div class="modal-dialog"><button class="modal-close" onclick="closeModal('mediaModal')">✕</button><input type="text" id="mTitle" placeholder="Title"><input type="text" id="mUrl" placeholder="Paste Cloudinary/YouTube URL"><button class="modal-submit" onclick="saveMedia()">Save</button><input type="hidden" id="mType"></div></div>
-    <!-- Live Modal -->
-    <div class="modal-backdrop" id="liveModal"><div class="modal-dialog"><button class="modal-close" onclick="closeModal('liveModal')">✕</button><h2>Setup Live</h2><input type="text" id="lTitle" placeholder="Stream Title"><input type="text" id="lUrl" placeholder="Stream URL (m3u8 / YouTube)"><button class="modal-submit" onclick="setLive()">Go Live</button><button class="nav-btn" style="width:100%; margin-top:10px; color:#e74c3c; border:none;" onclick="stopLive()">Stop Stream</button></div></div>
-
-    <!-- Form Builder (Multi-page) -->
-    <div class="modal-backdrop" id="formBuilderModal"><div class="modal-dialog" style="max-width:700px;"><button class="modal-close" onclick="closeModal('formBuilderModal')">✕</button><h2>Build Form</h2>
-        <input type="text" id="fbTitle" placeholder="Form Title">
-        <label style="color:var(--dim);">Page Background Color</label><input type="color" id="fbBgColor" value="#111111" style="height:40px; padding:0;">
-        <div style="margin:15px 0;"><button class="nav-btn" onclick="addFormPage()"><i class="fas fa-plus"></i> Add Page</button></div>
-        <div id="fbPagesContainer"></div>
-        <button class="modal-submit" onclick="saveCustomForm()">Publish Form</button>
-    </div></div>
-
-    <!-- Responses & Analytics -->
-    <div class="modal-backdrop" id="formResponsesModal"><div class="modal-dialog" style="max-width:800px;"><button class="modal-close" onclick="closeModal('formResponsesModal')">✕</button>
-        <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;"><input type="text" id="respSearch" placeholder="Search by name or code..." onkeyup="filterSubmissions()" style="flex:1; background:#0a0a0a; padding:0.7rem; border-radius:8px; border:1px solid var(--border); color:#fff;"><span style="color:var(--dim);">Total: <span id="respCount">0</span></span></div>
-        <div class="chart-container"><canvas id="formChart"></canvas></div>
-        <div id="chartExtra" style="display:flex; flex-wrap:wrap; gap:15px;"></div>
-        <h3 style="margin:20px 0 10px;">Responses</h3>
-        <div id="responsesList" style="max-height:350px; overflow-y:auto;"></div>
-    </div></div>
-
-    <div class="modal-backdrop" id="singleResponseModal"><div class="modal-dialog"><button class="modal-close" onclick="closeModal('singleResponseModal')">✕</button><h2>Submission Details</h2><div id="singleResponseData"></div></div></div>
-
-    <!-- Lightbox (with swipe) -->
-    <div class="lightbox" id="lightbox">
-        <button class="lb-nav lb-prev" onclick="lbSwipe(-1)"><i class="fas fa-chevron-left"></i></button>
-        <img id="lbImg" src="">
-        <button class="lb-nav lb-next" onclick="lbSwipe(1)"><i class="fas fa-chevron-right"></i></button>
-    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
     <script>
-        const SB = window.supabase.createClient('https://wvlvamuehbyfdsozjczk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2bHZhbXVlaGJ5ZmRzb3pqY3prIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NTM4MDAsImV4cCI6MjA5MTEyOTgwMH0.oaF4wymSu0ePwQSp3moV0sKZVgz5f50ILun5iaU816A');
-        const ADMIN = "princekvishwakarma@yahoo.com";
-        let user = null, mode = 'login';
-        let ALL_MEDIA = [], ALL_FORMS = [], ALL_SUBMISSIONS = [];
-        let formBuilderPages = []; // array of {title, description, fields}
-        let currentChart = null, currentLbIndex = 0, currentLbImages = [];
-
-        function TOAST(m, t='info') {
-            const b = document.getElementById('toastContainer'), d = document.createElement('div');
-            d.className = 'toast ' + t; d.innerHTML = m; b.appendChild(d);
-            setTimeout(() => { d.style.animation = 'toastIn 0.3s ease reverse forwards'; setTimeout(() => d.remove(), 300); }, 3000);
-        }
-
-        window.onload = async () => {
-            const hash = window.location.hash.replace('#', '');
-            if(hash.startsWith('formview_')) {
-                document.getElementById('mainNav').style.display = 'none';
-                document.getElementById('appContent').style.display = 'none';
-                renderPublicForm(hash.split('_')[1]);
-                return;
-            }
-            const { data } = await SB.auth.getSession();
-            updateUI(data.session ? data.session.user : null);
-            fetchMedia();
-            if(hash) navigateTo(hash);
-            const channel = SB.channel('live').on('presence', { event: 'sync' }, () => {
-                document.getElementById('vCount').innerText = Object.keys(channel.presenceState()).length;
-            }).subscribe(async (s) => { if(s==='SUBSCRIBED') await channel.track({ online: true }); });
+        const firebaseConfig = {
+            apiKey: "AIzaSyB6I0uj92aNft_TLwtYXhLNBi136LTYr8g",
+            authDomain: "prince-a6721.firebaseapp.com",
+            databaseURL: "https://prince-a6721-default-rtdb.firebaseio.com",
+            projectId: "prince-a6721",
+            storageBucket: "prince-a6721.firebasestorage.app",
+            messagingSenderId: "320131851435",
+            appId: "1:320131851435:web:fe98ec2fa7641aa41583ee"
         };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        function updateUI(u) {
-            user = u; const isA = user && user.email === ADMIN;
-            document.getElementById('authBtns').style.display = u ? 'none' : 'block';
-            document.getElementById('userProfile').style.display = u ? 'flex' : 'none';
-            document.getElementById('mobileAuth').style.display = u ? 'none' : 'block';
-            document.getElementById('mobileLogout').style.display = u ? 'block' : 'none';
-            if(u) {
-                const n = u.user_metadata?.full_name || u.email.split('@')[0];
-                document.getElementById('userNameText').innerText = n;
-                document.getElementById('mobileNameBox').innerText = n;
-                document.getElementById('mobileNameBox').style.display = 'block';
+        let myUser = localStorage.getItem('xit_username');
+        let activeRoom = null; let activeRoomType = 'normal'; let activePeerName = null;
+        let currentTab = 0; let currentActiveStatusKey = null; 
+        
+        let replyingToContext = null; let actionMsgContext = null; 
+        window.myPeers = {}; window.myPrivateRooms = {};
+        window.lastRead = JSON.parse(localStorage.getItem('xit_reads') || '{}');
+        window.hiddenUsers = JSON.parse(localStorage.getItem('xit_hidden_users') || '{}');
+
+        const ringtoneAudio = document.getElementById('ringtone-audio');
+        const msgAudio = document.getElementById('msg-audio');
+        
+        function requestNotificationPerm() {
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
             }
-            document.getElementById('pAdd').style.display = isA ? 'block' : 'none';
-            document.getElementById('vAdd').style.display = isA ? 'block' : 'none';
-            document.getElementById('dAdd').style.display = isA ? 'block' : 'none';
-            document.getElementById('adminLiveControls').style.display = isA ? 'flex' : 'none';
-            document.getElementById('createFormBtn').style.display = isA ? 'block' : 'none';
+        }
+        function notifyUser(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/1041/1041916.png" });
+            }
         }
 
-        function navigateTo(p) {
-            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('show'));
-            document.getElementById('page-'+p).classList.add('show');
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            const l = document.querySelector(`[data-page="${p}"]`); if(l) l.classList.add('active');
-            window.location.hash = p; closeMenu();
+        function applySavedBg() {
+            let bg = JSON.parse(localStorage.getItem('xit_chat_bg'));
+            let cw = document.getElementById('chat-window');
+            if(!bg || bg.type === 'default') cw.style.background = '#0a0f18'; 
+            else if(bg.type === 'color') cw.style.background = bg.value;
+            else if(bg.type === 'image') cw.style.background = `url(${bg.value}) center/cover no-repeat`;
         }
+        applySavedBg();
 
-        // Auth
-        function showAuth(m) { mode = m; document.getElementById('authTitle').innerText = m==='login'?'Login':'Signup'; document.getElementById('aName').style.display = m==='signup'?'block':'none'; document.getElementById('aCPass').style.display = m==='signup'?'block':'none'; document.getElementById('authModal').classList.add('show'); }
-        async function handleAuth() {
-            const e = document.getElementById('aEmail').value, p = document.getElementById('aPass').value;
-            if(mode === 'signup') {
-                if(p !== document.getElementById('aCPass').value) return TOAST('Passwords do not match', 'error');
-                const { data, error } = await SB.auth.signUp({ email: e, password: p, options:{data:{full_name:document.getElementById('aName').value}}});
-                if(error) TOAST(error.message, 'error'); else { TOAST('Signup Success'); closeModal('authModal'); }
+        function showModal(title, body, confirmFn, showButtons = true) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerHTML = body;
+            const btnWrapper = document.getElementById('modal-btns-wrapper');
+            if(showButtons) { btnWrapper.style.display = 'flex'; document.getElementById('modal-confirm-btn').onclick = confirmFn; } 
+            else btnWrapper.style.display = 'none';
+            document.getElementById('modal-container').classList.add('active');
+        }
+        function closeModal() { document.getElementById('modal-container').classList.remove('active'); }
+        function toggleSidebar(o) { document.getElementById('sidebar').classList.toggle('open', o); document.getElementById('overlay').style.display = o ? 'block' : 'none'; }
+
+        async function performLogin() {
+            const name = document.getElementById('user-input').value.trim().toLowerCase();
+            const pass = document.getElementById('pass-input').value.trim();
+            if(!name || !pass) return;
+            
+            ringtoneAudio.play().then(()=>ringtoneAudio.pause()).catch(()=>{});
+            msgAudio.play().then(()=>msgAudio.pause()).catch(()=>{});
+
+            const snap = await db.ref('registered_users/'+name).once('value');
+            if(snap.exists()){
+                if(snap.val().password === pass) login(name); else alert("Wrong Password");
             } else {
-                const { data, error } = await SB.auth.signInWithPassword({ email: e, password: p });
-                if(error) TOAST(error.message, 'error'); else { updateUI(data.user); closeModal('authModal'); }
+                await db.ref('registered_users/'+name).set({password:pass, ts:Date.now()}); login(name);
             }
         }
-        async function doLogout() { await SB.auth.signOut(); updateUI(null); }
+        function login(n){ localStorage.setItem('xit_username', n); requestNotificationPerm(); location.reload(); }
+        function logout(){ localStorage.clear(); location.reload(); }
 
-        // Media Fetch & Render
-        async function fetchMedia() {
-            const { data } = await SB.from('media').select('*').order('created_at', { ascending: false });
-            if(!data) return;
-            ALL_MEDIA = data;
-            const qP = document.getElementById('sPhoto')?.value.toLowerCase()||'', qV = document.getElementById('sVideo')?.value.toLowerCase()||'', qD = document.getElementById('sDoc')?.value.toLowerCase()||'';
-            const isA = user?.email === ADMIN;
-            const photos = data.filter(m => m.type==='photo' && m.title.toLowerCase().includes(qP));
-            const videos = data.filter(m => m.type==='video' && m.title.toLowerCase().includes(qV));
-            const docs = data.filter(m => m.type==='doc' && m.title.toLowerCase().includes(qD));
-            ALL_FORMS = data.filter(m => m.type==='form');
-            ALL_SUBMISSIONS = data.filter(m => m.type==='submission');
-
-            document.getElementById('photoGrid').innerHTML = photos.map((p,i) => `
-                <div class="gallery-item"><img src="${p.url}" onclick="openLB('${p.url}', ${i}, photos)">
-                ${isA?`<button style="position:absolute;top:5px;right:5px;background:rgba(255,0,0,0.8);border:none;color:#fff;padding:5px;border-radius:5px;" onclick="event.stopPropagation(); delMedia('${p.id}')"><i class="fas fa-trash"></i></button>`:''}
-                </div>`).join('');
-
-            document.getElementById('videoFeed').innerHTML = videos.map(v => `
-                <div class="video-card-yt">
-                    <div class="video-thumb-yt">${v.url.includes('youtube')?`<iframe src="${v.url.replace('watch?v=','embed/')}"></iframe>`:`<video src="${v.url}" controls playsinline></video>`}</div>
-                    <div style="padding:15px; display:flex; justify-content:space-between;"><h3>${v.title}</h3>${isA?`<button class="nav-btn" style="color:#e74c3c;" onclick="delMedia('${v.id}')"><i class="fas fa-trash"></i></button>`:''}</div>
-                </div>`).join('');
-
-            document.getElementById('docList').innerHTML = docs.map(d => `
-                <div style="background:var(--surface); padding:15px 20px; border-radius:14px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                    <span><i class="fas fa-file-pdf" style="color:#e74c3c;"></i> ${d.title}</span>
-                    <div style="display:flex; gap:10px;">
-                        <button class="nav-btn primary" onclick="downloadFile('${d.url}', '${d.title}')"><i class="fas fa-download"></i> Download</button>
-                        ${isA?`<button class="nav-btn" style="color:#e74c3c;" onclick="delMedia('${d.id}')"><i class="fas fa-trash"></i></button>`:''}
-                    </div>
-                </div>`).join('');
-
-            const live = data.filter(m => m.type==='live');
-            const lp = document.getElementById('livePlayer'), lb = document.getElementById('liveBadge');
-            if(live.length) {
-                lb.innerText = "LIVE NOW"; lb.style.background = "#2ecc71";
-                const u = live[0].url;
-                if(u.includes('.m3u8')) {
-                    lp.innerHTML = `<video id="hlsV" controls autoplay playsinline style="width:100%;height:100%;object-fit:contain;"></video>`;
-                    const v = document.getElementById('hlsV');
-                    if(Hls.isSupported()){ const h = new Hls(); h.loadSource(u); h.attachMedia(v); }
-                } else lp.innerHTML = `<iframe src="${u.includes('youtube')?u.replace('watch?v=','embed/'):u}" allowfullscreen style="width:100%;height:100%;"></iframe>`;
-            } else { lb.innerText = "OFFLINE"; lb.style.background = "#e74c3c"; lp.innerHTML = '<div class="coming-soon-overlay"><h3>STREAM OFFLINE</h3></div>'; }
-
-            renderAdminForms();
-        }
-
-        function openAdd(t) { document.getElementById('mType').value = t; document.getElementById('mediaModal').classList.add('show'); }
-        async function saveMedia() {
-            const t = document.getElementById('mType').value, title = document.getElementById('mTitle').value, url = document.getElementById('mUrl').value;
-            if(!title || !url) return TOAST('Please enter Title and URL', 'error');
-            await SB.from('media').insert([{ type: t, title, url }]);
-            closeModal('mediaModal'); fetchMedia(); TOAST('Added Successfully', 'success');
-        }
-        async function delMedia(id) { if(confirm('Delete?')) { await SB.from('media').delete().eq('id', id); fetchMedia(); } }
-
-        async function setLive() {
-            const title = document.getElementById('lTitle').value, url = document.getElementById('lUrl').value;
-            await SB.from('media').delete().eq('type', 'live');
-            await SB.from('media').insert([{ type: 'live', title, url }]);
-            closeModal('liveModal'); fetchMedia(); TOAST('Stream Live!');
-        }
-        async function stopLive() { await SB.from('media').delete().eq('type', 'live'); fetchMedia(); closeModal('liveModal'); }
-
-        // Lightbox with swipe
-        function openLB(url, index, arr) {
-            currentLbIndex = index; currentLbImages = arr.map(p => p.url);
-            document.getElementById('lbImg').src = url;
-            document.getElementById('lightbox').classList.add('show');
-        }
-        function closeLB() { document.getElementById('lightbox').classList.remove('show'); }
-        function lbSwipe(dir) {
-            if(currentLbImages.length < 2) return;
-            currentLbIndex = (currentLbIndex + dir + currentLbImages.length) % currentLbImages.length;
-            document.getElementById('lbImg').src = currentLbImages[currentLbIndex];
-        }
-        // Touch swipe
-        document.addEventListener('DOMContentLoaded', () => {
-            const lb = document.getElementById('lightbox');
-            let touchStartX = 0;
-            lb.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
-            lb.addEventListener('touchend', (e) => {
-                if(!touchStartX) return;
-                const diff = e.changedTouches[0].clientX - touchStartX;
-                if(Math.abs(diff) > 50) lbSwipe(diff > 0 ? -1 : 1);
-                touchStartX = 0;
+        async function startApp() {
+            requestNotificationPerm(); listenForCalls();
+            db.ref('peers/'+myUser).on('value', snap => { window.myPeers = snap.val() || {}; renderChatList(); });
+            db.ref('private_rooms').on('value', snap => { window.myPrivateRooms = snap.val() || {}; renderChatList(); });
+            db.ref('requests/'+myUser).on('value', snap => renderRequests(snap.val() || {}));
+            
+            db.ref('statuses').on('value', snap => {
+                const list = document.getElementById('status-list'); list.innerHTML = ""; let arr = [];
+                snap.forEach(s => {
+                    const d = s.val(); d.key = s.key;
+                    if(Date.now() - d.ts > 86400000) { db.ref('statuses/'+s.key).remove(); return; }
+                    if((d.user === myUser) || Object.values(window.myPeers).some(p => p.peer === d.user)) arr.push(d);
+                });
+                arr.sort((a,b) => b.ts - a.ts);
+                arr.forEach(d => {
+                    let time = new Date(d.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                    let icon = d.img ? '📷 ' : '';
+                    list.innerHTML += `<div class="status-row" onclick="viewStatus('${d.user}','${encodeURIComponent(d.text)}','${time}', '${d.key}', '${d.img||''}', '${d.tScale||1}', '${d.tX||50}', '${d.tY||50}')">
+                        <div class="avatar">${d.user[0]}</div>
+                        <div style="flex:1;"><b class="chat-name">${d.user}</b><br><small style="color:#888;">${icon}${time}</small></div>
+                    </div>`;
+                });
             });
-        });
-
-        // Download helper
-        function downloadFile(url, filename) {
-            const a = document.createElement('a'); a.href = url; a.download = filename || 'download'; document.body.appendChild(a); a.click(); a.remove();
         }
 
-        // ===================== FORM SYSTEM (Multi-page) =====================
-        const FORM_TEMPLATES = {
-            "Event Registration": [
-                { title: "Personal Info", fields: [{label:"Full Name", type:"text", required:true}, {label:"Email", type:"email", required:true}, {label:"Phone", type:"number", required:true}] },
-                { title: "Event Details", fields: [{label:"Ticket Type", type:"select-one", options:"VIP,General,Student", required:true}, {label:"Dietary Restrictions", type:"textarea"}] }
-            ],
-            "Job Application": [
-                { title: "Contact", fields: [{label:"Name", type:"text", required:true}, {label:"Email", type:"email", required:true}, {label:"Portfolio URL", type:"text"}] },
-                { title: "Experience", fields: [{label:"Years of Experience", type:"number"}, {label:"Skills", type:"textarea"}] },
-                { title: "Upload", fields: [{label:"Resume (PDF)", type:"file", required:true, maxSize:5}] }
-            ]
-        };
+        function renderRequests(reqData) {
+            const recvDiv = document.getElementById('received-reqs'); recvDiv.innerHTML = "";
+            const sentDiv = document.getElementById('sent-reqs'); sentDiv.innerHTML = "";
+            Object.keys(reqData).forEach(uid => {
+                const req = reqData[uid];
+                const row = document.createElement('div'); row.className = "req-row"; row.style.order = -req.ts;
+                makeLongPressable(row, () => { showModal("Request Option", `<button class="btn-danger" onclick="deleteRequest('${uid}')">🗑️ Delete Request</button>`, null, false); }, null);
 
-        function openFormBuilder() {
-            formBuilderPages = [{ title: "Page 1", fields: [] }];
-            document.getElementById('fbTitle').value = '';
-            renderBuilderPages();
-            document.getElementById('formBuilderModal').classList.add('show');
-        }
-
-        function addFormPage() {
-            formBuilderPages.push({ title: `Page ${formBuilderPages.length+1}`, fields: [] });
-            renderBuilderPages();
-        }
-
-        function addFormField(pageIndex) {
-            formBuilderPages[pageIndex].fields.push({ id: Date.now(), label: '', type: 'text', required: false, options: '', maxSize: 5 });
-            renderBuilderPages();
-        }
-
-        function removeFormField(pageIndex, fieldIndex) {
-            formBuilderPages[pageIndex].fields.splice(fieldIndex, 1);
-            renderBuilderPages();
-        }
-
-        function removeFormPage(pageIndex) {
-            if(formBuilderPages.length <= 1) return;
-            formBuilderPages.splice(pageIndex, 1);
-            renderBuilderPages();
-        }
-
-        function updateField(pageIndex, fieldIndex, key, value) {
-            formBuilderPages[pageIndex].fields[fieldIndex][key] = value;
-            if(key === 'type') renderBuilderPages();
-        }
-
-        function loadTemplate(name) {
-            if(!FORM_TEMPLATES[name]) return;
-            formBuilderPages = JSON.parse(JSON.stringify(FORM_TEMPLATES[name]));
-            document.getElementById('fbTitle').value = name;
-            renderBuilderPages();
-        }
-
-        function renderBuilderPages() {
-            const container = document.getElementById('fbPagesContainer');
-            container.innerHTML = formBuilderPages.map((page, pIdx) => `
-                <div style="border:1px solid var(--border); border-radius:14px; padding:1.2rem; margin-bottom:1rem; background:#0a0a0a;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <input type="text" value="${page.title}" oninput="formBuilderPages[${pIdx}].title=this.value" style="background:transparent; border:none; color:var(--gold); font-weight:bold; width:auto;">
-                        <button class="nav-btn" style="color:#e74c3c;" onclick="removeFormPage(${pIdx})"><i class="fas fa-trash"></i></button>
-                    </div>
-                    ${page.fields.map((f, fIdx) => `
-                        <div class="form-builder-field">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><strong>Field ${fIdx+1}</strong><button onclick="removeFormField(${pIdx}, ${fIdx})" style="background:none;border:none;color:#e74c3c;cursor:pointer;"><i class="fas fa-trash"></i></button></div>
-                            <input type="text" placeholder="Question / Label" value="${f.label}" oninput="updateField(${pIdx},${fIdx},'label',this.value)" style="background:#1a1a1a;">
-                            <div style="display:flex; gap:10px; margin-top:8px;">
-                                <select onchange="updateField(${pIdx},${fIdx},'type',this.value)" style="background:#1a1a1a;">
-                                    <option value="text" ${f.type==='text'?'selected':''}>Short Text</option>
-                                    <option value="textarea" ${f.type==='textarea'?'selected':''}>Paragraph</option>
-                                    <option value="number" ${f.type==='number'?'selected':''}>Number</option>
-                                    <option value="email" ${f.type==='email'?'selected':''}>Email</option>
-                                    <option value="date" ${f.type==='date'?'selected':''}>Date</option>
-                                    <option value="select-one" ${f.type==='select-one'?'selected':''}>Pick One</option>
-                                    <option value="select-many" ${f.type==='select-many'?'selected':''}>Pick Many</option>
-                                    <option value="file" ${f.type==='file'?'selected':''}>File Upload</option>
-                                </select>
-                                <label style="display:flex; align-items:center; gap:5px; color:#fff;"><input type="checkbox" ${f.required?'checked':''} onchange="updateField(${pIdx},${fIdx},'required',this.checked)"> Required</label>
-                            </div>
-                            ${f.type==='select-one'||f.type==='select-many' ? `<input type="text" placeholder="Options (comma separated)" value="${f.options||''}" oninput="updateField(${pIdx},${fIdx},'options',this.value)" style="background:#1a1a1a; margin-top:8px;">` : ''}
-                            ${f.type==='file' ? `<input type="number" placeholder="Max file size (MB)" value="${f.maxSize||5}" oninput="updateField(${pIdx},${fIdx},'maxSize',this.value)" style="background:#1a1a1a; margin-top:8px;">` : ''}
-                        </div>
-                    `).join('')}
-                    <button class="nav-btn" style="width:100%; margin-top:15px; border-style:dashed;" onclick="addFormField(${pIdx})">+ Add Field</button>
-                </div>
-            `).join('');
-
-            // Template selector
-            const templateSel = document.createElement('div');
-            templateSel.innerHTML = `<label style="color:var(--dim); margin-bottom:5px; display:block;">Load Template:</label>
-                <select onchange="loadTemplate(this.value)" style="width:100%; padding:0.6rem; border-radius:10px; background:#0a0a0a; color:#fff; border:1px solid var(--border);">
-                    <option value="">-- Custom --</option>
-                    ${Object.keys(FORM_TEMPLATES).map(t => `<option>${t}</option>`).join('')}
-                </select>`;
-            container.prepend(templateSel);
-        }
-
-        async function saveCustomForm() {
-            const title = document.getElementById('fbTitle').value;
-            const bgColor = document.getElementById('fbBgColor').value;
-            if(!title || formBuilderPages.length===0) return TOAST('Title and at least one page required', 'error');
-            const schema = { bgColor, pages: formBuilderPages };
-            await SB.from('media').insert([{ type: 'form', title, url: JSON.stringify(schema) }]);
-            TOAST('Form Published!', 'success'); closeModal('formBuilderModal'); fetchMedia();
-        }
-
-        function renderAdminForms() {
-            const list = document.getElementById('formsList');
-            if(ALL_FORMS.length === 0) { list.innerHTML = '<p style="color:var(--dim)">No forms created yet.</p>'; return; }
-            list.innerHTML = ALL_FORMS.map(f => {
-                const subsCount = ALL_SUBMISSIONS.filter(s => s.title === f.id.toString()).length;
-                const link = `${window.location.origin}${window.location.pathname}#formview_${f.id}`;
-                return `<div class="form-card">
-                    <div><h3 style="color:var(--gold);">${f.title}</h3><p style="font-size:0.8rem; color:var(--dim);">${subsCount} responses</p></div>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <button class="nav-btn" onclick="navigator.clipboard.writeText('${link}'); TOAST('Link Copied!')"><i class="fas fa-link"></i> Copy</button>
-                        <button class="nav-btn primary" onclick="viewFormAnalytics('${f.id}', '${f.title}')"><i class="fas fa-chart-pie"></i> Data</button>
-                        <button class="nav-btn" style="color:#e74c3c;" onclick="delMedia('${f.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        // Public Multi-step Form Renderer
-        async function renderPublicForm(formId) {
-            const { data } = await SB.from('media').select('*').eq('id', formId);
-            if(!data || data.length===0) return document.write('<h2>Form not found.</h2>');
-            const form = data[0];
-            const schema = JSON.parse(form.url);
-            const container = document.getElementById('publicFormView');
-            container.style.display = 'block';
-            container.style.background = schema.bgColor || '#111';
-
-            let currentPage = 0;
-            const pages = schema.pages;
-            function renderPage(idx) {
-                const page = pages[idx];
-                let html = `<div class="form-view-container"><h1 style="color:var(--gold); text-align:center; margin-bottom:5px;">${form.title}</h1><h3 style="color:#fff; text-align:center; margin-bottom:25px;">${page.title}</h3>
-                <div class="step-indicator">${pages.map((_,i)=>`<div class="step-dot${i===idx?' active':''}"></div>`).join('')}</div>
-                <form id="customFormStep">`;
-                page.fields.forEach(f => {
-                    html += `<div style="margin-bottom:18px;"><label style="display:block; margin-bottom:8px; font-weight:500;">${f.label} ${f.required?'<span style="color:#e74c3c">*</span>':''}</label>`;
-                    if(f.type==='text'||f.type==='email'||f.type==='number'||f.type==='date') html += `<input type="${f.type}" name="${f.label}" ${f.required?'required':''}>`;
-                    else if(f.type==='textarea') html += `<textarea name="${f.label}" rows="3" ${f.required?'required':''}></textarea>`;
-                    else if(f.type==='select-one') html += `<select name="${f.label}" ${f.required?'required':''}><option value="">Select</option>${(f.options||'').split(',').map(o=>`<option>${o.trim()}</option>`).join('')}</select>`;
-                    else if(f.type==='select-many') html += `<div style="display:flex; flex-wrap:wrap; gap:10px;">${(f.options||'').split(',').map(o=>`<label style="display:flex; align-items:center; gap:5px;"><input type="checkbox" name="${f.label}" value="${o.trim()}"> ${o.trim()}</label>`).join('')}</div>`;
-                    else if(f.type==='file') html += `<input type="file" name="${f.label}" ${f.required?'required':''} accept="image/*,.pdf" data-maxsize="${f.maxSize||5}">`;
-                    html += `</div>`;
-                });
-                html += `<div style="display:flex; gap:15px; margin-top:25px;">${idx>0?`<button type="button" class="nav-btn" onclick="prevPage()">Previous</button>`:''}
-                ${idx<pages.length-1?`<button type="button" class="nav-btn primary" onclick="nextPage()">Next</button>`:`<button type="submit" class="modal-submit">Submit</button>`}</div></form></div>`;
-                container.innerHTML = html;
-                document.getElementById('customFormStep').onsubmit = (e) => handleSubmit(e);
-                window.nextPage = () => { if(validatePage()) { currentPage++; renderPage(currentPage); } };
-                window.prevPage = () => { currentPage--; renderPage(currentPage); };
-            }
-
-            function validatePage() {
-                const page = pages[currentPage];
-                let valid = true;
-                page.fields.forEach(f => {
-                    const el = document.querySelector(`[name="${f.label}"]`);
-                    if(!el) return;
-                    if(f.required && (el.type==='file'?el.files.length===0:el.value.trim()==='')) valid = false;
-                    if(f.type==='email' && el.value && !/^\S+@\S+\.\S+$/.test(el.value)) valid = false;
-                    if(f.type==='file' && el.files[0]) {
-                        const maxSize = (f.maxSize||5)*1024*1024;
-                        if(el.files[0].size > maxSize) { TOAST(`File too large (max ${f.maxSize}MB)`,'error'); valid=false; }
+                if(req.type === 'received') {
+                    row.innerHTML = `<div class="avatar">${uid[0]}</div><div style="flex:1;"><b>${uid}</b><br><small>${req.status}</small></div>`;
+                    if(req.status === 'pending') {
+                        row.innerHTML += `<button class="btn-primary" style="width:auto; padding:8px 15px; margin-right:5px; margin-bottom:0;" onclick="acceptReq('${uid}'); event.stopPropagation();">Accept</button>
+                                          <button class="btn-danger" style="width:auto; padding:8px 15px; margin-bottom:0;" onclick="rejectReq('${uid}'); event.stopPropagation();">Reject</button>`;
                     }
-                });
-                if(!valid) TOAST('Please fill all required fields correctly','error');
-                return valid;
-            }
-
-            async function handleSubmit(e) {
-                e.preventDefault();
-                if(!validatePage()) return;
-                const allAnswers = {};
-                for(let p=0; p<pages.length; p++) {
-                    const page = pages[p];
-                    page.fields.forEach(f => {
-                        const els = document.querySelectorAll(`[name="${f.label}"]`);
-                        if(f.type==='select-many') {
-                            allAnswers[f.label] = Array.from(els).filter(el=>el.checked).map(el=>el.value).join(', ');
-                        } else if(f.type==='file') {
-                            // Simplified: store filename, real upload would need storage
-                            allAnswers[f.label] = els[0].files[0] ? els[0].files[0].name : '';
-                        } else {
-                            allAnswers[f.label] = els[0]?.value || '';
-                        }
-                    });
+                    recvDiv.appendChild(row);
+                } else if(req.type === 'sent') {
+                    row.innerHTML = `<div class="avatar">${uid[0]}</div><div style="flex:1;"><b>${uid}</b><br><small>Status: ${req.status}</small></div>
+                                     <button class="btn-secondary" style="width:auto; padding:8px 15px; margin-bottom:0;" onclick="deleteRequest('${uid}'); event.stopPropagation();">Cancel</button>`;
+                    sentDiv.appendChild(row);
                 }
-                const code = 'XIT-'+Date.now().toString(36).toUpperCase();
-                await SB.from('media').insert([{ type: 'submission', title: formId.toString(), url: JSON.stringify({code, answers: allAnswers}) }]);
-                container.innerHTML = `<div class="form-view-container" style="text-align:center;"><h2 style="color:#2ecc71;"><i class="fas fa-check-circle"></i> Submitted!</h2><p>Your reference: <strong>${code}</strong></p></div>`;
-            }
-            renderPage(0);
+            });
+        }
+        function sendFriendRequest(targetUser) {
+            if(targetUser === myUser) return alert("You cannot send request to yourself!");
+            db.ref('registered_users/'+targetUser).once('value', snap => {
+                if(!snap.exists()) return alert("User not found!");
+                db.ref('requests/'+myUser+'/'+targetUser).set({type: 'sent', status: 'pending', ts: Date.now()});
+                db.ref('requests/'+targetUser+'/'+myUser).set({type: 'received', status: 'pending', ts: Date.now()});
+                alert("Request Sent!"); closeModal();
+            });
+        }
+        async function acceptReq(uid) {
+            await db.ref('requests/'+myUser+'/'+uid).update({status: 'accepted'});
+            await db.ref('requests/'+uid+'/'+myUser).update({status: 'accepted'});
+            const room = [myUser, uid].sort().join('_');
+            await db.ref('peers/'+myUser+'/'+uid).set({peer:uid, room:room});
+            await db.ref('peers/'+uid+'/'+myUser).set({peer:myUser, room:room});
+        }
+        function rejectReq(uid) { db.ref('requests/'+myUser+'/'+uid).update({status: 'rejected'}); db.ref('requests/'+uid+'/'+myUser).update({status: 'rejected'}); }
+        function deleteRequest(uid) { db.ref('requests/'+myUser+'/'+uid).remove(); closeModal(); }
+
+        let firstLoadComplete = false;
+        function updateRoomMeta(room, isPrivate) {
+            db.ref((isPrivate?'private_messages/':'messages/')+room).limitToLast(1).on('value', snap => {
+                if(snap.exists()) {
+                    let lastMsg = Object.values(snap.val())[0]; let el = document.getElementById('chat-row-'+room);
+                    if(el) {
+                        el.style.order = -lastMsg.ts;
+                        if(lastMsg.ts > (window.lastRead[room]||0) && lastMsg.from !== myUser) {
+                            el.classList.add('unread');
+                            if(firstLoadComplete && room !== activeRoom) {
+                                msgAudio.play().catch(()=>{}); notifyUser("New Message", `Message from ${lastMsg.from}`);
+                            }
+                        } else el.classList.remove('unread');
+                    }
+                }
+            });
+        }
+        setTimeout(()=>{firstLoadComplete=true;}, 3000);
+
+        function renderChatList() {
+            const list = document.getElementById('chat-list'); list.innerHTML = "";
+            const query = document.getElementById('search-chat-input').value.trim();
+
+            Object.keys(window.myPrivateRooms).forEach(roomName => {
+                if(window.myPrivateRooms[roomName].users && window.myPrivateRooms[roomName].users[myUser]) {
+                    const row = document.createElement('div'); row.className = "chat-row"; row.id = "chat-row-"+roomName;
+                    row.innerHTML = `<div class="avatar" style="border: 1px solid var(--primary);">🔒</div><div style="flex:1;"><b class="chat-name">${roomName}</b><br><small style="color:var(--primary); font-weight:bold;">Private Group</small></div>`;
+                    makeLongPressable(row, () => showChatActionMenu(roomName, true), () => openChat(roomName, "🔒 " + roomName, 'private'));
+                    list.appendChild(row); updateRoomMeta(roomName, true);
+                }
+            });
+            Object.values(window.myPeers).forEach(p => {
+                let isHidden = window.hiddenUsers[p.peer];
+                if(isHidden && query !== isHidden) return; 
+
+                const row = document.createElement('div'); row.className = "chat-row"; row.id = "chat-row-"+p.room;
+                row.innerHTML = `<div class="avatar">${p.peer[0]}</div><div style="flex:1;"><b class="chat-name">${p.peer}</b></div>`;
+                makeLongPressable(row, () => showChatActionMenu(p.peer, false), () => openChat(p.room, p.peer, 'normal'));
+                list.appendChild(row); updateRoomMeta(p.room, false);
+            });
         }
 
-        // Analytics & Submissions
-        let currentFormIdAnalytics = null;
-        function viewFormAnalytics(formId, formTitle) {
-            currentFormIdAnalytics = formId;
-            const subs = ALL_SUBMISSIONS.filter(s => s.title === formId);
-            document.getElementById('respCount').innerText = subs.length;
-            document.getElementById('respSearch').value = '';
-            window.filterSubmissions = () => {
-                const q = document.getElementById('respSearch').value.toLowerCase();
-                const filtered = subs.filter(s => {
-                    const ans = JSON.parse(s.url).answers || {};
-                    return Object.values(ans).some(v => String(v).toLowerCase().includes(q));
+        function showChatActionMenu(target, isPrivate) {
+            if(isPrivate) showModal("Room Options", `<button class="btn-danger" onclick="exitPrivateRoomFromName('${target}')">🚪 Exit Private Room</button>`, null, false);
+            else showModal("Chat Options", `<button class="btn-danger" onclick="deletePeerChat('${target}')">🗑️ Delete Contact & Chat</button>`, null, false);
+        }
+        function deletePeerChat(peerName) { db.ref('peers/'+myUser+'/'+peerName).remove(); closeModal(); alert("Deleted!"); }
+
+        function openChat(room, name, type='normal') {
+            if(activeRoom) { db.ref('messages/'+activeRoom).off(); db.ref('private_messages/'+activeRoom).off(); cancelReply(); }
+            document.getElementById('msg-flow').innerHTML = ""; 
+
+            activeRoom = room; activeRoomType = type; activePeerName = (type==='normal') ? name : null;
+            window.lastRead[room] = Date.now(); localStorage.setItem('xit_reads', JSON.stringify(window.lastRead));
+            let rowEl = document.getElementById('chat-row-'+room); if(rowEl) rowEl.classList.remove('unread');
+
+            document.getElementById('active-name').innerText = name;
+            let chatWin = document.getElementById('chat-window');
+            
+            document.getElementById('btn-audio-call').style.display = (type === 'normal') ? 'flex' : 'none';
+            document.getElementById('btn-video-call').style.display = (type === 'normal') ? 'flex' : 'none';
+            document.getElementById('pr-share-btn').style.display = (type === 'private') ? 'flex' : 'none';
+            document.getElementById('pr-exit-btn').style.display = (type === 'private') ? 'flex' : 'none';
+
+            chatWin.classList.add('open'); history.pushState({page: 'chat'}, "");
+            
+            const refPath = type === 'private' ? 'private_messages/'+room : 'messages/'+room;
+            db.ref(refPath).on('value', snap => {
+                if(room !== activeRoom) return; 
+                const flow = document.getElementById('msg-flow'); flow.innerHTML = "";
+                
+                snap.forEach(ms => {
+                    const m = ms.val(); m.key = ms.key;
+                    
+                    const wrap = document.createElement('div');
+                    wrap.className = `msg-wrapper ${m.from === myUser ? 'sent-wrap' : 'recv-wrap'}`;
+                    wrap.id = `msg-wrap-${m.key}`;
+                    
+                    const bubble = document.createElement('div');
+                    bubble.className = `bubble ${m.from === myUser ? 'sent' : 'recv'}`;
+                    
+                    let content = '';
+                    if(type === 'private' && m.from !== myUser) content += `<small style="display:block; font-weight:800; margin-bottom:5px; font-size:12px; color:var(--primary);">~ ${m.from}</small>`;
+                    
+                    if(m.replyTo) {
+                        let shortText = m.replyTo.type==='image'?'📷 Image':m.replyTo.type==='video'?'📹 Video':m.replyTo.type==='audio'?'🎵 Audio':m.replyTo.type==='document'?'📄 Document':m.replyTo.data;
+                        content += `<div class="reply-block" onclick="document.getElementById('msg-wrap-${m.replyTo.key}').scrollIntoView({behavior:'smooth'})"><b style="color:var(--primary); font-weight:800;">${m.replyTo.from}</b><br><div style="font-size:12px; opacity:0.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${shortText}</div></div>`;
+                    }
+
+                    if(m.type === 'image') content += `<img src="${m.data}" onclick="openMediaViewer('${m.data}', 'image')">`;
+                    else if(m.type === 'video') content += `<video src="${m.data}" controls></video><br><small style="cursor:pointer; color:var(--primary); font-weight:bold;" onclick="openMediaViewer('${m.data}', 'video')">⛶ Full Screen</small>`;
+                    else if(m.type === 'audio') content += `<audio src="${m.data}" controls></audio>`;
+                    else if(m.type === 'document') content += `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; margin-top:5px; display:flex; align-items:center; gap:10px;"><span style="font-size:24px;">📄</span><a href="${m.data}" target="_blank" download style="color:inherit; font-weight:bold; flex:1;">Download Document</a></div>`;
+                    else content += urlify(m.data);
+                    
+                    let msgDateObj = new Date(m.ts);
+                    let formattedTime = msgDateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    content += `<div class="msg-time">${formattedTime}</div>`;
+
+                    bubble.innerHTML = content; wrap.appendChild(bubble); flow.appendChild(wrap);
+
+                    let startX = 0, isSwiping = false, pressTimer = null;
+                    bubble.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isSwiping=false; pressTimer = setTimeout(() => { showMsgActionMenu(m); pressTimer=null; }, 500); }, {passive:true});
+                    bubble.addEventListener('touchmove', e => { let dx = e.touches[0].clientX - startX; if(Math.abs(dx) > 5 && pressTimer) clearTimeout(pressTimer); if(dx > 10 && dx < 100) { isSwiping = true; bubble.style.transform = `translateX(${dx}px)`; } }, {passive:true});
+                    bubble.addEventListener('touchend', e => { if(pressTimer) clearTimeout(pressTimer); let dx = e.changedTouches[0].clientX - startX; bubble.style.transform = 'translateX(0px)'; if(dx > 50 && isSwiping) setReplyContext(m); });
+                    bubble.addEventListener('mousedown', e => { pressTimer = setTimeout(() => { showMsgActionMenu(m); pressTimer=null; }, 500); });
+                    bubble.addEventListener('mousemove', () => { if(pressTimer) clearTimeout(pressTimer); });
+                    bubble.addEventListener('mouseup', e => { if(pressTimer) clearTimeout(pressTimer); });
+                    bubble.addEventListener('contextmenu', e => { e.preventDefault(); showMsgActionMenu(m); });
                 });
-                renderResponsesList(filtered);
-            };
-            renderResponsesList(subs);
-            renderCharts(subs);
-            document.getElementById('formResponsesModal').classList.add('show');
+                flow.scrollTop = flow.scrollHeight; 
+                window.lastRead[room] = Date.now(); localStorage.setItem('xit_reads', JSON.stringify(window.lastRead));
+            });
         }
 
-        function renderResponsesList(subs) {
-            const list = document.getElementById('responsesList');
-            list.innerHTML = subs.length ? subs.map(s => {
-                const data = JSON.parse(s.url);
-                const ans = data.answers || {};
-                const code = data.code || 'N/A';
-                const name = ans['Full Name'] || ans['Name'] || Object.values(ans)[0] || 'No Name';
-                return `<div class="response-card" onclick="openSingleResponse('${encodeURIComponent(JSON.stringify(ans))}')">
-                    <div><strong>${code}</strong> - ${name}</div><div style="font-size:0.8rem; color:var(--dim);">${new Date(s.created_at).toLocaleString()}</div>
-                </div>`;
-            }).join('') : '<p style="color:var(--dim);">No responses yet.</p>';
+        function showMsgActionMenu(mObj) {
+            actionMsgContext = mObj;
+            let html = `<button class="btn-secondary" onclick="setReplyContext(actionMsgContext); closeModal();">↩️ Reply</button>
+                        <button class="btn-secondary" onclick="openForwardModal();">➡️ Forward</button>`;
+            if(mObj.from === myUser) html += `<button class="btn-danger" onclick="deleteTargetMsg('${mObj.key}'); closeModal();">🗑️ Delete</button>`;
+            showModal("Message Options", html, null, false);
+        }
+        function deleteTargetMsg(msgKey) { db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom+'/'+msgKey).remove(); }
+
+        function openForwardModal() {
+            closeModal();
+            let html = `<div style="max-height:50vh; overflow-y:auto; text-align:left; border:1px solid rgba(255,255,255,0.1); border-radius:12px; margin-bottom:15px; padding:10px;">`;
+            Object.values(window.myPeers).forEach(p => { html += `<label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;"><input type="checkbox" value="normal|${p.room}" style="width:20px; height:20px; margin:0;"> <b>${p.peer}</b></label>`; });
+            Object.keys(window.myPrivateRooms).forEach(pr => { if(window.myPrivateRooms[pr].users && window.myPrivateRooms[pr].users[myUser]) { html += `<label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;"><input type="checkbox" value="private|${pr}" style="width:20px; height:20px; margin:0;"> <b>🔒 ${pr}</b></label>`; } });
+            html += `</div><button class="btn-primary" onclick="submitForward()">➡️ Send Forward</button>`;
+            showModal("Forward Message To:", html, null, false);
+        }
+        function submitForward() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            if(checkboxes.length === 0) return alert("Select at least one chat!");
+            checkboxes.forEach(cb => {
+                let [type, targetRoom] = cb.value.split('|');
+                let refPath = type === 'private' ? 'private_messages/'+targetRoom : 'messages/'+targetRoom;
+                let payload = { from: myUser, data: actionMsgContext.data, type: actionMsgContext.type || 'text', ts: Date.now() };
+                db.ref(refPath).push().set(payload);
+            });
+            closeModal(); alert("Message Forwarded Successfully!");
         }
 
-        function renderCharts(subs) {
-            if(currentChart) currentChart.destroy();
-            const extra = document.getElementById('chartExtra');
-            extra.innerHTML = '';
-            if(subs.length===0) return;
-            const form = ALL_FORMS.find(f => f.id.toString() === currentFormIdAnalytics);
-            if(!form) return;
-            const schema = JSON.parse(form.url);
-            const allFields = schema.pages.flatMap(p => p.fields);
-            const counts = {};
-            subs.forEach(s => {
-                const ans = JSON.parse(s.url).answers;
-                allFields.forEach(f => {
-                    if(f.type==='select-one'||f.type==='select-many') {
-                        const val = ans[f.label] || '';
-                        counts[f.label] = counts[f.label] || {};
-                        val.split(',').forEach(v => { v=v.trim(); counts[f.label][v] = (counts[f.label][v]||0)+1; });
+        function setReplyContext(mObj) {
+            replyingToContext = mObj; document.getElementById('reply-preview').style.display = 'block';
+            document.getElementById('reply-to-name').innerText = mObj.from === myUser ? "You" : mObj.from;
+            document.getElementById('reply-to-text').innerText = mObj.type === 'image' ? '📷 Image' : mObj.type === 'video' ? '📹 Video' : mObj.type === 'audio' ? '🎵 Audio' : mObj.type === 'document' ? '📄 Document' : mObj.data;
+        }
+        function cancelReply() { replyingToContext = null; document.getElementById('reply-preview').style.display = 'none'; }
+
+        // --- Voice Recording Logic (Hold to Record) ---
+        let mediaRecorder;
+        let audioChunks = [];
+        let recInterval;
+        let recStartTime;
+        let isRecording = false;
+
+        const micBtn = document.getElementById('mic-btn');
+        
+        async function startVoiceRecording(e) {
+            e.preventDefault();
+            if(!activeRoom || document.getElementById('msg-input').value.trim().length > 0) return;
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                isRecording = true;
+                audioChunks = [];
+
+                mediaRecorder.addEventListener("dataavailable", event => { audioChunks.push(event.data); });
+                mediaRecorder.addEventListener("stop", () => {
+                    let duration = Date.now() - recStartTime;
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop()); 
+                    
+                    if(duration > 1000) { 
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = function() {
+                            let base64data = reader.result;
+                            pushAudioToDB(base64data);
+                        }
                     }
                 });
-            });
-            const firstSelect = Object.keys(counts)[0];
-            if(firstSelect) {
-                const ctx = document.getElementById('formChart').getContext('2d');
-                const labels = Object.keys(counts[firstSelect]);
-                const data = Object.values(counts[firstSelect]);
-                currentChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: firstSelect, data, backgroundColor: '#d4af37' }] }, options: { plugins: { legend: { labels: { color: '#fff' } } } } });
+
+                micBtn.classList.add('recording');
+                document.getElementById('msg-input').style.display = 'none';
+                document.getElementById('record-ui').style.display = 'flex';
+                recStartTime = Date.now();
+                document.getElementById('record-time').innerText = "00:00";
+                
+                recInterval = setInterval(() => {
+                    let diff = Math.floor((Date.now() - recStartTime)/1000);
+                    let m = String(Math.floor(diff/60)).padStart(2, '0');
+                    let s = String(diff%60).padStart(2, '0');
+                    document.getElementById('record-time').innerText = `${m}:${s}`;
+                }, 1000);
+
+            } catch(err) { alert("Microphone permission denied."); }
+        }
+
+        function stopVoiceRecording(e) {
+            if(isRecording && mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                document.getElementById('msg-input').style.display = 'block';
+                document.getElementById('record-ui').style.display = 'none';
+                clearInterval(recInterval);
             }
         }
 
-        function openSingleResponse(encoded) {
-            const ans = JSON.parse(decodeURIComponent(encoded));
-            document.getElementById('singleResponseData').innerHTML = Object.entries(ans).map(([k,v]) => `<div style="margin-bottom:12px;"><strong style="color:var(--gold);">${k}</strong><p style="background:#0a0a0a; padding:10px; border-radius:8px; margin-top:4px;">${v}</p></div>`).join('');
-            document.getElementById('singleResponseModal').classList.add('show');
+        function pushAudioToDB(base64) {
+             let payload = { from: myUser, data: base64, type: 'audio', ts: Date.now() };
+             if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); }
+             db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload);
         }
 
-        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-        function openMenu() { document.getElementById('mobileMenu').classList.add('open'); document.getElementById('mobileOverlay').classList.add('show'); }
-        function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('show'); }
+        // Attach hold events for Voice Chat
+        micBtn.addEventListener('mousedown', startVoiceRecording);
+        micBtn.addEventListener('touchstart', startVoiceRecording, {passive: false});
+        window.addEventListener('mouseup', stopVoiceRecording); 
+        window.addEventListener('touchend', stopVoiceRecording);
+
+        function toggleInputButtons() {
+            let val = document.getElementById('msg-input').value.trim();
+            if(val.length > 0) {
+                document.getElementById('mic-btn').style.display = 'none';
+                document.getElementById('send-btn').style.display = 'flex';
+            } else {
+                document.getElementById('mic-btn').style.display = 'flex';
+                document.getElementById('send-btn').style.display = 'none';
+            }
+        }
+
+        function sendMsg() {
+            const inp = document.getElementById('msg-input');
+            const val = inp.value.trim(); if(!val) return; inp.value = "";
+            let payload = { from: myUser, data: val, ts: Date.now() };
+            if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); }
+            db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload);
+            toggleInputButtons();
+        }
+
+        // Fast Media Send
+        function sendMedia() {
+            const fileInput = document.getElementById('media-input');
+            const file = fileInput.files[0]; if(!file) return;
+
+            if(file.size > 4 * 1024 * 1024) { alert("File is too large! Please select a file under 4MB."); fileInput.value = ''; return; }
+            document.getElementById('upload-indicator').style.display = 'block';
+            
+            let fType = 'document';
+            if(file.type.startsWith('image/')) fType = 'image'; else if(file.type.startsWith('video/')) fType = 'video'; else if(file.type.startsWith('audio/')) fType = 'audio';
+
+            const r = new FileReader();
+            r.onload = (e) => {
+                let dataURL = e.target.result;
+                if(fType === 'image') {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const scaleSize = Math.min(MAX_WIDTH / img.width, 1);
+                        canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); pushToDB(compressedDataUrl, fType);
+                    }; img.src = dataURL;
+                } else { pushToDB(dataURL, fType); }
+            };
+            r.readAsDataURL(file);
+
+            function pushToDB(fileData, type) {
+                let payload = { from: myUser, data: fileData, type: type, ts: Date.now() };
+                if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); }
+                db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload).then(() => { document.getElementById('upload-indicator').style.display = 'none'; fileInput.value = ''; }).catch(err => { alert("Error: " + err.message); document.getElementById('upload-indicator').style.display = 'none'; });
+            }
+        }
+        function closeChat(doBack=true) {
+            document.getElementById('chat-window').classList.remove('open');
+            if(activeRoom) { db.ref('messages/'+activeRoom).off(); db.ref('private_messages/'+activeRoom).off(); }
+            if(window.hiddenUsers[activePeerName]) renderChatList(); 
+            activeRoom = null; activePeerName = null; cancelReply(); if(doBack) history.back();
+        }
+
+        function showChangePass() { 
+            toggleSidebar(false);
+            showModal("🔑 Change Password", `<input type="password" id="old-p" placeholder="Old Password"><input type="password" id="new-p" placeholder="New Password">`, async () => { 
+                const snap = await db.ref('registered_users/'+myUser).once('value'); 
+                if(snap.val().password === document.getElementById('old-p').value) { await db.ref('registered_users/'+myUser+'/password').set(document.getElementById('new-p').value); alert("Success!"); closeModal(); } else alert("Wrong Password"); 
+            }); 
+        }
+
+        function showChatBgSettings() {
+            toggleSidebar(false);
+            let html = `<div style="margin-bottom:10px;"><label style="font-weight:bold;">Select Background Type:</label><select id="bg-type" onchange="document.getElementById('bg-col-wrap').style.display=this.value==='color'?'block':'none'; document.getElementById('bg-img-wrap').style.display=this.value==='image'?'block':'none';"><option value="default">Default Dark</option><option value="color">Solid Color</option><option value="image">Custom Image</option></select></div><div id="bg-col-wrap" style="display:none; margin-bottom:10px;"><label>Choose Color:</label><input type="color" id="bg-color" value="#0a0f18" style="height:40px; padding:0;"></div><div id="bg-img-wrap" style="display:none; margin-bottom:10px;"><label>Select Image:</label><input type="file" id="bg-file" accept="image/*" style="background:rgba(255,255,255,0.1); color:white;"></div>`;
+            showModal("🖼️ Chat Background", html, () => {
+                let type = document.getElementById('bg-type').value;
+                if(type === 'default') { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'default'})); applySavedBg(); closeModal(); alert("Background Reset to Default!"); } 
+                else if(type === 'color') { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'color', value: document.getElementById('bg-color').value})); applySavedBg(); closeModal(); alert("Solid Color Applied!"); } 
+                else if(type === 'image') {
+                    let file = document.getElementById('bg-file').files[0]; if(!file) return alert("Please select an image file first.");
+                    let r = new FileReader();
+                    r.onload = function(e) {
+                        let img = new Image();
+                        img.onload = () => { let canvas = document.createElement('canvas'); let maxW = 1080; let scale = Math.min(maxW/img.width, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; let ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); let data = canvas.toDataURL('image/jpeg', 0.5); try { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'image', value: data})); applySavedBg(); closeModal(); alert("Background Image Applied!"); } catch(err) { alert("Image size is too large."); } };
+                        img.src = e.target.result;
+                    }; r.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Hide Friend
+        function showHideFriendMenu() {
+            toggleSidebar(false);
+            let html = `<p style="font-size:13px; color:#aaa; margin-bottom:20px;">Assign a secret alias (like emoji or random number) to hide a chat. Search exact alias to reveal.</p><select id="hide-user-select"><option value="">-- Select Chat to Hide --</option>${Object.keys(window.myPeers).map(p => `<option value="${p}">${p}</option>`).join('')}</select><input type="text" id="hide-alias" placeholder="Enter Alias (e.g. 123 or 👽)"><h4 style="margin-top:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; color:var(--primary);">Unhide User</h4><input type="text" id="unhide-alias" placeholder="Enter Secret Alias"><button class="btn-secondary" onclick="processUnhide()">👁️ Unhide Chat</button>`;
+            showModal("🕵️ Stealth Mode", html, () => { const u = document.getElementById('hide-user-select').value; const a = document.getElementById('hide-alias').value.trim(); if(!u || !a) return alert("Select user and enter alias!"); window.hiddenUsers[u] = a; localStorage.setItem('xit_hidden_users', JSON.stringify(window.hiddenUsers)); closeModal(); alert("Chat Hidden! Search alias to reveal temporarily."); renderChatList(); });
+        }
+        function processUnhide() { const alias = document.getElementById('unhide-alias').value.trim(); let found = null; Object.keys(window.hiddenUsers).forEach(u => { if(window.hiddenUsers[u] === alias) found = u; }); if(found) { delete window.hiddenUsers[found]; localStorage.setItem('xit_hidden_users', JSON.stringify(window.hiddenUsers)); alert(`${found} unhidden!`); closeModal(); renderChatList(); } else { alert("Alias not found."); } }
+
+        // --- Status Creation ---
+        let stScale = 1.0, stX = 50, stY = 50; 
+        function handleFab() {
+            if(currentTab === 0 || currentTab === 2) { showModal("🔍 Add Contact", `<input id="t-user" placeholder="Enter exact username...">`, () => { const t = document.getElementById('t-user').value.toLowerCase().trim(); if(t) sendFriendRequest(t); });
+            } else if(currentTab === 1) {
+                stScale = 1.0; stX = 50; stY = 50;
+                let html = `<textarea id="s-txt" placeholder="Write status text..." style="height:80px; resize:none;" oninput="updateStatusPreview()"></textarea><div class="file-upload-wrapper"><div class="file-upload-btn">📷 Choose Image</div><input type="file" id="s-img" accept="image/*" onchange="previewStatusImg(this)"></div><div id="status-create-preview"><img id="scp-img" src=""><div id="scp-text"></div></div><p id="st-hint" style="font-size:12px; color:#aaa; display:none; text-align:center;">Use 2 fingers to pinch-zoom text. Drag to move.</p>`;
+                showModal("✨ New Status", html, async () => {
+                    const s = document.getElementById('s-txt').value; const fileInput = document.getElementById('s-img');
+                    if(!s && (!fileInput.files || fileInput.files.length === 0)) return alert("Add text or image.");
+                    let payload = {user:myUser, text:s, ts:Date.now(), tScale: stScale, tX: stX, tY: stY};
+                    if(fileInput.files && fileInput.files.length > 0) {
+                        const img = new Image(); img.onload = async () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const scaleSize = Math.min(MAX_WIDTH / img.width, 1); canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); payload.img = canvas.toDataURL('image/jpeg', 0.6); await db.ref('statuses').push(payload); closeModal(); }; img.src = document.getElementById('scp-img').src;
+                    } else { await db.ref('statuses').push(payload); closeModal(); }
+                });
+                
+                const previewArea = document.getElementById('status-create-preview'); let initialDist = 0, startScale = 1;
+                previewArea.addEventListener('touchstart', (e) => { if(e.touches.length === 2) { initialDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); startScale = stScale; } }, {passive: false});
+                previewArea.addEventListener('touchmove', (e) => { if(e.touches.length === 2) { e.preventDefault(); let dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); stScale = Math.max(0.5, Math.min(startScale * (dist / initialDist), 5)); updateStatusPreviewStyle(); } else if (e.touches.length === 1) { e.preventDefault(); const rect = previewArea.getBoundingClientRect(); stX = ((e.touches[0].clientX - rect.left) / rect.width) * 100; stY = ((e.touches[0].clientY - rect.top) / rect.height) * 100; updateStatusPreviewStyle(); } }, {passive: false});
+            }
+        }
+        function previewStatusImg(input) { if (input.files && input.files[0]) { var reader = new FileReader(); reader.onload = function (e) { document.getElementById('status-create-preview').style.display = 'block'; document.getElementById('st-hint').style.display = 'block'; document.getElementById('scp-img').src = e.target.result; updateStatusPreview(); }; reader.readAsDataURL(input.files[0]); } }
+        function updateStatusPreview() { document.getElementById('scp-text').innerText = document.getElementById('s-txt').value; updateStatusPreviewStyle(); }
+        function updateStatusPreviewStyle() { let el = document.getElementById('scp-text'); el.style.transform = `translate(-50%, -50%) scale(${stScale})`; el.style.left = `${stX}%`; el.style.top = `${stY}%`; }
+
+        function viewStatus(u, tEnc, tm, sKey, imgBase64, scale, x, y) { 
+            currentActiveStatusKey = sKey; document.getElementById('st-avatar').innerText = u[0]; document.getElementById('st-user').innerText = "@" + u; document.getElementById('st-time').innerText = tm; 
+            let t = decodeURIComponent(tEnc); const textEl = document.getElementById('status-text-overlay'); textEl.innerHTML = urlify(t); textEl.style.transform = `translate(-50%, -50%) scale(${scale})`; textEl.style.left = `${x}%`; textEl.style.top = `${y}%`;
+            const imgEl = document.getElementById('status-img'); if(imgBase64) { imgEl.src = imgBase64; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
+            let isMine = (u === myUser); document.getElementById('delete-st-btn').style.display = isMine ? 'inline-block' : 'none'; document.getElementById('view-stats-btn').style.display = isMine ? 'inline-block' : 'none'; document.getElementById('like-st-btn').style.display = !isMine ? 'inline-block' : 'none'; document.getElementById('status-stats').style.display = isMine ? 'flex' : 'none';
+            if(!isMine) db.ref(`statuses/${sKey}/views/${myUser}`).set(true);
+            if(isMine) { db.ref(`statuses/${sKey}`).on('value', snap => { if(snap.exists() && currentActiveStatusKey === sKey) { let data = snap.val(); document.getElementById('st-views').innerText = `👁️ ${Object.keys(data.views||{}).length}`; document.getElementById('st-likes-count').innerText = `❤️ ${Object.keys(data.likes||{}).length}`; } }); }
+            document.getElementById('status-viewer').style.display = 'flex'; history.pushState({page: 'status'}, ""); 
+        }
+        function likeStatus(e) { e.stopPropagation(); if(currentActiveStatusKey) { db.ref(`statuses/${currentActiveStatusKey}/likes/${myUser}`).set(true); document.getElementById('like-st-btn').innerText = '❤️ Liked'; } }
+        function viewStatusStats(e) { e.stopPropagation(); db.ref(`statuses/${currentActiveStatusKey}`).once('value', snap => { if(!snap.exists()) return; let data = snap.val(); alert(`Viewed by: ${Object.keys(data.views||{}).join(', ')||'None'}\n\nLiked by: ${Object.keys(data.likes||{}).join(', ')||'None'}`); }); }
+        function deleteMyStatus(e) { e.stopPropagation(); if(confirm("Delete this status?")) { db.ref('statuses/'+currentActiveStatusKey).remove(); closeStatus(); } }
+        function closeStatus(doBack=true) { document.getElementById('status-viewer').style.display = 'none'; if(currentActiveStatusKey) db.ref(`statuses/${currentActiveStatusKey}`).off(); currentActiveStatusKey = null; if(doBack) history.back(); }
+
+        function showPrivateRoomMenu() { toggleSidebar(false); showModal("🔒 Private Rooms", `<button class="btn-primary" onclick="openCreateRoomUI()">➕ Create New Room</button><button class="btn-secondary" onclick="openJoinRoomUI()">📥 Join Existing Room</button>`, null, false); }
+        function openCreateRoomUI() { showModal("Create Private Room", `<input type="text" id="pr-name" placeholder="Enter Room Name"><input type="password" id="pr-pass" placeholder="Create Password">`, async () => { const n = document.getElementById('pr-name').value.trim(), p = document.getElementById('pr-pass').value.trim(); if(!n || !p) return; if((await db.ref('private_rooms/'+n).once('value')).exists()) return alert("Room Name taken!"); await db.ref('private_rooms/'+n).set({password: p, users: {[myUser]: true}}); closeModal(); openChat(n, "🔒 " + n, 'private'); }); }
+        function openJoinRoomUI() { showModal("Join Private Room", `<input type="text" id="pr-name" placeholder="Room Name"><input type="password" id="pr-pass" placeholder="Password">`, async () => { const n = document.getElementById('pr-name').value.trim(), p = document.getElementById('pr-pass').value.trim(); if(!n || !p) return; const snap = await db.ref('private_rooms/'+n).once('value'); if(!snap.exists() || snap.val().password !== p) return alert("Invalid details!"); await db.ref('private_rooms/'+n+'/users/'+myUser).set(true); closeModal(); openChat(n, "🔒 " + n, 'private'); }); }
+        function exitPrivateRoomFromName(rName) { activeRoom = rName; exitPrivateRoom(); }
+        function exitPrivateRoom() { const roomToExit = activeRoom; showModal("Exit Room", `<p style="margin-bottom:20px; color:white;">Exit <b>${roomToExit}</b>?</p>`, async () => { closeModal(); closeChat(); await db.ref('private_rooms/'+roomToExit+'/users/'+myUser).remove(); }); }
+        function openShareLinkModal() { let url = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(activeRoom); showModal("Share Room", `<p style="margin-bottom:15px;">Share this link to invite others!</p><button class="btn-primary" onclick="navigator.clipboard.writeText('${url}').then(()=>alert('Copied!'))">📋 Copy Link</button><button class="btn-primary" style="background:#25D366; color:white;" onclick="window.open('whatsapp://send?text=' + encodeURIComponent('Join secure room: ${url}'))">💬 WhatsApp</button>`, null, false); }
+
+        function urlify(text) { const urlRegex = /(https?:\/\/[^\s]+)/g; return text.replace(urlRegex, function(url) { return `<a href="${url}" target="_blank" onclick="event.stopPropagation()">${url}</a>`; }); }
+        function makeLongPressable(el, onLongPress, onClick) { let pressTimer = null; let isDragging = false; let startX, startY; el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; isDragging = false; pressTimer = setTimeout(() => { onLongPress(); pressTimer=null; }, 500); }, {passive:true}); el.addEventListener('touchmove', e => { if(Math.abs(e.touches[0].clientX - startX) > 10 || Math.abs(e.touches[0].clientY - startY) > 10) { isDragging = true; if(pressTimer) clearTimeout(pressTimer); } }, {passive:true}); el.addEventListener('touchend', e => { if(pressTimer) { clearTimeout(pressTimer); if(!isDragging && onClick) onClick(e); } }); el.addEventListener('mousedown', e => { pressTimer = setTimeout(() => { onLongPress(); pressTimer=null; }, 500); }); el.addEventListener('mousemove', () => { if(pressTimer) clearTimeout(pressTimer); }); el.addEventListener('mouseup', e => { if(pressTimer) { clearTimeout(pressTimer); if(onClick && e.button===0) onClick(e); } }); el.addEventListener('contextmenu', e => { e.preventDefault(); onLongPress(); }); }
+        let touchStartX = 0; const container = document.getElementById('main-container'); container.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, {passive: true}); container.addEventListener('touchend', e => { let diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 60) { if (diff > 0 && currentTab < 2) moveTab(currentTab + 1); else if (diff < 0 && currentTab > 0) moveTab(currentTab - 1); } }, {passive: true}); function moveTab(i) { currentTab = i; container.style.transform = `translateX(-${i * 33.333}%)`; document.getElementById('tab0').classList.toggle('active', i === 0); document.getElementById('tab1').classList.toggle('active', i === 1); document.getElementById('tab2').classList.toggle('active', i === 2); }
+        history.replaceState({page: 'home'}, ""); window.onpopstate = () => { if (document.getElementById('modal-container').classList.contains('active')) closeModal(); else if (document.getElementById('image-viewer').style.display === 'flex') { document.getElementById('image-viewer').style.display = 'none'; document.getElementById('iv-video').pause(); } else if (document.getElementById('status-viewer').style.display === 'flex') closeStatus(false); else if (document.getElementById('call-screen').style.display === 'flex') endCall(); else if (document.getElementById('chat-window').classList.contains('open')) closeChat(false); else if (document.getElementById('sidebar').classList.contains('open')) toggleSidebar(false); };
+        function openMediaViewer(dataUrl, type) { document.getElementById('iv-img').style.display = 'none'; document.getElementById('iv-video').style.display = 'none'; document.getElementById('iv-video').pause(); if(type === 'image') { document.getElementById('iv-img').src = dataUrl; document.getElementById('iv-img').style.display = 'block'; } else if(type === 'video') { document.getElementById('iv-video').src = dataUrl; document.getElementById('iv-video').style.display = 'block'; document.getElementById('iv-video').play(); } document.getElementById('iv-download').href = dataUrl; document.getElementById('image-viewer').style.display = 'flex'; }
+
+        function saveCallHistory(peer, type, status) { db.ref(`call_history/${myUser}`).push({ peer: peer, type: type, status: status, ts: Date.now() }); }
+        function showCallHistory() { toggleSidebar(false); db.ref(`call_history/${myUser}`).once('value', snap => { let html = `<div style="text-align:left;">`; let data = []; snap.forEach(s => data.push(s.val())); data.sort((a,b) => b.ts - a.ts); if(data.length === 0) html += `<p style="text-align:center; color:#777;">No calls yet.</p>`; data.forEach(c => { let d = new Date(c.ts); let timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); let icon = c.type === 'video' ? '📹' : '📞'; let col = c.status === 'missed' ? 'var(--danger)' : c.status === 'outgoing' ? 'var(--primary)' : '#38ef7d'; let arrow = c.status === 'missed' ? '↙️ Missed' : c.status === 'outgoing' ? '↗️ Outgoing' : '↙️ Received'; html += `<div class="history-row" style="margin-bottom:10px; background:rgba(255,255,255,0.05); border-radius:15px; display:flex; align-items:center; padding:15px;"><div style="font-size:26px; margin-right:15px; color:${col}">${icon}</div><div style="flex:1;"><b style="color:${col}; font-size:16px;">${c.peer}</b><br><small style="color:#aaa;">${arrow}</small></div><div style="font-size:11px; color:#888; text-align:right;">${timeStr}</div></div>`; }); html += `</div>`; showModal("📞 Call History", html, null, false); }); }
+
+        // WEBRTC CALLING
+        const iceServers = { iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun2.l.google.com:19302' }]};
+        let peerConnections = {}; let remoteStreams = {}; let callRoomRef = null; let pinnedUsers = []; let hasCallStarted = false;
+        async function startCall(type) { if(!activeRoom) return; isVideoCall = (type === 'video'); hasCallStarted = true; if(activeRoomType === 'normal') saveCallHistory(activePeerName, type, 'outgoing'); else saveCallHistory(activeRoom, type, 'outgoing'); try { localStream = await navigator.mediaDevices.getUserMedia({ video: isVideoCall ? { facingMode: 'user' } : false, audio: true }); document.getElementById('local-video').srcObject = localStream; isFrontCamera = true; let callScrn = document.getElementById('call-screen'); callScrn.style.display = 'flex'; document.getElementById('call-status-text').innerText = `Connecting...`; document.getElementById('flip-cam-btn').style.display = isVideoCall ? 'flex' : 'none'; if(activeRoomType === 'private') { document.getElementById('view-members-btn').style.display = 'block'; document.getElementById('call-status-text').innerText = `Room Call`; callRoomRef = db.ref(`group_calls/${activeRoom}`); await callRoomRef.child(`participants/${myUser}`).set({ active: true, ts: Date.now() }); callRoomRef.child('participants').on('child_added', snap => { const peerId = snap.key; if(peerId !== myUser) handleNewGroupPeer(peerId, true); }); listenForGroupSignals(); } else { document.getElementById('view-members-btn').style.display = 'none'; document.getElementById('call-status-text').innerText = `Calling ${activePeerName}...`; handleNewGroupPeer(activePeerName, true, true); } } catch(e) { console.error(e); alert("Camera/Mic Permission Denied!"); endCallLocal(); } }
+        async function handleNewGroupPeer(peerId, createOffer, isDirect=false) { if(peerConnections[peerId]) return; let pc = new RTCPeerConnection(iceServers); peerConnections[peerId] = pc; localStream.getTracks().forEach(track => pc.addTrack(track, localStream)); pc.ontrack = event => { if(!remoteStreams[peerId]) { remoteStreams[peerId] = new MediaStream(); addVideoElement(peerId, remoteStreams[peerId]); } remoteStreams[peerId].addTrack(event.track); }; pc.onicecandidate = event => { if(event.candidate) db.ref(`call_signals/${activeRoom||incomingCallObj.room}/${peerId}/${myUser}/candidates`).push(event.candidate.toJSON()); }; if(createOffer) { const offer = await pc.createOffer(); await pc.setLocalDescription(offer); if(isDirect) { const callId = db.ref(`incoming_calls/${peerId}`).push().key; await db.ref(`incoming_calls/${peerId}`).set({ caller: myUser, room: activeRoom, type: isVideoCall?'video':'audio', callId: callId, offer: offer, ts: Date.now() }); } else { await db.ref(`call_signals/${activeRoom}/${peerId}/${myUser}`).set({ type: 'offer', sdp: offer }); } } }
+        function listenForGroupSignals() { if(!activeRoom) return; db.ref(`call_signals/${activeRoom}/${myUser}`).on('child_added', async snap => { const senderId = snap.key; const data = snap.val(); if(data.type === 'offer') { await handleNewGroupPeer(senderId, false); let pc = peerConnections[senderId]; await pc.setRemoteDescription(new RTCSessionDescription(data.sdp)); const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); await db.ref(`call_signals/${activeRoom}/${senderId}/${myUser}`).set({ type: 'answer', sdp: answer }); } else if(data.type === 'answer') { let pc = peerConnections[senderId]; if(pc) await pc.setRemoteDescription(new RTCSessionDescription(data.sdp)); } }); db.ref(`call_signals/${activeRoom}/${myUser}`).on('child_changed', snap => { const senderId = snap.key; const data = snap.val(); if(data.candidates) Object.values(data.candidates).forEach(cand => { if(peerConnections[senderId]) peerConnections[senderId].addIceCandidate(new RTCIceCandidate(cand)).catch(()=>{}); }); }); }
+        function addVideoElement(peerId, stream) { const grid = document.getElementById('video-grid'); let div = document.createElement('div'); div.className = 'video-container'; div.id = `video-cont-${peerId}`; let vid = document.createElement('video'); vid.autoplay = true; vid.playsInline = true; vid.srcObject = stream; div.appendChild(vid); makeLongPressable(div, () => togglePin(peerId), null); grid.appendChild(div); let count = Object.keys(peerConnections).length + 1; document.getElementById('view-members-btn').innerText = `👥 Members (${count})`; }
+        function togglePin(peerId) { const grid = document.getElementById('video-grid'); const cont = document.getElementById(`video-cont-${peerId}`); if(pinnedUsers.includes(peerId)) { pinnedUsers = pinnedUsers.filter(id => id !== peerId); cont.classList.remove('pinned'); } else { if(pinnedUsers.length >= 2) return alert("You can only pin up to 2 users!"); pinnedUsers.push(peerId); cont.classList.add('pinned'); } if(pinnedUsers.length > 0) { grid.classList.add('pinned-layout'); if(pinnedUsers.length === 2) grid.classList.add('two-pinned'); else grid.classList.remove('two-pinned'); } else { grid.classList.remove('pinned-layout'); grid.classList.remove('two-pinned'); } }
+        function showCallMembers() { let list = `<ul style="text-align:left; padding-left:20px; line-height:2.5; font-size:18px;"><li><b>You</b></li>${Object.keys(peerConnections).map(p => `<li>${p}</li>`).join('')}</ul><p style="font-size:13px; color:#aaa; margin-top:15px; border-top:1px solid #333; padding-top:10px;">Long press a user's video to pin them.</p>`; showModal("Call Members", list, null, false); }
+        function listenForCalls() { db.ref(`incoming_calls/${myUser}`).on('value', snap => { if(snap.exists()) { incomingCallObj = snap.val(); ringtoneAudio.play().catch(()=>{}); notifyUser("Incoming Call", `Call from ${incomingCallObj.caller}`); showModal("Incoming Call 📞", `<h2 style="text-align:center; color:var(--primary); font-size:35px; letter-spacing:2px;">${incomingCallObj.caller}</h2><p style="text-align:center; color:#aaa;">Incoming ${incomingCallObj.type} call...</p>`, () => answerCall(), true); document.getElementById('modal-confirm-btn').innerText = "Accept"; let cancelBtn = document.querySelector('.modal-btns button:first-child'); cancelBtn.innerText = "Reject"; cancelBtn.style.background = "var(--danger)"; cancelBtn.style.color = "white"; cancelBtn.onclick = () => { rejectCall(); closeModal(); }; } }); }
+        async function answerCall() { closeModal(); ringtoneAudio.pause(); hasCallStarted = true; saveCallHistory(incomingCallObj.caller, incomingCallObj.type, 'received'); activeRoom = incomingCallObj.room; activeRoomType = incomingCallObj.room.includes('_') ? 'normal' : 'private'; startCall(incomingCallObj.type); db.ref(`incoming_calls/${myUser}`).remove(); }
+        function rejectCall() { ringtoneAudio.pause(); if(incomingCallObj) { saveCallHistory(incomingCallObj.caller, incomingCallObj.type, 'missed'); db.ref(`incoming_calls/${myUser}`).remove(); incomingCallObj = null; } }
+        function endCallLocal() { ringtoneAudio.pause(); Object.values(peerConnections).forEach(pc => pc.close()); peerConnections = {}; remoteStreams = {}; pinnedUsers = []; hasCallStarted = false; if(localStream) { localStream.getTracks().forEach(track => track.stop()); localStream = null; } document.getElementById('call-screen').style.display = 'none'; document.getElementById('video-grid').innerHTML = ''; document.getElementById('local-video').srcObject = null; if(callRoomRef) { callRoomRef.child(`participants/${myUser}`).remove(); db.ref(`call_signals/${activeRoom}/${myUser}`).remove(); callRoomRef = null; } db.ref(`incoming_calls/${myUser}`).remove(); }
+        function endCall() { endCallLocal(); }
+        function toggleMute() { if(localStream) { let audioTrack = localStream.getAudioTracks()[0]; if(audioTrack) { audioTrack.enabled = !audioTrack.enabled; let btn = document.getElementById('toggle-mic-btn'); btn.style.background = audioTrack.enabled ? 'rgba(255,255,255,0.1)' : 'rgba(255,71,87,0.5)'; } } }
+        function toggleVideo() { if(localStream && isVideoCall) { let videoTrack = localStream.getVideoTracks()[0]; if(videoTrack) { videoTrack.enabled = !videoTrack.enabled; let btn = document.getElementById('toggle-vid-btn'); btn.style.background = videoTrack.enabled ? 'rgba(255,255,255,0.1)' : 'rgba(255,71,87,0.5)'; } } }
+        async function flipCamera() { if (!localStream || !isVideoCall) return; isFrontCamera = !isFrontCamera; const videoTrack = localStream.getVideoTracks()[0]; try { const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: isFrontCamera ? 'user' : 'environment' } }); const newVideoTrack = newStream.getVideoTracks()[0]; localStream.removeTrack(videoTrack); localStream.addTrack(newVideoTrack); document.getElementById('local-video').srcObject = localStream; Object.values(peerConnections).forEach(pc => { const sender = pc.getSenders().find(s => s.track.kind === 'video'); if (sender) sender.replaceTrack(newVideoTrack); }); videoTrack.stop(); } catch (e) { isFrontCamera = !isFrontCamera; } }
+        function toggleSpeaker() { isSpeakerOn = !isSpeakerOn; const btn = document.getElementById('toggle-speaker-btn'); btn.style.background = isSpeakerOn ? 'rgba(255,255,255,0.1)' : 'rgba(255,71,87,0.5)'; document.querySelectorAll('#video-grid video').forEach(v => v.volume = isSpeakerOn ? 1.0 : 0.2); }
+
+        const params = new URLSearchParams(window.location.search); const linkRoom = params.get('room');
+        if(linkRoom && myUser) { setTimeout(()=>{ showModal("Join Secure Room", `<p style="color:#aaa; margin-bottom:15px;">Enter password to unlock <b>${linkRoom}</b>.</p><input type="password" id="link-p" placeholder="Room Password">`, async () => { const p = document.getElementById('link-p').value; const snap = await db.ref('private_rooms/'+linkRoom).once('value'); if(!snap.exists() || snap.val().password !== p) return alert("Incorrect Password!"); await db.ref('private_rooms/'+linkRoom+'/users/'+myUser).set(true); window.history.replaceState({}, document.title, window.location.pathname); closeModal(); openChat(linkRoom, "🔒 " + linkRoom, 'private'); }); }, 1000); }
+
+        if(!myUser) document.getElementById('login-screen').style.display='flex';
+        else { document.getElementById('side-user-info').innerText = "@"+myUser; document.getElementById('my-avatar').innerText = myUser[0]; startApp(); }
     </script>
 </body>
 </html>
