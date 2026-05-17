@@ -235,7 +235,7 @@
             border-radius:50%; box-shadow: 0 0 10px var(--danger); animation: blink 1s infinite; 
         }
 
-        /* Lists (Chats, Status, History) */
+        /* Lists */
         .chat-row, .status-row, .req-row, .history-row { 
             display: flex; align-items: center; padding: 15px 20px; 
             border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.2s; 
@@ -602,7 +602,11 @@
             } else btnWrapper.style.display = 'none'; 
             document.getElementById('modal-container').classList.add('active'); 
         }
-        function closeModal() { document.getElementById('modal-container').classList.remove('active'); }
+        function closeModal() { 
+            document.getElementById('modal-container').classList.remove('active'); 
+            let cancelBtn = document.querySelector('.modal-btns button:first-child');
+            if(cancelBtn) { cancelBtn.innerText = "Cancel"; cancelBtn.style.background = "rgba(255,255,255,0.1)"; cancelBtn.style.color = "white"; }
+        }
         function toggleSidebar(o) { document.getElementById('sidebar').classList.toggle('open', o); document.getElementById('overlay').style.display = o ? 'block' : 'none'; }
 
         async function performLogin() {
@@ -986,7 +990,7 @@
 
 
         // ==========================================
-        // STABLE WEBRTC LOGIC (1-TO-1 PERFECTED)
+        // FIXED STABLE WEBRTC LOGIC
         // ==========================================
         const iceServers = { iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun2.l.google.com:19302' }]};
         let pc = null; let localStream = null; let remoteStream = null; let currentCallRef = null; 
@@ -1050,7 +1054,14 @@
 
                 const offer = await pc.createOffer(); await pc.setLocalDescription(offer);
                 
-                await db.ref(`incoming_calls/${activePeerName}`).set({ caller: myUser, type: type, callId: callId, offer: offer, ts: Date.now() });
+                // IMPORTANT BUG FIX: Serialized RTCSessionDescription to avoid Firebase Exception
+                await db.ref(`incoming_calls/${activePeerName}`).set({ 
+                    caller: myUser, 
+                    type: type, 
+                    callId: callId, 
+                    offer: { type: offer.type, sdp: offer.sdp }, 
+                    ts: Date.now() 
+                });
 
                 currentCallRef.child('answer').on('value', snap => {
                     if(snap.exists() && !pc.currentRemoteDescription) {
@@ -1076,21 +1087,24 @@
             } catch(e) { console.error(e); alert("Camera/Mic Permission Denied!"); endCallLocal(); } 
         }
 
+        // --- INCOMING CALL LOGIC ---
         function listenForCalls() { 
             db.ref(`incoming_calls/${myUser}`).on('value', snap => { 
                 if(snap.exists() && !pc) { 
-                    incomingCallObj = snap.val(); 
-                    
-                    ringtoneAudio.currentTime = 0;
-                    ringtoneAudio.play().catch(()=>{}); 
-                    notifyUser("Incoming Call", `Call from ${incomingCallObj.caller}`); 
-                    
-                    showModal("Incoming Call 📞", `<h2 style="text-align:center; color:var(--primary); font-size:35px; letter-spacing:2px;">${incomingCallObj.caller}</h2><p style="text-align:center; color:#aaa;">Incoming ${incomingCallObj.type} call...</p>`, () => answerCall(), true); 
-                    
-                    document.getElementById('modal-confirm-btn').innerText = "Accept"; 
-                    let cancelBtn = document.querySelector('.modal-btns button:first-child'); 
-                    cancelBtn.innerText = "Reject"; cancelBtn.style.background = "var(--danger)"; cancelBtn.style.color = "white"; 
-                    cancelBtn.onclick = () => { rejectCall(); closeModal(); }; 
+                    if(!incomingCallObj) { 
+                        incomingCallObj = snap.val(); 
+                        
+                        ringtoneAudio.currentTime = 0;
+                        ringtoneAudio.play().catch(()=>{}); 
+                        notifyUser("Incoming Call", `Call from ${incomingCallObj.caller}`); 
+                        
+                        showModal("Incoming Call 📞", `<h2 style="text-align:center; color:var(--primary); font-size:35px; letter-spacing:2px;">${incomingCallObj.caller}</h2><p style="text-align:center; color:#aaa;">Incoming ${incomingCallObj.type} call...</p>`, () => answerCall(), true); 
+                        
+                        document.getElementById('modal-confirm-btn').innerText = "Accept"; 
+                        let cancelBtn = document.querySelector('.modal-btns button:first-child'); 
+                        cancelBtn.innerText = "Reject"; cancelBtn.style.background = "var(--danger)"; cancelBtn.style.color = "white"; 
+                        cancelBtn.onclick = () => { rejectCall(); closeModal(); }; 
+                    }
                 } else if(!snap.exists()) {
                     if(incomingCallObj) {
                         ringtoneAudio.pause(); ringtoneAudio.currentTime = 0;
@@ -1140,7 +1154,9 @@
 
                 await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
                 const answer = await pc.createAnswer(); await pc.setLocalDescription(answer);
-                await currentCallRef.child('answer').set(answer);
+                
+                // IMPORTANT BUG FIX: Serialized answer to avoid Firebase Exception
+                await currentCallRef.child('answer').set({ type: answer.type, sdp: answer.sdp });
 
                 currentCallRef.child('callerCandidates').on('child_added', snap => {
                     if(snap.exists()) {
@@ -1173,7 +1189,9 @@
             } 
         }
 
-        function endCall() { if(currentCallRef) currentCallRef.child('status').set('ended'); else endCallLocal(); }
+        function endCall() { 
+            if(currentCallRef) currentCallRef.child('status').set('ended'); else endCallLocal(); 
+        }
 
         function endCallLocal() { 
             ringtoneAudio.pause(); ringtoneAudio.currentTime = 0;
