@@ -18,56 +18,160 @@
             --danger: #ff4757;
             --blur: blur(15px);
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Outfit', sans-serif; }
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(--bg-dark); color: var(--text-main); overflow: hidden; }
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            font-family: 'Outfit', sans-serif; 
+        }
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            background: var(--bg-dark); 
+            color: var(--text-main); 
+            overflow: hidden; 
+        }
 
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-        /* Glassmorphism Modals */
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); backdrop-filter: var(--blur); z-index: 9000; display:none; align-items:flex-end; justify-content:center; transition: opacity 0.3s; cursor: pointer; }
-        .modal-card { background: var(--panel-solid); width: 100%; max-width: 600px; border-radius: 25px 25px 0 0; padding: 25px 20px; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); cursor: default; max-height: 85vh; overflow-y: auto; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.05); }
+        /* Modals */
+        .modal-overlay { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.7); backdrop-filter: var(--blur); 
+            z-index: 9000; display:none; align-items:flex-end; justify-content:center; 
+            transition: opacity 0.3s; cursor: pointer; 
+        }
+        .modal-card { 
+            background: var(--panel-solid); width: 100%; max-width: 600px; 
+            border-radius: 25px 25px 0 0; padding: 25px 20px; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5); 
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1); 
+            cursor: default; max-height: 85vh; overflow-y: auto; margin: 0 auto; 
+            border-top: 1px solid rgba(255,255,255,0.05); 
+        }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-overlay.active .modal-card { transform: translateY(0); }
-        .modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color:white; border-radius: 12px; outline: none; transition: 0.3s; font-size:15px; }
-        .modal-card input:focus, .modal-card textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
+        .modal-card input, .modal-card select, .modal-card textarea { 
+            width: 100%; padding: 15px; margin: 10px 0; 
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); 
+            color:white; border-radius: 12px; outline: none; transition: 0.3s; font-size:15px; 
+        }
+        .modal-card input:focus, .modal-card textarea:focus { 
+            border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); 
+        }
 
+        /* Buttons */
         button { cursor: pointer; transition: 0.2s; font-family: 'Outfit'; }
         button:active { transform: scale(0.95); }
-        .btn-primary { background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 800; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4); }
-        .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 15px; border-radius: 12px; width: 100%; font-weight: 600; font-size: 15px; margin-bottom: 10px;}
-        .btn-danger { background: rgba(255, 71, 87, 0.1); color: var(--danger); border: 1px solid rgba(255, 71, 87, 0.3); padding: 15px; border-radius: 12px; width: 100%; font-weight: 600; font-size: 15px; margin-bottom: 10px;}
+        .btn-primary { 
+            background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); 
+            color: #000; border: none; padding: 15px; border-radius: 12px; 
+            width: 100%; font-weight: 800; font-size: 16px; margin-bottom: 10px; 
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4); 
+        }
+        .btn-secondary { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            color: white; padding: 15px; border-radius: 12px; width: 100%; 
+            font-weight: 600; font-size: 15px; margin-bottom: 10px;
+        }
+        .btn-danger { 
+            background: rgba(255, 71, 87, 0.1); color: var(--danger); 
+            border: 1px solid rgba(255, 71, 87, 0.3); padding: 15px; 
+            border-radius: 12px; width: 100%; font-weight: 600; 
+            font-size: 15px; margin-bottom: 10px;
+        }
 
-        header { background: var(--panel-bg); backdrop-filter: var(--blur); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 100; position: relative; }
-        .top-bar { display: flex; align-items: center; padding: 20px; gap: 15px; font-weight: 800; font-size: 22px; letter-spacing: 1px; color: var(--primary); }
+        /* Header & Tabs */
+        header { 
+            background: var(--panel-bg); backdrop-filter: var(--blur); 
+            border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 100; position: relative; 
+        }
+        .top-bar { 
+            display: flex; align-items: center; padding: 20px; gap: 15px; 
+            font-weight: 800; font-size: 22px; letter-spacing: 1px; color: var(--primary); 
+        }
         .tabs { display: flex; }
-        .tab { flex: 1; padding: 15px 0; text-align: center; font-size: 14px; font-weight: 600; opacity: 0.5; border-bottom: 3px solid transparent; color: white; cursor: pointer; transition: 0.3s; }
-        .tab.active { opacity: 1; border-bottom: 3px solid var(--primary); color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+        .tab { 
+            flex: 1; padding: 15px 0; text-align: center; font-size: 14px; 
+            font-weight: 600; opacity: 0.5; border-bottom: 3px solid transparent; 
+            color: white; cursor: pointer; transition: 0.3s; 
+        }
+        .tab.active { 
+            opacity: 1; border-bottom: 3px solid var(--primary); 
+            color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); 
+        }
 
-        .view-container { display: flex; width: 300%; height: calc(100vh - 120px); transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); will-change: transform; }
+        /* Main Container */
+        .view-container { 
+            display: flex; width: 300%; height: calc(100vh - 120px); 
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); will-change: transform; 
+        }
         .view { width: 33.333%; height: 100%; overflow-y: auto; padding-bottom: 90px; }
 
-        #sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: var(--panel-solid); z-index: 2000; transition: 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); box-shadow: 5px 0 25px rgba(0,0,0,0.8); border-right: 1px solid rgba(255,255,255,0.05); }
+        /* Sidebar */
+        #sidebar { 
+            position: fixed; left: -300px; top: 0; width: 280px; height: 100%; 
+            background: var(--panel-solid); z-index: 2000; transition: 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); 
+            box-shadow: 5px 0 25px rgba(0,0,0,0.8); border-right: 1px solid rgba(255,255,255,0.05); 
+        }
         #sidebar.open { left: 0; }
-        .sidebar-header { background: linear-gradient(180deg, rgba(0,229,255,0.1) 0%, transparent 100%); padding: 60px 20px 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);}
-        .sidebar-header .avatar { margin: 0 auto 15px; width: 80px; height: 80px; font-size: 32px; box-shadow: 0 0 20px var(--primary-glow); border: 2px solid var(--primary); }
-        .menu-item { padding: 18px 25px; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; color: #aaa; font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 15px; }
+        .sidebar-header { 
+            background: linear-gradient(180deg, rgba(0,229,255,0.1) 0%, transparent 100%); 
+            padding: 60px 20px 30px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .sidebar-header .avatar { 
+            margin: 0 auto 15px; width: 80px; height: 80px; font-size: 32px; 
+            box-shadow: 0 0 20px var(--primary-glow); border: 2px solid var(--primary); 
+        }
+        .menu-item { 
+            padding: 18px 25px; border-bottom: 1px solid rgba(255,255,255,0.02); 
+            cursor: pointer; color: #aaa; font-weight: 500; transition: 0.2s; 
+            display: flex; align-items: center; gap: 15px; 
+        }
         .menu-item:hover { background: rgba(255,255,255,0.03); color: white; padding-left: 30px; }
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: var(--blur); z-index: 1900; animation: fadeIn 0.3s; }
+        .menu-item a { color: inherit; text-decoration: none; width: 100%;}
+        #overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); backdrop-filter: var(--blur); z-index: 1900; 
+            animation: fadeIn 0.3s; 
+        }
 
-        #chat-window { position: fixed; top: 0; left: 100%; width: 100%; height: 100%; background: var(--bg-dark); z-index: 1500; display: flex; flex-direction: column; transition: 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); }
+        /* Chat UI */
+        #chat-window { 
+            position: fixed; top: 0; left: 100%; width: 100%; height: 100%; 
+            background: var(--bg-dark); z-index: 1500; display: flex; 
+            flex-direction: column; transition: 0.3s cubic-bezier(0.2, 0.9, 0.3, 1); 
+        }
         #chat-window.open { left: 0; }
-        .chat-header { background: var(--panel-bg); backdrop-filter: var(--blur); padding: 12px 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;}
-        .icon-btn { background: transparent; border: none; fill: var(--primary); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;}
+        .chat-header { 
+            background: var(--panel-bg); backdrop-filter: var(--blur); 
+            padding: 12px 15px; display: flex; align-items: center; gap: 15px; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;
+        }
+        .icon-btn { 
+            background: transparent; border: none; fill: var(--primary); 
+            width: 35px; height: 35px; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; transition: 0.2s;
+        }
         .icon-btn:active { transform: scale(0.9); }
         .icon-btn svg { width: 22px; height: 22px; }
         
-        .msg-flow { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        .msg-flow { 
+            flex: 1; overflow-y: auto; padding: 20px; display: flex; 
+            flex-direction: column; gap: 15px; scroll-behavior: smooth; 
+        }
         .msg-wrapper { display:flex; align-items:center; width:100%; position:relative; }
         .sent-wrap { justify-content:flex-end; }
         .recv-wrap { justify-content:flex-start; }
 
-        .bubble { max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 15px; position: relative; word-wrap: break-word; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .bubble { 
+            max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 15px; 
+            position: relative; word-wrap: break-word; 
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+            opacity: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+        }
         .bubble img, .bubble video { width: 100%; border-radius: 12px; margin-top: 5px; margin-bottom: 5px; cursor: pointer; }
         .bubble a { color: #fff; text-decoration: underline; font-weight: 600; }
         .bubble audio { width: 100%; min-width: 200px; margin-top:5px; height: 40px; border-radius: 20px;}
@@ -75,58 +179,167 @@
         .sent { background: var(--sent-bubble); color: white; border-bottom-right-radius: 4px; }
         .recv { background: var(--recv-bubble); color: white; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
 
-        .reply-block { background: rgba(0,0,0,0.4); padding: 8px 12px; border-left: 4px solid var(--primary); border-radius: 8px; margin-bottom: 8px; font-size: 13px; cursor: pointer; transition: 0.2s;}
-        #reply-preview { display:none; background:var(--panel-solid); padding:12px 20px; border-left:4px solid var(--primary); position:relative; z-index: 11; border-top: 1px solid rgba(255,255,255,0.05);}
-        #reply-preview .close-btn { position:absolute; right:20px; top:15px; cursor:pointer; font-weight:bold; color:var(--danger); font-size:22px; background: rgba(255,71,87,0.1); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
+        .reply-block { 
+            background: rgba(0,0,0,0.4); padding: 8px 12px; 
+            border-left: 4px solid var(--primary); border-radius: 8px; 
+            margin-bottom: 8px; font-size: 13px; cursor: pointer; transition: 0.2s;
+        }
+        
+        #reply-preview { 
+            display:none; background:var(--panel-solid); padding:12px 20px; 
+            border-left:4px solid var(--primary); position:relative; z-index: 11; 
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        #reply-preview .close-btn { 
+            position:absolute; right:20px; top:15px; cursor:pointer; font-weight:bold; 
+            color:var(--danger); font-size:22px; background: rgba(255,71,87,0.1); 
+            width: 30px; height: 30px; border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center;
+        }
 
-        #chat-input-bar { background: var(--panel-bg); backdrop-filter: var(--blur); border-top: 1px solid rgba(255,255,255,0.05); padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+        /* Chat Input Area */
+        #chat-input-bar { 
+            background: var(--panel-bg); backdrop-filter: var(--blur); 
+            border-top: 1px solid rgba(255,255,255,0.05); padding-bottom: max(10px, env(safe-area-inset-bottom)); 
+        }
         #chat-input-row { padding: 12px 15px; display: flex; gap: 12px; align-items: center; position: relative; }
-        #msg-input { flex:1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 25px; padding: 14px 20px; font-size: 15px; outline: none; transition: 0.3s;}
+        #msg-input { 
+            flex:1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); 
+            color: white; border-radius: 25px; padding: 14px 20px; font-size: 15px; outline: none; transition: 0.3s;
+        }
         #msg-input:focus { border-color: var(--primary); }
-        .send-btn { background: var(--primary); color: #000; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 0 15px var(--primary-glow); }
+        .send-btn { 
+            background: var(--primary); color: #000; border: none; border-radius: 50%; 
+            width: 50px; height: 50px; display: flex; align-items: center; 
+            justify-content: center; font-size: 20px; box-shadow: 0 0 15px var(--primary-glow); 
+        }
         
-        .mic-btn { background: rgba(0, 229, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.3s; cursor: pointer; user-select: none; -webkit-user-select: none;}
+        .mic-btn { 
+            background: rgba(0, 229, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 229, 255, 0.2); 
+            border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; 
+            justify-content: center; font-size: 20px; transition: 0.3s; cursor: pointer; 
+            user-select: none; -webkit-user-select: none;
+        }
         .mic-btn svg { width: 24px; height: 24px; fill: currentColor; pointer-events: none;}
-        .mic-btn.recording { background: var(--danger); color: white; box-shadow: 0 0 25px rgba(255, 71, 87, 0.6); border-color: var(--danger); transform: scale(1.15); animation: pulseRecord 1.5s infinite; }
+        .mic-btn.recording { 
+            background: var(--danger); color: white; box-shadow: 0 0 25px rgba(255, 71, 87, 0.6); 
+            border-color: var(--danger); transform: scale(1.15); animation: pulseRecord 1.5s infinite; 
+        }
         
-        #record-ui { display: none; flex: 1; align-items: center; justify-content: flex-start; gap: 15px; color: var(--danger); font-weight: 800; font-size: 16px; padding-left: 15px; }
-        .red-dot { display:inline-block; width:12px; height:12px; background:var(--danger); border-radius:50%; box-shadow: 0 0 10px var(--danger); animation: blink 1s infinite; }
+        #record-ui { 
+            display: none; flex: 1; align-items: center; justify-content: flex-start; gap: 15px; 
+            color: var(--danger); font-weight: 800; font-size: 16px; padding-left: 15px; 
+        }
+        .red-dot { 
+            display:inline-block; width:12px; height:12px; background:var(--danger); 
+            border-radius:50%; box-shadow: 0 0 10px var(--danger); animation: blink 1s infinite; 
+        }
 
-        .chat-row, .status-row, .req-row, .history-row { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.2s; }
+        /* Lists (Chats, Status, History) */
+        .chat-row, .status-row, .req-row, .history-row { 
+            display: flex; align-items: center; padding: 15px 20px; 
+            border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.2s; 
+        }
         .chat-row:hover, .status-row:hover, .req-row:hover, .history-row:hover { background: rgba(255,255,255,0.03); }
         .chat-row.unread .chat-name { color: var(--primary); font-weight: 800; } 
         .chat-row.unread { background: linear-gradient(90deg, rgba(0,229,255,0.05) 0%, transparent 100%); }
-        .avatar { width: 55px; height: 55px; border-radius: 18px; background: linear-gradient(135deg, #2b3240, #141820); display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; font-weight: 800; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;}
+        .avatar { 
+            width: 55px; height: 55px; border-radius: 18px; 
+            background: linear-gradient(135deg, #2b3240, #141820); display: flex; 
+            align-items: center; justify-content: center; color: white; margin-right: 15px; 
+            font-weight: 800; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+        }
         
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #11998e, #38ef7d); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 28px; border:none; z-index: 90; box-shadow: 0 10px 25px rgba(56, 239, 125, 0.4); transition: 0.3s; }
+        .fab { 
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; 
+            background: linear-gradient(135deg, #11998e, #38ef7d); border-radius: 20px; 
+            display: flex; align-items: center; justify-content: center; color: #000; 
+            font-size: 28px; border:none; z-index: 90; box-shadow: 0 10px 25px rgba(56, 239, 125, 0.4); transition: 0.3s; 
+        }
         .fab:hover { transform: scale(1.1) rotate(90deg); border-radius: 50%; }
 
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1a2233 0%, var(--bg-dark) 100%); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        #login-screen h1 { font-size: 60px; letter-spacing: 10px; color: var(--primary); text-shadow: 0 0 20px var(--primary-glow); margin-bottom: 50px; font-weight: 800;}
+        /* Login Screen */
+        #login-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle at center, #1a2233 0%, var(--bg-dark) 100%); 
+            z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        #login-screen h1 { 
+            font-size: 60px; letter-spacing: 10px; color: var(--primary); 
+            text-shadow: 0 0 20px var(--primary-glow); margin-bottom: 50px; font-weight: 800;
+        }
 
-        #status-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 8000; display: none; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
-        #status-render-area { position: relative; width: 100%; max-width: 500px; height: 80vh; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 20px;}
+        /* Status Viewer */
+        #status-viewer { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; z-index: 8000; display: none; flex-direction: column; 
+            align-items: center; justify-content: center; animation: fadeIn 0.3s; 
+        }
+        #status-render-area { 
+            position: relative; width: 100%; max-width: 500px; height: 80vh; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 20px;
+        }
         #status-img { width: 100%; height: 100%; object-fit: contain; display: none; }
-        #status-text-overlay { position: absolute; color: white; font-weight: bold; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); text-align: center; width: 100%; pointer-events: none; }
-        
-        /* RESTORED STABLE CALL UI */
-        #call-screen { position:fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at top, #1e293b 0%, #000 100%); z-index:9999; display:none; flex-direction:column; color:white; animation: fadeIn 0.3s;}
-        #remote-video { width:100%; height:100%; object-fit:cover; background:#000; display:none; }
-        #local-video { position:absolute; bottom:140px; right:20px; width:110px; height:160px; object-fit:cover; border-radius:15px; border:2px solid var(--primary); box-shadow:0 10px 20px rgba(0,0,0,0.5); background:#111; z-index:2; display:none; transform: scaleX(-1); }
-        
-        .audio-avatar-wrapper { display:none; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; position:absolute; top:0; left:0; z-index:1; }
-        .audio-avatar { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(135deg, #1e293b, #0f172a); display: flex; align-items: center; justify-content: center; font-size: 70px; color: var(--primary); box-shadow: 0 0 50px var(--primary-glow); text-transform: uppercase; border: 2px solid rgba(0,229,255,0.3); animation: pulseGlow 2s infinite;}
+        #status-text-overlay { 
+            position: absolute; color: white; font-weight: bold; 
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.8); text-align: center; width: 100%; pointer-events: none; 
+        }
 
-        .call-controls { position:absolute; bottom:30px; left:0; width:100%; display:flex; justify-content:center; gap:20px; z-index:11;}
-        .call-btn { width:65px; height:65px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; background: rgba(255,255,255,0.1); color: white; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;}
+        /* STABLE CALL UI */
+        #call-screen { 
+            position:fixed; top:0; left:0; width:100%; height:100%; 
+            background: radial-gradient(circle at top, #1e293b 0%, #000 100%); 
+            z-index:9999; display:none; flex-direction:column; color:white; animation: fadeIn 0.3s;
+        }
+        #remote-video { width:100%; height:100%; object-fit:cover; background:#000; display:none; }
+        #local-video { 
+            position:absolute; bottom:140px; right:20px; width:110px; height:160px; 
+            object-fit:cover; border-radius:15px; border:2px solid var(--primary); 
+            box-shadow:0 10px 20px rgba(0,0,0,0.5); background:#111; z-index:2; 
+            display:none; transform: scaleX(-1); 
+        }
+        
+        .audio-avatar-wrapper { 
+            display:none; flex-direction:column; align-items:center; justify-content:center; 
+            height:100%; width:100%; position:absolute; top:0; left:0; z-index:1; 
+        }
+        .audio-avatar { 
+            width: 180px; height: 180px; border-radius: 50%; 
+            background: linear-gradient(135deg, #1e293b, #0f172a); display: flex; 
+            align-items: center; justify-content: center; font-size: 70px; color: var(--primary); 
+            box-shadow: 0 0 50px var(--primary-glow); text-transform: uppercase; 
+            border: 2px solid rgba(0,229,255,0.3); animation: pulseGlow 2s infinite;
+        }
+
+        .call-controls { 
+            position:absolute; bottom:30px; left:0; width:100%; 
+            display:flex; justify-content:center; gap:20px; z-index:11;
+        }
+        .call-btn { 
+            width:65px; height:65px; border-radius:50%; border:none; display:flex; 
+            align-items:center; justify-content:center; cursor:pointer; 
+            background: rgba(255,255,255,0.1); color: white; backdrop-filter: blur(10px); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
+        }
         .call-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
         .call-btn svg { width: 28px; height: 28px; fill: currentColor; }
-        .call-btn.end { background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; width: 75px; height: 75px; box-shadow: 0 0 20px rgba(255,71,87,0.4); border: none; animation: pulse 2s infinite; }
+        .call-btn.end { 
+            background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; 
+            width: 75px; height: 75px; box-shadow: 0 0 20px rgba(255,71,87,0.4); 
+            border: none; animation: pulse 2s infinite; 
+        }
         .call-btn.end svg { width: 35px; height: 35px; }
         
-        .call-status-text { position:absolute; top:50px; width:100%; text-align:center; font-size:24px; z-index:10; font-weight:800; letter-spacing: 1px;}
-        .call-timer-text { position:absolute; top:90px; width:100%; text-align:center; font-size:18px; z-index:10; color:#ddd; font-weight:600;}
+        .call-status-text { 
+            position:absolute; top:50px; width:100%; text-align:center; 
+            font-size:24px; z-index:10; font-weight:800; letter-spacing: 1px;
+        }
+        .call-timer-text { 
+            position:absolute; top:90px; width:100%; text-align:center; 
+            font-size:18px; z-index:10; color:#ddd; font-weight:600;
+        }
 
+        /* Inputs */
         #search-bar { background: var(--panel-bg); padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);}
         #search-bar input { width: 100%; padding: 14px 20px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; outline: none; font-size: 15px;}
         
@@ -138,6 +351,7 @@
         #scp-img { width: 100%; height: 100%; object-fit: contain; }
         #scp-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; text-shadow: 2px 2px 5px black; white-space: pre-wrap; text-align: center; min-width: 50px; }
 
+        /* Animations */
         @keyframes popIn { from { opacity: 0; transform: translateY(15px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -208,7 +422,7 @@
     <div id="login-screen">
         <h1>XIT</h1>
         <div style="width: 85%; max-width: 340px; display: flex; flex-direction: column; gap: 18px; animation: slideUp 0.5s;">
-            <input type="text" id="user-input" placeholder="Enter Username" style="padding:18px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.5); color:white; font-size:16px; outline:none;">
+            <input type="text" id="user-input" placeholder="Enter Username" autocomplete="off" style="padding:18px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.5); color:white; font-size:16px; outline:none;">
             <input type="password" id="pass-input" placeholder="Enter Password" style="padding:18px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.5); color:white; font-size:16px; outline:none;">
             <button onclick="performLogin()" style="padding:18px; background:linear-gradient(90deg, #11998e, #38ef7d); color:#000; border:none; border-radius:15px; font-weight:800; font-size:16px; margin-top:10px; box-shadow: 0 5px 20px rgba(56, 239, 125, 0.4);">GET STARTED</button>
         </div>
@@ -357,31 +571,54 @@
         window.lastRead = JSON.parse(localStorage.getItem('xit_reads') || '{}');
         window.hiddenUsers = JSON.parse(localStorage.getItem('xit_hidden_users') || '{}');
 
-        // Sounds & Notifications
         const ringtoneAudio = document.getElementById('ringtone-audio');
         const msgAudio = document.getElementById('msg-audio');
         
-        function requestNotificationPerm() { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); } }
-        function notifyUser(title, body) { if ("Notification" in window && Notification.permission === "granted") { new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/1041/1041916.png" }); } }
+        function requestNotificationPerm() { 
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { 
+                Notification.requestPermission(); 
+            } 
+        }
+        function notifyUser(title, body) { 
+            if ("Notification" in window && Notification.permission === "granted") { 
+                new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/1041/1041916.png" }); 
+            } 
+        }
 
-        function applySavedBg() { let bg = JSON.parse(localStorage.getItem('xit_chat_bg')); let cw = document.getElementById('chat-window'); if(!bg || bg.type === 'default') cw.style.background = '#0a0f18'; else if(bg.type === 'color') cw.style.background = bg.value; else if(bg.type === 'image') cw.style.background = `url(${bg.value}) center/cover no-repeat`; }
-        applySavedBg();
-
-        function showModal(title, body, confirmFn, showButtons = true) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-body').innerHTML = body; const btnWrapper = document.getElementById('modal-btns-wrapper'); if(showButtons) { btnWrapper.style.display = 'flex'; document.getElementById('modal-confirm-btn').onclick = confirmFn; } else btnWrapper.style.display = 'none'; document.getElementById('modal-container').classList.add('active'); }
+        function applySavedBg() { 
+            let bg = JSON.parse(localStorage.getItem('xit_chat_bg')); 
+            let cw = document.getElementById('chat-window'); 
+            if(!bg || bg.type === 'default') cw.style.background = '#0a0f18'; 
+            else if(bg.type === 'color') cw.style.background = bg.value; 
+            else if(bg.type === 'image') cw.style.background = `url(${bg.value}) center/cover no-repeat`; 
+        }
+        
+        function showModal(title, body, confirmFn, showButtons = true) { 
+            document.getElementById('modal-title').innerText = title; 
+            document.getElementById('modal-body').innerHTML = body; 
+            const btnWrapper = document.getElementById('modal-btns-wrapper'); 
+            if(showButtons) { 
+                btnWrapper.style.display = 'flex'; document.getElementById('modal-confirm-btn').onclick = confirmFn; 
+            } else btnWrapper.style.display = 'none'; 
+            document.getElementById('modal-container').classList.add('active'); 
+        }
         function closeModal() { document.getElementById('modal-container').classList.remove('active'); }
         function toggleSidebar(o) { document.getElementById('sidebar').classList.toggle('open', o); document.getElementById('overlay').style.display = o ? 'block' : 'none'; }
 
         async function performLogin() {
-            const name = document.getElementById('user-input').value.trim().toLowerCase(); const pass = document.getElementById('pass-input').value.trim();
+            const name = document.getElementById('user-input').value.trim().toLowerCase(); 
+            const pass = document.getElementById('pass-input').value.trim();
             if(!name || !pass) return;
             
-            // Audio unlock
             ringtoneAudio.muted = false; ringtoneAudio.play().then(()=>ringtoneAudio.pause()).catch(()=>{}); 
             msgAudio.muted = false; msgAudio.play().then(()=>msgAudio.pause()).catch(()=>{});
 
             const snap = await db.ref('registered_users/'+name).once('value');
-            if(snap.exists()){ if(snap.val().password === pass) login(name); else alert("Wrong Password"); } 
-            else { await db.ref('registered_users/'+name).set({password:pass, ts:Date.now()}); login(name); }
+            if(snap.exists()){ 
+                if(snap.val().password === pass) login(name); else alert("Wrong Password"); 
+            } else { 
+                await db.ref('registered_users/'+name).set({password:pass, ts:Date.now()}); login(name); 
+            }
         }
         function login(n){ localStorage.setItem('xit_username', n); requestNotificationPerm(); location.reload(); }
         function logout(){ localStorage.clear(); location.reload(); }
@@ -394,24 +631,102 @@
             
             db.ref('statuses').on('value', snap => {
                 const list = document.getElementById('status-list'); list.innerHTML = ""; let arr = [];
-                snap.forEach(s => { const d = s.val(); d.key = s.key; if(Date.now() - d.ts > 86400000) { db.ref('statuses/'+s.key).remove(); return; } if((d.user === myUser) || Object.values(window.myPeers).some(p => p.peer === d.user)) arr.push(d); });
+                snap.forEach(s => { 
+                    const d = s.val(); d.key = s.key; 
+                    if(Date.now() - d.ts > 86400000) { db.ref('statuses/'+s.key).remove(); return; } 
+                    if((d.user === myUser) || Object.values(window.myPeers).some(p => p.peer === d.user)) arr.push(d); 
+                });
                 arr.sort((a,b) => b.ts - a.ts);
-                arr.forEach(d => { let time = new Date(d.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); let icon = d.img ? '📷 ' : ''; list.innerHTML += `<div class="status-row" onclick="viewStatus('${d.user}','${encodeURIComponent(d.text)}','${time}', '${d.key}', '${d.img||''}', '${d.tScale||1}', '${d.tX||50}', '${d.tY||50}')"><div class="avatar">${d.user[0]}</div><div style="flex:1;"><b class="chat-name">${d.user}</b><br><small style="color:#888;">${icon}${time}</small></div></div>`; });
+                arr.forEach(d => { 
+                    let time = new Date(d.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); 
+                    let icon = d.img ? '📷 ' : ''; 
+                    list.innerHTML += `<div class="status-row" onclick="viewStatus('${d.user}','${encodeURIComponent(d.text)}','${time}', '${d.key}', '${d.img||''}', '${d.tScale||1}', '${d.tX||50}', '${d.tY||50}')">
+                        <div class="avatar">${d.user[0]}</div><div style="flex:1;"><b class="chat-name">${d.user}</b><br><small style="color:#888;">${icon}${time}</small></div></div>`; 
+                });
             });
         }
 
-        function renderRequests(reqData) { const recvDiv = document.getElementById('received-reqs'); recvDiv.innerHTML = ""; const sentDiv = document.getElementById('sent-reqs'); sentDiv.innerHTML = ""; Object.keys(reqData).forEach(uid => { const req = reqData[uid]; const row = document.createElement('div'); row.className = "req-row"; row.style.order = -req.ts; makeLongPressable(row, () => { showModal("Request Option", `<button class="btn-danger" onclick="deleteRequest('${uid}')">🗑️ Delete Request</button>`, null, false); }, null); if(req.type === 'received') { row.innerHTML = `<div class="avatar">${uid[0]}</div><div style="flex:1;"><b>${uid}</b><br><small>${req.status}</small></div>`; if(req.status === 'pending') { row.innerHTML += `<button class="btn-primary" style="width:auto; padding:8px 15px; margin-right:5px; margin-bottom:0;" onclick="acceptReq('${uid}'); event.stopPropagation();">Accept</button><button class="btn-danger" style="width:auto; padding:8px 15px; margin-bottom:0;" onclick="rejectReq('${uid}'); event.stopPropagation();">Reject</button>`; } recvDiv.appendChild(row); } else if(req.type === 'sent') { row.innerHTML = `<div class="avatar">${uid[0]}</div><div style="flex:1;"><b>${uid}</b><br><small>Status: ${req.status}</small></div><button class="btn-secondary" style="width:auto; padding:8px 15px; margin-bottom:0;" onclick="deleteRequest('${uid}'); event.stopPropagation();">Cancel</button>`; sentDiv.appendChild(row); } }); }
-        function sendFriendRequest(targetUser) { if(targetUser === myUser) return alert("You cannot send request to yourself!"); db.ref('registered_users/'+targetUser).once('value', snap => { if(!snap.exists()) return alert("User not found!"); db.ref('requests/'+myUser+'/'+targetUser).set({type: 'sent', status: 'pending', ts: Date.now()}); db.ref('requests/'+targetUser+'/'+myUser).set({type: 'received', status: 'pending', ts: Date.now()}); alert("Request Sent!"); closeModal(); }); }
-        async function acceptReq(uid) { await db.ref('requests/'+myUser+'/'+uid).update({status: 'accepted'}); await db.ref('requests/'+uid+'/'+myUser).update({status: 'accepted'}); const room = [myUser, uid].sort().join('_'); await db.ref('peers/'+myUser+'/'+uid).set({peer:uid, room:room}); await db.ref('peers/'+uid+'/'+myUser).set({peer:myUser, room:room}); }
+        function renderRequests(reqData) { 
+            const recvDiv = document.getElementById('received-reqs'); recvDiv.innerHTML = ""; 
+            const sentDiv = document.getElementById('sent-reqs'); sentDiv.innerHTML = ""; 
+            Object.keys(reqData).forEach(uid => { 
+                const req = reqData[uid]; const row = document.createElement('div'); row.className = "req-row"; row.style.order = -req.ts; 
+                makeLongPressable(row, () => { showModal("Request Option", `<button class="btn-danger" onclick="deleteRequest('${uid}')">🗑️ Delete Request</button>`, null, false); }, null); 
+                if(req.type === 'received') { 
+                    row.innerHTML = `<div class="avatar">${uid[0]}</div><div style="flex:1;"><b>${uid}</b><br><small>${req.status}</small></div>`; 
+                    if(req.status === 'pending') { 
+                        row.innerHTML += `<button class="btn-primary" style="width:auto; padding:8px 15px; margin-right:5px; margin-bottom:0;" onclick="acceptReq('${uid}'); event.stopPropagation();">Accept</button>
+                                          <button class="btn-danger" style="width:auto; padding:8px 15px; margin-bottom:0;" onclick="rejectReq('${uid}'); event.stopPropagation();">Reject</button>`; 
+                    } recvDiv.appendChild(row); 
+                } else if(req.type === 'sent') { 
+                    row.innerHTML = `<div class="avatar">${uid[0]}</div><div style="flex:1;"><b>${uid}</b><br><small>Status: ${req.status}</small></div>
+                                     <button class="btn-secondary" style="width:auto; padding:8px 15px; margin-bottom:0;" onclick="deleteRequest('${uid}'); event.stopPropagation();">Cancel</button>`; 
+                    sentDiv.appendChild(row); 
+                } 
+            }); 
+        }
+        function sendFriendRequest(targetUser) { 
+            if(targetUser === myUser) return alert("You cannot send request to yourself!"); 
+            db.ref('registered_users/'+targetUser).once('value', snap => { 
+                if(!snap.exists()) return alert("User not found!"); 
+                db.ref('requests/'+myUser+'/'+targetUser).set({type: 'sent', status: 'pending', ts: Date.now()}); 
+                db.ref('requests/'+targetUser+'/'+myUser).set({type: 'received', status: 'pending', ts: Date.now()}); 
+                alert("Request Sent!"); closeModal(); 
+            }); 
+        }
+        async function acceptReq(uid) { 
+            await db.ref('requests/'+myUser+'/'+uid).update({status: 'accepted'}); 
+            await db.ref('requests/'+uid+'/'+myUser).update({status: 'accepted'}); 
+            const room = [myUser, uid].sort().join('_'); 
+            await db.ref('peers/'+myUser+'/'+uid).set({peer:uid, room:room}); 
+            await db.ref('peers/'+uid+'/'+myUser).set({peer:myUser, room:room}); 
+        }
         function rejectReq(uid) { db.ref('requests/'+myUser+'/'+uid).update({status: 'rejected'}); db.ref('requests/'+uid+'/'+myUser).update({status: 'rejected'}); }
         function deleteRequest(uid) { db.ref('requests/'+myUser+'/'+uid).remove(); closeModal(); }
 
         let firstLoadComplete = false;
-        function updateRoomMeta(room, isPrivate) { db.ref((isPrivate?'private_messages/':'messages/')+room).limitToLast(1).on('value', snap => { if(snap.exists()) { let lastMsg = Object.values(snap.val())[0]; let el = document.getElementById('chat-row-'+room); if(el) { el.style.order = -lastMsg.ts; if(lastMsg.ts > (window.lastRead[room]||0) && lastMsg.from !== myUser) { el.classList.add('unread'); if(firstLoadComplete && room !== activeRoom) { msgAudio.play().catch(()=>{}); notifyUser("New Message", `Message from ${lastMsg.from}`); } } else el.classList.remove('unread'); } } }); }
+        function updateRoomMeta(room, isPrivate) { 
+            db.ref((isPrivate?'private_messages/':'messages/')+room).limitToLast(1).on('value', snap => { 
+                if(snap.exists()) { 
+                    let lastMsg = Object.values(snap.val())[0]; let el = document.getElementById('chat-row-'+room); 
+                    if(el) { 
+                        el.style.order = -lastMsg.ts; 
+                        if(lastMsg.ts > (window.lastRead[room]||0) && lastMsg.from !== myUser) { 
+                            el.classList.add('unread'); 
+                            if(firstLoadComplete && room !== activeRoom) { 
+                                msgAudio.play().catch(()=>{}); notifyUser("New Message", `Message from ${lastMsg.from}`); 
+                            } 
+                        } else el.classList.remove('unread'); 
+                    } 
+                } 
+            }); 
+        }
         setTimeout(()=>{firstLoadComplete=true;}, 3000);
 
-        function renderChatList() { const list = document.getElementById('chat-list'); list.innerHTML = ""; const query = document.getElementById('search-chat-input').value.trim(); Object.keys(window.myPrivateRooms).forEach(roomName => { if(window.myPrivateRooms[roomName].users && window.myPrivateRooms[roomName].users[myUser]) { const row = document.createElement('div'); row.className = "chat-row"; row.id = "chat-row-"+roomName; row.innerHTML = `<div class="avatar" style="border: 1px solid var(--primary);">🔒</div><div style="flex:1;"><b class="chat-name">${roomName}</b><br><small style="color:var(--primary); font-weight:bold;">Private Group</small></div>`; makeLongPressable(row, () => showChatActionMenu(roomName, true), () => openChat(roomName, "🔒 " + roomName, 'private')); list.appendChild(row); updateRoomMeta(roomName, true); } }); Object.values(window.myPeers).forEach(p => { let isHidden = window.hiddenUsers[p.peer]; if(isHidden && query !== isHidden) return; const row = document.createElement('div'); row.className = "chat-row"; row.id = "chat-row-"+p.room; row.innerHTML = `<div class="avatar">${p.peer[0]}</div><div style="flex:1;"><b class="chat-name">${p.peer}</b></div>`; makeLongPressable(row, () => showChatActionMenu(p.peer, false), () => openChat(p.room, p.peer, 'normal')); list.appendChild(row); updateRoomMeta(p.room, false); }); }
-        function showChatActionMenu(target, isPrivate) { if(isPrivate) showModal("Room Options", `<button class="btn-danger" onclick="exitPrivateRoomFromName('${target}')">🚪 Exit Private Room</button>`, null, false); else showModal("Chat Options", `<button class="btn-danger" onclick="deletePeerChat('${target}')">🗑️ Delete Contact & Chat</button>`, null, false); }
+        function renderChatList() { 
+            const list = document.getElementById('chat-list'); list.innerHTML = ""; 
+            const query = document.getElementById('search-chat-input').value.trim(); 
+            Object.keys(window.myPrivateRooms).forEach(roomName => { 
+                if(window.myPrivateRooms[roomName].users && window.myPrivateRooms[roomName].users[myUser]) { 
+                    const row = document.createElement('div'); row.className = "chat-row"; row.id = "chat-row-"+roomName; 
+                    row.innerHTML = `<div class="avatar" style="border: 1px solid var(--primary);">🔒</div><div style="flex:1;"><b class="chat-name">${roomName}</b><br><small style="color:var(--primary); font-weight:bold;">Private Group</small></div>`; 
+                    makeLongPressable(row, () => showChatActionMenu(roomName, true), () => openChat(roomName, "🔒 " + roomName, 'private')); 
+                    list.appendChild(row); updateRoomMeta(roomName, true); 
+                } 
+            }); 
+            Object.values(window.myPeers).forEach(p => { 
+                let isHidden = window.hiddenUsers[p.peer]; if(isHidden && query !== isHidden) return; 
+                const row = document.createElement('div'); row.className = "chat-row"; row.id = "chat-row-"+p.room; 
+                row.innerHTML = `<div class="avatar">${p.peer[0]}</div><div style="flex:1;"><b class="chat-name">${p.peer}</b></div>`; 
+                makeLongPressable(row, () => showChatActionMenu(p.peer, false), () => openChat(p.room, p.peer, 'normal')); 
+                list.appendChild(row); updateRoomMeta(p.room, false); 
+            }); 
+        }
+
+        function showChatActionMenu(target, isPrivate) { 
+            if(isPrivate) showModal("Room Options", `<button class="btn-danger" onclick="exitPrivateRoomFromName('${target}')">🚪 Exit Private Room</button>`, null, false); 
+            else showModal("Chat Options", `<button class="btn-danger" onclick="deletePeerChat('${target}')">🗑️ Delete Contact & Chat</button>`, null, false); 
+        }
         function deletePeerChat(peerName) { db.ref('peers/'+myUser+'/'+peerName).remove(); closeModal(); alert("Deleted!"); }
 
         function openChat(room, name, type='normal') {
@@ -419,6 +734,7 @@
             document.getElementById('msg-flow').innerHTML = ""; 
             activeRoom = room; activeRoomType = type; activePeerName = (type==='normal') ? name : null;
             window.lastRead[room] = Date.now(); localStorage.setItem('xit_reads', JSON.stringify(window.lastRead));
+            
             let rowEl = document.getElementById('chat-row-'+room); if(rowEl) rowEl.classList.remove('unread');
             document.getElementById('active-name').innerText = name;
             let chatWin = document.getElementById('chat-window');
@@ -430,6 +746,7 @@
 
             chatWin.classList.add('open'); history.pushState({page: 'chat'}, "");
             const refPath = type === 'private' ? 'private_messages/'+room : 'messages/'+room;
+            
             db.ref(refPath).on('value', snap => {
                 if(room !== activeRoom) return; 
                 const flow = document.getElementById('msg-flow'); flow.innerHTML = "";
@@ -437,8 +754,14 @@
                     const m = ms.val(); m.key = ms.key;
                     const wrap = document.createElement('div'); wrap.className = `msg-wrapper ${m.from === myUser ? 'sent-wrap' : 'recv-wrap'}`; wrap.id = `msg-wrap-${m.key}`;
                     const bubble = document.createElement('div'); bubble.className = `bubble ${m.from === myUser ? 'sent' : 'recv'}`;
-                    let content = ''; if(type === 'private' && m.from !== myUser) content += `<small style="display:block; font-weight:800; margin-bottom:5px; font-size:12px; color:var(--primary);">~ ${m.from}</small>`;
-                    if(m.replyTo) { let shortText = m.replyTo.type==='image'?'📷 Image':m.replyTo.type==='video'?'📹 Video':m.replyTo.type==='audio'?'🎵 Audio':m.replyTo.type==='document'?'📄 Document':m.replyTo.data; content += `<div class="reply-block" onclick="document.getElementById('msg-wrap-${m.replyTo.key}').scrollIntoView({behavior:'smooth'})"><b style="color:var(--primary); font-weight:800;">${m.replyTo.from}</b><br><div style="font-size:12px; opacity:0.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${shortText}</div></div>`; }
+                    
+                    let content = ''; 
+                    if(type === 'private' && m.from !== myUser) content += `<small style="display:block; font-weight:800; margin-bottom:5px; font-size:12px; color:var(--primary);">~ ${m.from}</small>`;
+                    if(m.replyTo) { 
+                        let shortText = m.replyTo.type==='image'?'📷 Image':m.replyTo.type==='video'?'📹 Video':m.replyTo.type==='audio'?'🎵 Audio':m.replyTo.type==='document'?'📄 Document':m.replyTo.data; 
+                        content += `<div class="reply-block" onclick="document.getElementById('msg-wrap-${m.replyTo.key}').scrollIntoView({behavior:'smooth'})"><b style="color:var(--primary); font-weight:800;">${m.replyTo.from}</b><br><div style="font-size:12px; opacity:0.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${shortText}</div></div>`; 
+                    }
+                    
                     if(m.type === 'image') content += `<img src="${m.data}" onclick="openMediaViewer('${m.data}', 'image')">`;
                     else if(m.type === 'video') content += `<video src="${m.data}" controls></video><br><small style="cursor:pointer; color:var(--primary); font-weight:bold;" onclick="openMediaViewer('${m.data}', 'video')">⛶ Full Screen</small>`;
                     else if(m.type === 'audio') content += `<audio src="${m.data}" controls></audio>`;
@@ -462,47 +785,180 @@
             });
         }
 
-        function showMsgActionMenu(mObj) { actionMsgContext = mObj; let html = `<button class="btn-secondary" onclick="setReplyContext(actionMsgContext); closeModal();">↩️ Reply</button><button class="btn-secondary" onclick="openForwardModal();">➡️ Forward</button>`; if(mObj.from === myUser) html += `<button class="btn-danger" onclick="deleteTargetMsg('${mObj.key}'); closeModal();">🗑️ Delete</button>`; showModal("Message Options", html, null, false); }
+        function showMsgActionMenu(mObj) { 
+            actionMsgContext = mObj; 
+            let html = `<button class="btn-secondary" onclick="setReplyContext(actionMsgContext); closeModal();">↩️ Reply</button><button class="btn-secondary" onclick="openForwardModal();">➡️ Forward</button>`; 
+            if(mObj.from === myUser) html += `<button class="btn-danger" onclick="deleteTargetMsg('${mObj.key}'); closeModal();">🗑️ Delete</button>`; 
+            showModal("Message Options", html, null, false); 
+        }
         function deleteTargetMsg(msgKey) { db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom+'/'+msgKey).remove(); }
-        function openForwardModal() { closeModal(); let html = `<div style="max-height:50vh; overflow-y:auto; text-align:left; border:1px solid rgba(255,255,255,0.1); border-radius:12px; margin-bottom:15px; padding:10px;">`; Object.values(window.myPeers).forEach(p => { html += `<label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;"><input type="checkbox" value="normal|${p.room}" style="width:20px; height:20px; margin:0;"> <b>${p.peer}</b></label>`; }); Object.keys(window.myPrivateRooms).forEach(pr => { if(window.myPrivateRooms[pr].users && window.myPrivateRooms[pr].users[myUser]) { html += `<label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;"><input type="checkbox" value="private|${pr}" style="width:20px; height:20px; margin:0;"> <b>🔒 ${pr}</b></label>`; } }); html += `</div><button class="btn-primary" onclick="submitForward()">➡️ Send Forward</button>`; showModal("Forward Message To:", html, null, false); }
-        function submitForward() { let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked'); if(checkboxes.length === 0) return alert("Select at least one chat!"); checkboxes.forEach(cb => { let [type, targetRoom] = cb.value.split('|'); let refPath = type === 'private' ? 'private_messages/'+targetRoom : 'messages/'+targetRoom; let payload = { from: myUser, data: actionMsgContext.data, type: actionMsgContext.type || 'text', ts: Date.now() }; db.ref(refPath).push().set(payload); }); closeModal(); alert("Message Forwarded Successfully!"); }
-        function setReplyContext(mObj) { replyingToContext = mObj; document.getElementById('reply-preview').style.display = 'block'; document.getElementById('reply-to-name').innerText = mObj.from === myUser ? "You" : mObj.from; document.getElementById('reply-to-text').innerText = mObj.type === 'image' ? '📷 Image' : mObj.type === 'video' ? '📹 Video' : mObj.type === 'audio' ? '🎵 Audio' : mObj.type === 'document' ? '📄 Document' : mObj.data; }
+        
+        function openForwardModal() { 
+            closeModal(); 
+            let html = `<div style="max-height:50vh; overflow-y:auto; text-align:left; border:1px solid rgba(255,255,255,0.1); border-radius:12px; margin-bottom:15px; padding:10px;">`; 
+            Object.values(window.myPeers).forEach(p => { html += `<label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;"><input type="checkbox" value="normal|${p.room}" style="width:20px; height:20px; margin:0;"> <b>${p.peer}</b></label>`; }); 
+            Object.keys(window.myPrivateRooms).forEach(pr => { if(window.myPrivateRooms[pr].users && window.myPrivateRooms[pr].users[myUser]) { html += `<label style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer;"><input type="checkbox" value="private|${pr}" style="width:20px; height:20px; margin:0;"> <b>🔒 ${pr}</b></label>`; } }); 
+            html += `</div><button class="btn-primary" onclick="submitForward()">➡️ Send Forward</button>`; 
+            showModal("Forward Message To:", html, null, false); 
+        }
+        function submitForward() { 
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked'); 
+            if(checkboxes.length === 0) return alert("Select at least one chat!"); 
+            checkboxes.forEach(cb => { let [type, targetRoom] = cb.value.split('|'); let refPath = type === 'private' ? 'private_messages/'+targetRoom : 'messages/'+targetRoom; let payload = { from: myUser, data: actionMsgContext.data, type: actionMsgContext.type || 'text', ts: Date.now() }; db.ref(refPath).push().set(payload); }); 
+            closeModal(); alert("Message Forwarded Successfully!"); 
+        }
+
+        function setReplyContext(mObj) { 
+            replyingToContext = mObj; document.getElementById('reply-preview').style.display = 'block'; 
+            document.getElementById('reply-to-name').innerText = mObj.from === myUser ? "You" : mObj.from; 
+            document.getElementById('reply-to-text').innerText = mObj.type === 'image' ? '📷 Image' : mObj.type === 'video' ? '📹 Video' : mObj.type === 'audio' ? '🎵 Audio' : mObj.type === 'document' ? '📄 Document' : mObj.data; 
+        }
         function cancelReply() { replyingToContext = null; document.getElementById('reply-preview').style.display = 'none'; }
 
-        // --- Voice Chat Integration ---
-        let mediaRecorder; let audioChunks = []; let recInterval; let recStartTime; let isRecording = false; const micBtn = document.getElementById('mic-btn');
+        // --- Voice Chat Logic ---
+        let mediaRecorder; let audioChunks = []; let recInterval; let recStartTime; let isRecording = false; 
+        const micBtn = document.getElementById('mic-btn');
+        
         async function startVoiceRecording(e) {
-            e.preventDefault(); if(!activeRoom || document.getElementById('msg-input').value.trim().length > 0) return;
+            e.preventDefault(); 
+            if(!activeRoom || document.getElementById('msg-input').value.trim().length > 0) return;
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream); mediaRecorder.start(); isRecording = true; audioChunks = [];
                 mediaRecorder.addEventListener("dataavailable", event => { audioChunks.push(event.data); });
                 mediaRecorder.addEventListener("stop", () => {
-                    let duration = Date.now() - recStartTime; const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); stream.getTracks().forEach(track => track.stop()); 
-                    if(duration > 1000) { const reader = new FileReader(); reader.readAsDataURL(audioBlob); reader.onloadend = function() { pushAudioToDB(reader.result); } }
+                    let duration = Date.now() - recStartTime; 
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); 
+                    stream.getTracks().forEach(track => track.stop()); 
+                    if(duration > 1000) { 
+                        const reader = new FileReader(); reader.readAsDataURL(audioBlob); 
+                        reader.onloadend = function() { pushAudioToDB(reader.result); } 
+                    }
                 });
-                micBtn.classList.add('recording'); document.getElementById('msg-input').style.display = 'none'; document.getElementById('record-ui').style.display = 'flex'; recStartTime = Date.now(); document.getElementById('record-time').innerText = "00:00";
-                recInterval = setInterval(() => { let diff = Math.floor((Date.now() - recStartTime)/1000); let m = String(Math.floor(diff/60)).padStart(2, '0'); let s = String(diff%60).padStart(2, '0'); document.getElementById('record-time').innerText = `${m}:${s}`; }, 1000);
+                micBtn.classList.add('recording'); document.getElementById('msg-input').style.display = 'none'; 
+                document.getElementById('record-ui').style.display = 'flex'; recStartTime = Date.now(); 
+                document.getElementById('record-time').innerText = "00:00";
+                recInterval = setInterval(() => { 
+                    let diff = Math.floor((Date.now() - recStartTime)/1000); 
+                    let m = String(Math.floor(diff/60)).padStart(2, '0'); let s = String(diff%60).padStart(2, '0'); 
+                    document.getElementById('record-time').innerText = `${m}:${s}`; 
+                }, 1000);
             } catch(err) { alert("Microphone permission denied."); }
         }
-        function stopVoiceRecording(e) { if(isRecording && mediaRecorder && mediaRecorder.state !== "inactive") { mediaRecorder.stop(); isRecording = false; micBtn.classList.remove('recording'); document.getElementById('msg-input').style.display = 'block'; document.getElementById('record-ui').style.display = 'none'; clearInterval(recInterval); } }
-        function pushAudioToDB(base64) { let payload = { from: myUser, data: base64, type: 'audio', ts: Date.now() }; if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); } db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload); }
+        function stopVoiceRecording(e) { 
+            if(isRecording && mediaRecorder && mediaRecorder.state !== "inactive") { 
+                mediaRecorder.stop(); isRecording = false; micBtn.classList.remove('recording'); 
+                document.getElementById('msg-input').style.display = 'block'; document.getElementById('record-ui').style.display = 'none'; 
+                clearInterval(recInterval); 
+            } 
+        }
+        function pushAudioToDB(base64) { 
+            let payload = { from: myUser, data: base64, type: 'audio', ts: Date.now() }; 
+            if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); } 
+            db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload); 
+        }
         
         micBtn.addEventListener('mousedown', startVoiceRecording); micBtn.addEventListener('touchstart', startVoiceRecording, {passive: false});
         window.addEventListener('mouseup', stopVoiceRecording); window.addEventListener('touchend', stopVoiceRecording);
         
-        function toggleInputButtons() { let val = document.getElementById('msg-input').value.trim(); if(val.length > 0) { document.getElementById('mic-btn').style.display = 'none'; document.getElementById('send-btn').style.display = 'flex'; } else { document.getElementById('mic-btn').style.display = 'flex'; document.getElementById('send-btn').style.display = 'none'; } }
-        function sendMsg() { const inp = document.getElementById('msg-input'); const val = inp.value.trim(); if(!val) return; inp.value = ""; let payload = { from: myUser, data: val, ts: Date.now() }; if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); } db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload); toggleInputButtons(); }
-        function sendMedia() { const fileInput = document.getElementById('media-input'); const file = fileInput.files[0]; if(!file) return; if(file.size > 4 * 1024 * 1024) { alert("File is too large! Please select a file under 4MB."); fileInput.value = ''; return; } document.getElementById('upload-indicator').style.display = 'block'; let fType = 'document'; if(file.type.startsWith('image/')) fType = 'image'; else if(file.type.startsWith('video/')) fType = 'video'; else if(file.type.startsWith('audio/')) fType = 'audio'; const r = new FileReader(); r.onload = (e) => { let dataURL = e.target.result; if(fType === 'image') { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const scaleSize = Math.min(MAX_WIDTH / img.width, 1); canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); pushToDB(compressedDataUrl, fType); }; img.src = dataURL; } else { pushToDB(dataURL, fType); } }; r.readAsDataURL(file); function pushToDB(fileData, type) { let payload = { from: myUser, data: fileData, type: type, ts: Date.now() }; if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); } db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload).then(() => { document.getElementById('upload-indicator').style.display = 'none'; fileInput.value = ''; }).catch(err => { alert("Error: " + err.message); document.getElementById('upload-indicator').style.display = 'none'; }); } }
-        function closeChat(doBack=true) { document.getElementById('chat-window').classList.remove('open'); if(activeRoom) { db.ref('messages/'+activeRoom).off(); db.ref('private_messages/'+activeRoom).off(); } if(window.hiddenUsers[activePeerName]) renderChatList(); activeRoom = null; activePeerName = null; cancelReply(); if(doBack) history.back(); }
-        function showChangePass() { toggleSidebar(false); showModal("🔑 Change Password", `<input type="password" id="old-p" placeholder="Old Password"><input type="password" id="new-p" placeholder="New Password">`, async () => { const snap = await db.ref('registered_users/'+myUser).once('value'); if(snap.val().password === document.getElementById('old-p').value) { await db.ref('registered_users/'+myUser+'/password').set(document.getElementById('new-p').value); alert("Success!"); closeModal(); } else alert("Wrong Password"); }); }
-        function showChatBgSettings() { toggleSidebar(false); let html = `<div style="margin-bottom:10px;"><label style="font-weight:bold;">Select Background Type:</label><select id="bg-type" onchange="document.getElementById('bg-col-wrap').style.display=this.value==='color'?'block':'none'; document.getElementById('bg-img-wrap').style.display=this.value==='image'?'block':'none';"><option value="default">Default Dark</option><option value="color">Solid Color</option><option value="image">Custom Image</option></select></div><div id="bg-col-wrap" style="display:none; margin-bottom:10px;"><label>Choose Color:</label><input type="color" id="bg-color" value="#0a0f18" style="height:40px; padding:0;"></div><div id="bg-img-wrap" style="display:none; margin-bottom:10px;"><label>Select Image:</label><input type="file" id="bg-file" accept="image/*" style="background:rgba(255,255,255,0.1); color:white;"></div>`; showModal("🖼️ Chat Background", html, () => { let type = document.getElementById('bg-type').value; if(type === 'default') { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'default'})); applySavedBg(); closeModal(); alert("Background Reset to Default!"); } else if(type === 'color') { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'color', value: document.getElementById('bg-color').value})); applySavedBg(); closeModal(); alert("Solid Color Applied!"); } else if(type === 'image') { let file = document.getElementById('bg-file').files[0]; if(!file) return alert("Please select an image file first."); let r = new FileReader(); r.onload = function(e) { let img = new Image(); img.onload = () => { let canvas = document.createElement('canvas'); let maxW = 1080; let scale = Math.min(maxW/img.width, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; let ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); let data = canvas.toDataURL('image/jpeg', 0.5); try { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'image', value: data})); applySavedBg(); closeModal(); alert("Background Image Applied!"); } catch(err) { alert("Image size is too large."); } }; img.src = e.target.result; }; r.readAsDataURL(file); } }); }
-        function showHideFriendMenu() { toggleSidebar(false); let html = `<p style="font-size:13px; color:#aaa; margin-bottom:20px;">Assign a secret alias (like emoji or random number) to hide a chat. Search exact alias to reveal.</p><select id="hide-user-select"><option value="">-- Select Chat to Hide --</option>${Object.keys(window.myPeers).map(p => `<option value="${p}">${p}</option>`).join('')}</select><input type="text" id="hide-alias" placeholder="Enter Alias (e.g. 123 or 👽)"><h4 style="margin-top:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; color:var(--primary);">Unhide User</h4><input type="text" id="unhide-alias" placeholder="Enter Secret Alias"><button class="btn-secondary" onclick="processUnhide()">👁️ Unhide Chat</button>`; showModal("🕵️ Stealth Mode", html, () => { const u = document.getElementById('hide-user-select').value; const a = document.getElementById('hide-alias').value.trim(); if(!u || !a) return alert("Select user and enter alias!"); window.hiddenUsers[u] = a; localStorage.setItem('xit_hidden_users', JSON.stringify(window.hiddenUsers)); closeModal(); alert("Chat Hidden! Search alias to reveal temporarily."); renderChatList(); }); }
-        function processUnhide() { const alias = document.getElementById('unhide-alias').value.trim(); let found = null; Object.keys(window.hiddenUsers).forEach(u => { if(window.hiddenUsers[u] === alias) found = u; }); if(found) { delete window.hiddenUsers[found]; localStorage.setItem('xit_hidden_users', JSON.stringify(window.hiddenUsers)); alert(`${found} unhidden!`); closeModal(); renderChatList(); } else { alert("Alias not found."); } }
+        function toggleInputButtons() { 
+            let val = document.getElementById('msg-input').value.trim(); 
+            if(val.length > 0) { document.getElementById('mic-btn').style.display = 'none'; document.getElementById('send-btn').style.display = 'flex'; } 
+            else { document.getElementById('mic-btn').style.display = 'flex'; document.getElementById('send-btn').style.display = 'none'; } 
+        }
+        
+        function sendMsg() { 
+            const inp = document.getElementById('msg-input'); const val = inp.value.trim(); if(!val) return; inp.value = ""; 
+            let payload = { from: myUser, data: val, ts: Date.now() }; 
+            if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); } 
+            db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload); toggleInputButtons(); 
+        }
+        
+        function sendMedia() { 
+            const fileInput = document.getElementById('media-input'); const file = fileInput.files[0]; if(!file) return; 
+            if(file.size > 4 * 1024 * 1024) { alert("File is too large! Please select a file under 4MB."); fileInput.value = ''; return; } 
+            document.getElementById('upload-indicator').style.display = 'block'; 
+            let fType = 'document'; if(file.type.startsWith('image/')) fType = 'image'; else if(file.type.startsWith('video/')) fType = 'video'; else if(file.type.startsWith('audio/')) fType = 'audio'; 
+            const r = new FileReader(); 
+            r.onload = (e) => { 
+                let dataURL = e.target.result; 
+                if(fType === 'image') { 
+                    const img = new Image(); img.onload = () => { 
+                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const scaleSize = Math.min(MAX_WIDTH / img.width, 1); 
+                        canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize; 
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); 
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6); pushToDB(compressedDataUrl, fType); 
+                    }; img.src = dataURL; 
+                } else { pushToDB(dataURL, fType); } 
+            }; r.readAsDataURL(file); 
+            
+            function pushToDB(fileData, type) { 
+                let payload = { from: myUser, data: fileData, type: type, ts: Date.now() }; 
+                if(replyingToContext) { payload.replyTo = { key: replyingToContext.key, from: replyingToContext.from, data: replyingToContext.data, type: replyingToContext.type || 'text' }; cancelReply(); } 
+                db.ref((activeRoomType==='private'?'private_messages/':'messages/')+activeRoom).push().set(payload).then(() => { document.getElementById('upload-indicator').style.display = 'none'; fileInput.value = ''; }).catch(err => { alert("Error: " + err.message); document.getElementById('upload-indicator').style.display = 'none'; }); 
+            } 
+        }
+
+        function closeChat(doBack=true) { 
+            document.getElementById('chat-window').classList.remove('open'); 
+            if(activeRoom) { db.ref('messages/'+activeRoom).off(); db.ref('private_messages/'+activeRoom).off(); } 
+            if(window.hiddenUsers[activePeerName]) renderChatList(); 
+            activeRoom = null; activePeerName = null; cancelReply(); if(doBack) history.back(); 
+        }
+
+        function showChangePass() { 
+            toggleSidebar(false); showModal("🔑 Change Password", `<input type="password" id="old-p" placeholder="Old Password"><input type="password" id="new-p" placeholder="New Password">`, async () => { 
+                const snap = await db.ref('registered_users/'+myUser).once('value'); 
+                if(snap.val().password === document.getElementById('old-p').value) { await db.ref('registered_users/'+myUser+'/password').set(document.getElementById('new-p').value); alert("Success!"); closeModal(); } else alert("Wrong Password"); 
+            }); 
+        }
+
+        function showChatBgSettings() { 
+            toggleSidebar(false); 
+            let html = `<div style="margin-bottom:10px;"><label style="font-weight:bold;">Select Background Type:</label><select id="bg-type" onchange="document.getElementById('bg-col-wrap').style.display=this.value==='color'?'block':'none'; document.getElementById('bg-img-wrap').style.display=this.value==='image'?'block':'none';"><option value="default">Default Dark</option><option value="color">Solid Color</option><option value="image">Custom Image</option></select></div><div id="bg-col-wrap" style="display:none; margin-bottom:10px;"><label>Choose Color:</label><input type="color" id="bg-color" value="#0a0f18" style="height:40px; padding:0;"></div><div id="bg-img-wrap" style="display:none; margin-bottom:10px;"><label>Select Image:</label><input type="file" id="bg-file" accept="image/*" style="background:rgba(255,255,255,0.1); color:white;"></div>`; 
+            showModal("🖼️ Chat Background", html, () => { 
+                let type = document.getElementById('bg-type').value; 
+                if(type === 'default') { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'default'})); applySavedBg(); closeModal(); alert("Background Reset to Default!"); } 
+                else if(type === 'color') { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'color', value: document.getElementById('bg-color').value})); applySavedBg(); closeModal(); alert("Solid Color Applied!"); } 
+                else if(type === 'image') { 
+                    let file = document.getElementById('bg-file').files[0]; if(!file) return alert("Please select an image file first."); 
+                    let r = new FileReader(); r.onload = function(e) { 
+                        let img = new Image(); img.onload = () => { let canvas = document.createElement('canvas'); let maxW = 1080; let scale = Math.min(maxW/img.width, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; let ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); let data = canvas.toDataURL('image/jpeg', 0.5); try { localStorage.setItem('xit_chat_bg', JSON.stringify({type:'image', value: data})); applySavedBg(); closeModal(); alert("Background Image Applied!"); } catch(err) { alert("Image size is too large."); } }; img.src = e.target.result; 
+                    }; r.readAsDataURL(file); 
+                } 
+            }); 
+        }
+
+        function showHideFriendMenu() { 
+            toggleSidebar(false); 
+            let html = `<p style="font-size:13px; color:#aaa; margin-bottom:20px;">Assign a secret alias (like emoji or random number) to hide a chat. Search exact alias to reveal.</p><select id="hide-user-select"><option value="">-- Select Chat to Hide --</option>${Object.keys(window.myPeers).map(p => `<option value="${p}">${p}</option>`).join('')}</select><input type="text" id="hide-alias" placeholder="Enter Alias (e.g. 123 or 👽)"><h4 style="margin-top:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; color:var(--primary);">Unhide User</h4><input type="text" id="unhide-alias" placeholder="Enter Secret Alias"><button class="btn-secondary" onclick="processUnhide()">👁️ Unhide Chat</button>`; 
+            showModal("🕵️ Stealth Mode", html, () => { const u = document.getElementById('hide-user-select').value; const a = document.getElementById('hide-alias').value.trim(); if(!u || !a) return alert("Select user and enter alias!"); window.hiddenUsers[u] = a; localStorage.setItem('xit_hidden_users', JSON.stringify(window.hiddenUsers)); closeModal(); alert("Chat Hidden! Search alias to reveal temporarily."); renderChatList(); }); 
+        }
+        function processUnhide() { 
+            const alias = document.getElementById('unhide-alias').value.trim(); let found = null; Object.keys(window.hiddenUsers).forEach(u => { if(window.hiddenUsers[u] === alias) found = u; }); 
+            if(found) { delete window.hiddenUsers[found]; localStorage.setItem('xit_hidden_users', JSON.stringify(window.hiddenUsers)); alert(`${found} unhidden!`); closeModal(); renderChatList(); } else { alert("Alias not found."); } 
+        }
 
         // --- Status Logic ---
         let stScale = 1.0, stX = 50, stY = 50; 
-        function handleFab() { if(currentTab === 0 || currentTab === 2) { showModal("🔍 Add Contact", `<input id="t-user" placeholder="Enter exact username...">`, () => { const t = document.getElementById('t-user').value.toLowerCase().trim(); if(t) sendFriendRequest(t); }); } else if(currentTab === 1) { stScale = 1.0; stX = 50; stY = 50; let html = `<textarea id="s-txt" placeholder="Write status text..." style="height:80px; resize:none;" oninput="updateStatusPreview()"></textarea><div class="file-upload-wrapper"><div class="file-upload-btn">📷 Choose Image</div><input type="file" id="s-img" accept="image/*" onchange="previewStatusImg(this)"></div><div id="status-create-preview"><img id="scp-img" src=""><div id="scp-text"></div></div><p id="st-hint" style="font-size:12px; color:#aaa; display:none; text-align:center;">Use 2 fingers to pinch-zoom text. Drag to move.</p>`; showModal("✨ New Status", html, async () => { const s = document.getElementById('s-txt').value; const fileInput = document.getElementById('s-img'); if(!s && (!fileInput.files || fileInput.files.length === 0)) return alert("Add text or image."); let payload = {user:myUser, text:s, ts:Date.now(), tScale: stScale, tX: stX, tY: stY}; if(fileInput.files && fileInput.files.length > 0) { const img = new Image(); img.onload = async () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const scaleSize = Math.min(MAX_WIDTH / img.width, 1); canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); payload.img = canvas.toDataURL('image/jpeg', 0.6); await db.ref('statuses').push(payload); closeModal(); }; img.src = document.getElementById('scp-img').src; } else { await db.ref('statuses').push(payload); closeModal(); } }); const previewArea = document.getElementById('status-create-preview'); let initialDist = 0, startScale = 1; previewArea.addEventListener('touchstart', (e) => { if(e.touches.length === 2) { initialDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); startScale = stScale; } }, {passive: false}); previewArea.addEventListener('touchmove', (e) => { if(e.touches.length === 2) { e.preventDefault(); let dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); stScale = Math.max(0.5, Math.min(startScale * (dist / initialDist), 5)); updateStatusPreviewStyle(); } else if (e.touches.length === 1) { e.preventDefault(); const rect = previewArea.getBoundingClientRect(); stX = ((e.touches[0].clientX - rect.left) / rect.width) * 100; stY = ((e.touches[0].clientY - rect.top) / rect.height) * 100; updateStatusPreviewStyle(); } }, {passive: false}); } }
+        function handleFab() { 
+            if(currentTab === 0 || currentTab === 2) { showModal("🔍 Add Contact", `<input id="t-user" placeholder="Enter exact username...">`, () => { const t = document.getElementById('t-user').value.toLowerCase().trim(); if(t) sendFriendRequest(t); }); } 
+            else if(currentTab === 1) { 
+                stScale = 1.0; stX = 50; stY = 50; 
+                let html = `<textarea id="s-txt" placeholder="Write status text..." style="height:80px; resize:none;" oninput="updateStatusPreview()"></textarea><div class="file-upload-wrapper"><div class="file-upload-btn">📷 Choose Image</div><input type="file" id="s-img" accept="image/*" onchange="previewStatusImg(this)"></div><div id="status-create-preview"><img id="scp-img" src=""><div id="scp-text"></div></div><p id="st-hint" style="font-size:12px; color:#aaa; display:none; text-align:center;">Use 2 fingers to pinch-zoom text. Drag to move.</p>`; 
+                showModal("✨ New Status", html, async () => { 
+                    const s = document.getElementById('s-txt').value; const fileInput = document.getElementById('s-img'); 
+                    if(!s && (!fileInput.files || fileInput.files.length === 0)) return alert("Add text or image."); 
+                    let payload = {user:myUser, text:s, ts:Date.now(), tScale: stScale, tX: stX, tY: stY}; 
+                    if(fileInput.files && fileInput.files.length > 0) { 
+                        const img = new Image(); img.onload = async () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const scaleSize = Math.min(MAX_WIDTH / img.width, 1); canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); payload.img = canvas.toDataURL('image/jpeg', 0.6); await db.ref('statuses').push(payload); closeModal(); }; img.src = document.getElementById('scp-img').src; 
+                    } else { await db.ref('statuses').push(payload); closeModal(); } 
+                }); 
+                const previewArea = document.getElementById('status-create-preview'); let initialDist = 0, startScale = 1; 
+                previewArea.addEventListener('touchstart', (e) => { if(e.touches.length === 2) { initialDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); startScale = stScale; } }, {passive: false}); 
+                previewArea.addEventListener('touchmove', (e) => { if(e.touches.length === 2) { e.preventDefault(); let dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); stScale = Math.max(0.5, Math.min(startScale * (dist / initialDist), 5)); updateStatusPreviewStyle(); } else if (e.touches.length === 1) { e.preventDefault(); const rect = previewArea.getBoundingClientRect(); stX = ((e.touches[0].clientX - rect.left) / rect.width) * 100; stY = ((e.touches[0].clientY - rect.top) / rect.height) * 100; updateStatusPreviewStyle(); } }, {passive: false}); 
+            } 
+        }
         function previewStatusImg(input) { if (input.files && input.files[0]) { var reader = new FileReader(); reader.onload = function (e) { document.getElementById('status-create-preview').style.display = 'block'; document.getElementById('st-hint').style.display = 'block'; document.getElementById('scp-img').src = e.target.result; updateStatusPreview(); }; reader.readAsDataURL(input.files[0]); } }
         function updateStatusPreview() { document.getElementById('scp-text').innerText = document.getElementById('s-txt').value; updateStatusPreviewStyle(); }
         function updateStatusPreviewStyle() { let el = document.getElementById('scp-text'); el.style.transform = `translate(-50%, -50%) scale(${stScale})`; el.style.left = `${stX}%`; el.style.top = `${stY}%`; }
@@ -511,6 +967,7 @@
         function viewStatusStats(e) { e.stopPropagation(); db.ref(`statuses/${currentActiveStatusKey}`).once('value', snap => { if(!snap.exists()) return; let data = snap.val(); alert(`Viewed by: ${Object.keys(data.views||{}).join(', ')||'None'}\n\nLiked by: ${Object.keys(data.likes||{}).join(', ')||'None'}`); }); }
         function deleteMyStatus(e) { e.stopPropagation(); if(confirm("Delete this status?")) { db.ref('statuses/'+currentActiveStatusKey).remove(); closeStatus(); } }
         function closeStatus(doBack=true) { document.getElementById('status-viewer').style.display = 'none'; if(currentActiveStatusKey) db.ref(`statuses/${currentActiveStatusKey}`).off(); currentActiveStatusKey = null; if(doBack) history.back(); }
+        
         function showPrivateRoomMenu() { toggleSidebar(false); showModal("🔒 Private Rooms", `<button class="btn-primary" onclick="openCreateRoomUI()">➕ Create New Room</button><button class="btn-secondary" onclick="openJoinRoomUI()">📥 Join Existing Room</button>`, null, false); }
         function openCreateRoomUI() { showModal("Create Private Room", `<input type="text" id="pr-name" placeholder="Enter Room Name"><input type="password" id="pr-pass" placeholder="Create Password">`, async () => { const n = document.getElementById('pr-name').value.trim(), p = document.getElementById('pr-pass').value.trim(); if(!n || !p) return; if((await db.ref('private_rooms/'+n).once('value')).exists()) return alert("Room Name taken!"); await db.ref('private_rooms/'+n).set({password: p, users: {[myUser]: true}}); closeModal(); openChat(n, "🔒 " + n, 'private'); }); }
         function openJoinRoomUI() { showModal("Join Private Room", `<input type="text" id="pr-name" placeholder="Room Name"><input type="password" id="pr-pass" placeholder="Password">`, async () => { const n = document.getElementById('pr-name').value.trim(), p = document.getElementById('pr-pass').value.trim(); if(!n || !p) return; const snap = await db.ref('private_rooms/'+n).once('value'); if(!snap.exists() || snap.val().password !== p) return alert("Invalid details!"); await db.ref('private_rooms/'+n+'/users/'+myUser).set(true); closeModal(); openChat(n, "🔒 " + n, 'private'); }); }
@@ -529,7 +986,7 @@
 
 
         // ==========================================
-        // RESTORED STABLE WEBRTC LOGIC (1-TO-1 PERFECTED)
+        // STABLE WEBRTC LOGIC (1-TO-1 PERFECTED)
         // ==========================================
         const iceServers = { iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun2.l.google.com:19302' }]};
         let pc = null; let localStream = null; let remoteStream = null; let currentCallRef = null; 
@@ -593,7 +1050,6 @@
 
                 const offer = await pc.createOffer(); await pc.setLocalDescription(offer);
                 
-                // Ring the receiver
                 await db.ref(`incoming_calls/${activePeerName}`).set({ caller: myUser, type: type, callId: callId, offer: offer, ts: Date.now() });
 
                 currentCallRef.child('answer').on('value', snap => {
@@ -620,7 +1076,6 @@
             } catch(e) { console.error(e); alert("Camera/Mic Permission Denied!"); endCallLocal(); } 
         }
 
-        // --- INCOMING CALL LOGIC ---
         function listenForCalls() { 
             db.ref(`incoming_calls/${myUser}`).on('value', snap => { 
                 if(snap.exists() && !pc) { 
@@ -637,7 +1092,6 @@
                     cancelBtn.innerText = "Reject"; cancelBtn.style.background = "var(--danger)"; cancelBtn.style.color = "white"; 
                     cancelBtn.onclick = () => { rejectCall(); closeModal(); }; 
                 } else if(!snap.exists()) {
-                    // Call was cancelled
                     if(incomingCallObj) {
                         ringtoneAudio.pause(); ringtoneAudio.currentTime = 0;
                         if(document.getElementById('modal-title').innerText === "Incoming Call 📞") closeModal();
@@ -654,6 +1108,7 @@
             let data = incomingCallObj;
             currentCallRef = db.ref(`calls_signaling/${data.callId}`); 
             isVideoCall = (data.type === 'video');
+            activePeerName = data.caller;
 
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: isVideoCall ? { facingMode: 'user' } : false, audio: true });
@@ -718,15 +1173,13 @@
             } 
         }
 
-        function endCall() { 
-            if(currentCallRef) currentCallRef.child('status').set('ended'); else endCallLocal(); 
-        }
+        function endCall() { if(currentCallRef) currentCallRef.child('status').set('ended'); else endCallLocal(); }
 
         function endCallLocal() { 
             ringtoneAudio.pause(); ringtoneAudio.currentTime = 0;
             stopCallTimerUI();
             
-            if(activePeerName && activeRoomType === 'normal') { db.ref(`incoming_calls/${activePeerName}`).remove(); }
+            if(activePeerName && currentCallRef) { db.ref(`incoming_calls/${activePeerName}`).remove(); }
 
             if(pc) { pc.close(); pc = null; }
             if(localStream) { localStream.getTracks().forEach(track => track.stop()); localStream = null; }
@@ -748,6 +1201,11 @@
         async function flipCamera() { if (!localStream || !isVideoCall) return; isFrontCamera = !isFrontCamera; const videoTrack = localStream.getVideoTracks()[0]; try { const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: isFrontCamera ? 'user' : 'environment' } }); const newVideoTrack = newStream.getVideoTracks()[0]; localStream.removeTrack(videoTrack); localStream.addTrack(newVideoTrack); document.getElementById('local-video').srcObject = localStream; if(pc) { const sender = pc.getSenders().find(s => s.track.kind === 'video'); if (sender) sender.replaceTrack(newVideoTrack); } videoTrack.stop(); } catch (e) { isFrontCamera = !isFrontCamera; } }
         function toggleSpeaker() { isSpeakerOn = !isSpeakerOn; const btn = document.getElementById('toggle-speaker-btn'); if(isSpeakerOn) { btn.style.background = 'rgba(255,255,255,0.1)'; btn.style.color = 'white'; } else { btn.style.background = 'rgba(255,71,87,0.2)'; btn.style.color = 'var(--danger)'; } if(document.getElementById('remote-video')) document.getElementById('remote-video').volume = isSpeakerOn ? 1.0 : 0.2; }
 
+        const params = new URLSearchParams(window.location.search); const linkRoom = params.get('room');
+        if(linkRoom && myUser) { setTimeout(()=>{ showModal("Join Secure Room", `<p style="color:#aaa; margin-bottom:15px;">Enter password to unlock <b>${linkRoom}</b>.</p><input type="password" id="link-p" placeholder="Room Password">`, async () => { const p = document.getElementById('link-p').value; const snap = await db.ref('private_rooms/'+linkRoom).once('value'); if(!snap.exists() || snap.val().password !== p) return alert("Incorrect Password!"); await db.ref('private_rooms/'+linkRoom+'/users/'+myUser).set(true); window.history.replaceState({}, document.title, window.location.pathname); closeModal(); openChat(linkRoom, "🔒 " + linkRoom, 'private'); }); }, 1000); }
+
+        if(!myUser) document.getElementById('login-screen').style.display='flex';
+        else { document.getElementById('side-user-info').innerText = "@"+myUser; document.getElementById('my-avatar').innerText = myUser[0]; startApp(); }
     </script>
 </body>
 </html>
