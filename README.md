@@ -1,10 +1,9 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XIT - Premium Chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght=300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #0a0f18;
@@ -211,13 +210,13 @@
         .send-btn { 
             background: var(--primary); color: #000; border: none; border-radius: 50%; 
             width: 50px; height: 50px; display: flex; align-items: center; 
-            justify-content: center; font-size: 20px; box-shadow: 0 0 15px var(--primary-glow); 
+            justify-content: center; font-size: 20px; box-shadow: 0 0 15px var(--primary-glow); flex-shrink: 0;
         }
         
         .mic-btn { 
             background: rgba(0, 229, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 229, 255, 0.2); 
             border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; 
-            justify-content: center; font-size: 20px; transition: 0.3s; cursor: pointer; 
+            justify-content: center; font-size: 20px; transition: 0.3s; cursor: pointer; flex-shrink: 0;
             user-select: none; -webkit-user-select: none;
         }
         .mic-btn svg { width: 24px; height: 24px; fill: currentColor; pointer-events: none;}
@@ -228,21 +227,28 @@
         
         #record-ui { 
             display: none; flex: 1; align-items: center; justify-content: flex-start; gap: 15px; 
-            color: var(--danger); font-weight: 800; font-size: 16px; padding-left: 15px; 
+            color: var(--danger); font-weight: 800; font-size: 16px; padding-left: 15px; height: 50px;
         }
         .red-dot { 
             display:inline-block; width:12px; height:12px; background:var(--danger); 
             border-radius:50%; box-shadow: 0 0 10px var(--danger); animation: blink 1s infinite; 
         }
 
-        /* Lists */
+        /* Lists and Top Highlight Modifications */
         .chat-row, .status-row, .req-row, .history-row { 
             display: flex; align-items: center; padding: 15px 20px; 
-            border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.2s; 
+            border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; transition: 0.3s; 
         }
         .chat-row:hover, .status-row:hover, .req-row:hover, .history-row:hover { background: rgba(255,255,255,0.03); }
-        .chat-row.unread .chat-name { color: var(--primary); font-weight: 800; } 
-        .chat-row.unread { background: linear-gradient(90deg, rgba(0,229,255,0.05) 0%, transparent 100%); }
+        
+        /* Highlight and Glow design for New Notification Top Items */
+        .chat-row.unread { 
+            background: linear-gradient(90deg, rgba(0,229,255,0.08) 0%, rgba(10,15,24,0.4) 100%); 
+            border-left: 4px solid var(--primary);
+            box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.15);
+        }
+        .chat-row.unread .chat-name { color: var(--primary); font-weight: 800; text-shadow: 0 0 10px var(--primary-glow); } 
+
         .avatar { 
             width: 55px; height: 55px; border-radius: 18px; 
             background: linear-gradient(135deg, #2b3240, #141820); display: flex; 
@@ -368,8 +374,8 @@
 </head>
 <body>
 
-    <audio id="ringtone-audio" loop src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-    <audio id="msg-audio" src="https://assets.mixkit.co/active_storage/sfx/2866/2866-preview.mp3"></audio>
+    <audio id="ringtone-audio" loop src="https://assets.mixkit.co/active_storage/sfx/1357/1357-preview.mp3"></audio>
+    <audio id="msg-audio" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
     <div id="modal-container" class="modal-overlay" onclick="closeModal()">
         <div class="modal-card" id="modal-card" onclick="event.stopPropagation()">
@@ -463,7 +469,6 @@
             <div class="menu-item" onclick="showCallHistory()"><span>📞</span> Call History</div>
             <div class="menu-item" onclick="showChatBgSettings()"><span>🖼️</span> Chat Background</div>
             <div class="menu-item" onclick="showChangePass()"><span>🔑</span> Change Password</div>
-            <div class="menu-item"><a href="prince" target="_blank"><span>⬇️</span> Download App</a></div>
             <div class="menu-item" style="color: var(--danger); margin-top:20px;" onclick="logout()"><span>🚪</span> Logout</div>
         </div>
     </div>
@@ -482,7 +487,7 @@
             <div id="search-bar">
                 <input type="text" id="search-chat-input" placeholder="Search hidden alias..." oninput="renderChatList()">
             </div>
-            <div id="chat-list"></div>
+            <div id="chat-list" style="display: flex; flex-direction: column;"></div>
         </div>
         <div class="view" id="status-list"></div>
         <div class="view" id="request-list">
@@ -697,6 +702,7 @@
                         el.style.order = -lastMsg.ts; 
                         if(lastMsg.ts > (window.lastRead[room]||0) && lastMsg.from !== myUser) { 
                             el.classList.add('unread'); 
+                            // Automatic repositioning to structural top handled dynamically via flex order
                             if(firstLoadComplete && room !== activeRoom) { 
                                 msgAudio.play().catch(()=>{}); notifyUser("New Message", `Message from ${lastMsg.from}`); 
                             } 
@@ -819,7 +825,7 @@
         }
         function cancelReply() { replyingToContext = null; document.getElementById('reply-preview').style.display = 'none'; }
 
-        // --- Voice Chat Logic ---
+        // --- Voice Chat Logic (Fixed Oval shape onto Smartphones) ---
         let mediaRecorder; let audioChunks = []; let recInterval; let recStartTime; let isRecording = false; 
         const micBtn = document.getElementById('mic-btn');
         
@@ -985,12 +991,30 @@
         history.replaceState({page: 'home'}, ""); window.onpopstate = () => { if (document.getElementById('modal-container').classList.contains('active')) closeModal(); else if (document.getElementById('image-viewer').style.display === 'flex') { document.getElementById('image-viewer').style.display = 'none'; document.getElementById('iv-video').pause(); } else if (document.getElementById('status-viewer').style.display === 'flex') closeStatus(false); else if (document.getElementById('call-screen').style.display === 'flex') endCall(); else if (document.getElementById('chat-window').classList.contains('open')) closeChat(false); else if (document.getElementById('sidebar').classList.contains('open')) toggleSidebar(false); };
         function openMediaViewer(dataUrl, type) { document.getElementById('iv-img').style.display = 'none'; document.getElementById('iv-video').style.display = 'none'; document.getElementById('iv-video').pause(); if(type === 'image') { document.getElementById('iv-img').src = dataUrl; document.getElementById('iv-img').style.display = 'block'; } else if(type === 'video') { document.getElementById('iv-video').src = dataUrl; document.getElementById('iv-video').style.display = 'block'; document.getElementById('iv-video').play(); } document.getElementById('iv-download').href = dataUrl; document.getElementById('image-viewer').style.display = 'flex'; }
         
-        function saveCallHistory(peer, type, status) { db.ref(`call_history/${myUser}`).push({ peer: peer, type: type, status: status, ts: Date.now() }); }
-        function showCallHistory() { toggleSidebar(false); db.ref(`call_history/${myUser}`).once('value', snap => { let html = `<div style="text-align:left;">`; let data = []; snap.forEach(s => data.push(s.val())); data.sort((a,b) => b.ts - a.ts); if(data.length === 0) html += `<p style="text-align:center; color:#777;">No calls yet.</p>`; data.forEach(c => { let d = new Date(c.ts); let timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); let icon = c.type === 'video' ? '📹' : '📞'; let col = c.status === 'missed' ? 'var(--danger)' : c.status === 'outgoing' ? 'var(--primary)' : '#38ef7d'; let arrow = c.status === 'missed' ? '↙️ Missed' : c.status === 'outgoing' ? '↗️ Outgoing' : '↙️ Received'; html += `<div class="history-row" style="margin-bottom:10px; background:rgba(255,255,255,0.05); border-radius:15px; display:flex; align-items:center; padding:15px;"><div style="font-size:26px; margin-right:15px; color:${col}">${icon}</div><div style="flex:1;"><b style="color:${col}; font-size:16px;">${c.peer}</b><br><small style="color:#aaa;">${arrow}</small></div><div style="font-size:11px; color:#888; text-align:right;">${timeStr}</div></div>`; }); html += `</div>`; showModal("📞 Call History", html, null, false); }); }
-
+        function saveCallHistory(peer, type, status) { 
+            db.ref(`call_history/${myUser}`).push({ peer: peer, type: type, status: status, ts: Date.now() }); 
+        }
+        
+        function showCallHistory() { 
+            toggleSidebar(false); 
+            db.ref(`call_history/${myUser}`).once('value', snap => { 
+                let html = `<div style="text-align:left;">`; let data = []; 
+                snap.forEach(s => data.push(s.val())); 
+                data.sort((a,b) => b.ts - a.ts); 
+                if(data.length === 0) html += `<p style="text-align:center; color:#777;">No calls yet.</p>`; 
+                data.forEach(c => { 
+                    let d = new Date(c.ts); let timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); 
+                    let icon = c.type === 'video' ? '📹' : '📞'; 
+                    let col = c.status === 'missed' ? 'var(--danger)' : c.status === 'outgoing' ? 'var(--primary)' : '#38ef7d'; 
+                    let arrow = c.status === 'missed' ? '↙️ Missed' : c.status === 'outgoing' ? '↗️ Outgoing' : '↙️ Received'; 
+                    html += `<div class="history-row" style="margin-bottom:10px; background:rgba(255,255,255,0.05); border-radius:15px; display:flex; align-items:center; padding:15px;"><div style="font-size:26px; margin-right:15px; color:${col}">${icon}</div><div style="flex:1;"><b style="color:${col}; font-size:16px;">${c.peer}</b><br><small style="color:#aaa;">${arrow}</small></div><div style="font-size:11px; color:#888; text-align:right;">${timeStr}</div></div>`; 
+                }); 
+                html += `</div>`; showModal("📞 Call History", html, null, false); 
+            }); 
+        }
 
         // ==========================================
-        // FIXED STABLE WEBRTC LOGIC
+        // STABLE WEBRTC INTER-DEVICE CALL LOGIC
         // ==========================================
         const iceServers = { iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:stun2.l.google.com:19302' }]};
         let pc = null; let localStream = null; let remoteStream = null; let currentCallRef = null; 
@@ -1044,7 +1068,12 @@
 
                 remoteStream = new MediaStream(); document.getElementById('remote-video').srcObject = remoteStream;
                 pc.ontrack = event => { remoteStream.addTrack(event.track); document.getElementById('remote-video').play().catch(e=>console.log(e)); };
-                pc.onconnectionstatechange = () => { if (pc.connectionState === 'connected') startCallTimerUI(); };
+                
+                pc.onconnectionstatechange = () => { 
+                    if (pc.connectionState === 'connected') {
+                        startCallTimerUI();
+                    }
+                };
 
                 const callId = db.ref(`incoming_calls/${activePeerName}`).push().key;
                 currentCallRef = db.ref(`calls_signaling/${callId}`);
@@ -1054,7 +1083,7 @@
 
                 const offer = await pc.createOffer(); await pc.setLocalDescription(offer);
                 
-                // IMPORTANT BUG FIX: Serialized RTCSessionDescription to avoid Firebase Exception
+                // Cross-device synchronization initialization structure
                 await db.ref(`incoming_calls/${activePeerName}`).set({ 
                     caller: myUser, 
                     type: type, 
@@ -1062,6 +1091,9 @@
                     offer: { type: offer.type, sdp: offer.sdp }, 
                     ts: Date.now() 
                 });
+                
+                // Track state locally for direct history accuracy
+                localStorage.setItem('xit_active_call_role', 'outgoing');
 
                 currentCallRef.child('answer').on('value', snap => {
                     if(snap.exists() && !pc.currentRemoteDescription) {
@@ -1078,7 +1110,9 @@
                 
                 currentCallRef.child('status').on('value', snap => {
                     if(snap.val() === 'ended') {
-                        let finalDur = stopCallTimerUI(); let finalStat = finalDur === "00:00" ? "missed" : "outgoing";
+                        let role = localStorage.getItem('xit_active_call_role') || 'outgoing';
+                        let finalDur = stopCallTimerUI(); 
+                        let finalStat = finalDur === "00:00" ? "missed" : "outgoing";
                         saveCallHistory(activePeerName, type, finalStat);
                         endCallLocal();
                     }
@@ -1087,7 +1121,7 @@
             } catch(e) { console.error(e); alert("Camera/Mic Permission Denied!"); endCallLocal(); } 
         }
 
-        // --- INCOMING CALL LOGIC ---
+        // --- INCOMING CALL INTER-DEVICE SYNC ---
         function listenForCalls() { 
             db.ref(`incoming_calls/${myUser}`).on('value', snap => { 
                 if(snap.exists() && !pc) { 
@@ -1123,6 +1157,7 @@
             currentCallRef = db.ref(`calls_signaling/${data.callId}`); 
             isVideoCall = (data.type === 'video');
             activePeerName = data.caller;
+            localStorage.setItem('xit_active_call_role', 'received');
 
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: isVideoCall ? { facingMode: 'user' } : false, audio: true });
@@ -1155,7 +1190,6 @@
                 await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
                 const answer = await pc.createAnswer(); await pc.setLocalDescription(answer);
                 
-                // IMPORTANT BUG FIX: Serialized answer to avoid Firebase Exception
                 await currentCallRef.child('answer').set({ type: answer.type, sdp: answer.sdp });
 
                 currentCallRef.child('callerCandidates').on('child_added', snap => {
@@ -1167,7 +1201,7 @@
 
                 currentCallRef.child('status').on('value', snap => {
                     if(snap.val() === 'ended') {
-                        let finalDur = stopCallTimerUI();
+                        stopCallTimerUI();
                         saveCallHistory(data.caller, data.type, 'received');
                         endCallLocal();
                     }
@@ -1190,7 +1224,11 @@
         }
 
         function endCall() { 
-            if(currentCallRef) currentCallRef.child('status').set('ended'); else endCallLocal(); 
+            if(currentCallRef) {
+                currentCallRef.child('status').set('ended');
+            } else {
+                endCallLocal(); 
+            }
         }
 
         function endCallLocal() { 
@@ -1212,6 +1250,7 @@
             
             if(currentCallRef) { currentCallRef.off(); currentCallRef = null; } 
             db.ref(`incoming_calls/${myUser}`).remove();
+            localStorage.removeItem('xit_active_call_role');
         }
         
         function toggleMute() { if(localStream) { let audioTrack = localStream.getAudioTracks()[0]; if(audioTrack) { audioTrack.enabled = !audioTrack.enabled; let btn = document.getElementById('toggle-mic-btn'); if(audioTrack.enabled) { btn.style.background = 'rgba(255,255,255,0.1)'; btn.style.color = 'white'; } else { btn.style.background = 'rgba(255,71,87,0.2)'; btn.style.color = 'var(--danger)'; } } } }
